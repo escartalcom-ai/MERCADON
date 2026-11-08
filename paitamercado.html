@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paita Mercado - Directorio Oficial de Puestos y Mercados</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Manifest for PWA -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBhaXRhIE1lcmNhZG8iLAogICJzaG9ydF9uYW1lIjogIlBhaXRhTWVyY2FkbyIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjhmYWZjIiwKICAidGhlbWVfY29sb3IiOiAiIzEwYjA3OSIKfQ==">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            green: '#10B981',
+                            greenDark: '#059669',
+                            orange: '#F97316',
+                            orangeDark: '#EA580C',
+                            sun: '#F59E0B',
+                            bg: '#F8FAFC'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar for Rubros & Carousel */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .sun-spin:hover {
+            transform: rotate(20deg) scale(1.15);
+            transition: transform 0.2s ease-in-out;
+        }
+        /* Touch friendly buttons */
+        button, a {
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-green selection:text-white">
+
+    <!-- ==================== TOP HEADER ==================== -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="resetFilters()">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-green to-emerald-400 flex items-center justify-center text-white shadow-md shadow-emerald-200">
+                    <i class="fa-solid font-bold fa-store text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight leading-none text-slate-900">
+                        Paita<span class="text-brand-green">Mercado</span>
+                    </h1>
+                    <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Provincia de Paita</p>
+                </div>
+            </div>
+
+            <!-- Header Action Buttons -->
+            <div class="flex items-center space-x-2">
+                <!-- Favorites Toggle Button -->
+                <button id="btnFavsFilter" onclick="toggleFavoritesFilter()" class="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold rounded-full border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 transition shadow-sm">
+                    <i id="iconFavFilter" class="fa-regular fa-heart text-sm"></i>
+                    <span class="hidden sm:inline">Favoritos</span>
+                    <span id="favsCountBadge" class="bg-rose-600 text-white rounded-full text-[10px] px-1.5 py-0.2 font-bold ml-1">0</span>
+                </button>
+
+                <!-- Register Post Button -->
+                <button onclick="openModal('modalRegister')" class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-brand-green to-emerald-500 hover:from-brand-greenDark hover:to-emerald-600 text-white text-xs sm:text-sm font-bold rounded-full shadow-md shadow-emerald-200 hover:shadow-lg transition transform active:scale-95">
+                    <i class="fa-solid fa-plus-circle text-sm"></i>
+                    <span>Registrar Puesto</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== BANNER CAROUSEL (DYNAMIC FROM GOOGLE SHEETS) ==================== -->
+    <section class="relative w-full bg-slate-100 overflow-hidden shadow-inner">
+        <div id="bannerContainer" class="relative w-full h-44 sm:h-56 md:h-64 lg:h-72 transition-all duration-500">
+            <!-- Banners injected by JS -->
+        </div>
+
+        <!-- Carousel Navigation Controls -->
+        <button onclick="prevBanner()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-700 w-9 h-9 rounded-full flex items-center justify-center shadow-md backdrop-blur-sm transition focus:outline-none">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button onclick="nextBanner()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-700 w-9 h-9 rounded-full flex items-center justify-center shadow-md backdrop-blur-sm transition focus:outline-none">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- Carousel Indicators -->
+        <div id="carouselDots" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1.5 z-10">
+            <!-- Dynamic dots -->
+        </div>
+    </section>
+
+    <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full space-y-6">
+
+        <!-- SEARCH AND DISTRICT FILTER BAR -->
+        <section class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                <!-- Search Box -->
+                <div class="relative md:col-span-8">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <input type="text" id="searchInput" oninput="filterPuestos()" placeholder="Buscar por puesto, ID, productos o servicios..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green transition">
+                </div>
+
+                <!-- District Selector -->
+                <div class="relative md:col-span-4">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-green">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <select id="districtFilter" onchange="filterPuestos()" class="w-full pl-10 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green transition appearance-none">
+                        <option value="TODOS">Todos los Distritos de Paita</option>
+                        <option value="Paita" selected>Distrito de Paita (Capital)</option>
+                        <option value="Amotape">Amotape</option>
+                        <option value="Colán">Colán / Pueblo Nuevo</option>
+                        <option value="El Arenal">El Arenal</option>
+                        <option value="La Huaca">La Huaca</option>
+                        <option value="Tamarindo">Tamarindo</option>
+                        <option value="Vichayal">Vichayal</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SMART RUBROS / CATEGORIES -->
+            <div class="pt-2">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-tags text-brand-orange"></i> Rubros Comerciales
+                    </h3>
+                    <span id="puestosCount" class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Cargando...</span>
+                </div>
+                <!-- Horizontally Scrollable Rubros Container -->
+                <div id="rubrosContainer" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1">
+                    <!-- Dynamic Rubro Buttons -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PUESTOS GRID ==================== -->
+        <section>
+            <div id="puestosGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Cards render dynamically via JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200">
+                <div class="w-16 h-16 mx-auto bg-amber-50 rounded-full flex items-center justify-center text-amber-500 mb-3 text-2xl">
+                    <i class="fa-solid fa-store-slash"></i>
+                </div>
+                <h4 class="text-base font-bold text-slate-700">No se encontraron puestos</h4>
+                <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Intenta cambiando los filtros de búsqueda o el rubro seleccionado.</p>
+                <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition">
+                    Restablecer Filtros
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== PROMOTIONAL VIRTUAL CATALOG BANNER ==================== -->
+        <section class="bg-gradient-to-r from-amber-500 via-brand-orange to-orange-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 text-white/10 text-9xl font-black pointer-events-none select-none">
+                <i class="fa-solid fa-basket-shopping"></i>
+            </div>
+            <div class="relative z-10 max-w-2xl space-y-2">
+                <span class="bg-white/20 text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider">Impulsa tu Negocio</span>
+                <h3 class="text-xl sm:text-2xl font-black tracking-tight leading-tight">¿Quieres tener tu propio catálogo virtual para ventas?</h3>
+                <p class="text-xs sm:text-sm text-amber-100">
+                    Ten tu catálogo digital personalizado con enlace y código QR. Cotizamos según la cantidad de productos de tu puesto en modalidad mensual o anual.
+                </p>
+                <div class="pt-2">
+                    <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Cat%C3%A1logo%20Virtual%20para%20mi%20puesto%20en%20Paita%20Mercado" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 bg-white text-brand-orangeDark hover:bg-amber-50 font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow transition transform active:scale-95">
+                        <i class="fa-brands fa-whatsapp text-emerald-600 text-base"></i>
+                        <span>Cotizar Mi Catálogo Virtual</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FREE SOCIAL MEDIA PUBLISHING BANNER & NETWORKS ==================== -->
+        <section class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4">
+            <div class="max-w-xl mx-auto space-y-2">
+                <div class="inline-flex items-center space-x-1.5 text-xs font-bold text-brand-green bg-emerald-50 px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span>¡Publicación 100% Gratuita!</span>
+                </div>
+                <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Publicamos tus puestos o productos en nuestras Redes Oficiales</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Si quieres publicar contenido de tus puestos o productos en nuestras redes sociales lo puedes hacer de manera <strong class="text-slate-800">GRATUITA</strong>. Horario de recepción: <strong>Lunes a Sábado de 10:00 am a 5:00 pm</strong>. Las publicaciones se realizarán en orden de recepción y deben contar con el material visual adecuado.
+                </p>
+                <div class="pt-1">
+                    <a href="https://wa.me/51930528649?text=Hola,%20quiero%20publicar%20mi%20puesto/producto%20en%20sus%20redes%20sociales%20de%20forma%20gratuitam" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                        <span>Enviar Publicación por WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+
+            <hr class="border-slate-100 my-4">
+
+            <!-- Social Media Icons -->
+            <div class="space-y-2">
+                <p class="text-xs font-semibold text-slate-500">Síguenos en nuestras plataformas</p>
+                <div class="flex items-center justify-center space-x-4">
+                    <!-- Facebook -->
+                    <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center text-lg transition shadow-sm">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <!-- TikTok -->
+                    <a href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok" class="w-10 h-10 rounded-full bg-slate-100 text-slate-900 hover:bg-slate-900 hover:text-white flex items-center justify-center text-lg transition shadow-sm">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </a>
+                    <!-- Instagram -->
+                    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="w-10 h-10 rounded-full bg-pink-50 text-pink-600 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 hover:text-white flex items-center justify-center text-lg transition shadow-sm">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <!-- YouTube -->
+                    <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube" class="w-10 h-10 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center text-lg transition shadow-sm">
+                        <i class="fa-brands fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="text-xs text-slate-600 font-medium">
+                © 2026 PaitaMercado - Todos los derechos reservados.
+            </p>
+            <p class="text-[11px] text-slate-600">
+                Desarrollada por <a href="https://comaxion.vercel.app" target="_blank" rel="noopener" class="font-bold text-brand-green hover:underline">COMAXION</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- ==================== FLOATING ACTION BUTTONS ==================== -->
+    <div class="fixed bottom-4 right-4 z-30 flex flex-col space-y-2.5">
+        <!-- Scroll to Top Button -->
+        <button id="btnScrollTop" onclick="scrollToTop()" class="hidden w-10 h-10 bg-white border border-slate-200 text-slate-600 rounded-full shadow-lg flex items-center justify-center hover:bg-slate-50 transition">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+
+        <!-- Volunteer Support Button -->
+        <button onclick="openModal('modalSupport')" class="flex items-center space-x-2 px-3.5 py-2.5 bg-gradient-to-r from-amber-500 to-brand-orange text-white text-xs font-bold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition transform">
+            <i class="fa-solid fa-heart text-white animate-pulse"></i>
+            <span class="hidden sm:inline">Apoyar Plataforma</span>
+        </button>
+    </div>
+
+    <!-- ==================== MODAL 1: REGISTRAR PUESTO ==================== -->
+    <div id="modalRegister" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative my-8 border border-slate-100">
+            <!-- Close Modal -->
+            <button onclick="closeModal('modalRegister')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Header Modal -->
+            <div class="mb-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-brand-green flex items-center justify-center mb-2">
+                    <i class="fa-solid fa-store text-lg"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900">Registrar Puesto Gratis</h3>
+                <p class="text-xs text-slate-500">Únete al directorio oficial de la Provincia de Paita.</p>
+            </div>
+
+            <!-- Form -->
+            <form id="formRegisterPuesto" onsubmit="handleRegisterSubmit(event)" class="space-y-3.5 text-xs">
+                <!-- Nombre Puesto -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nombre y/o ID del Puesto <span class="text-rose-500">*</span></label>
+                    <input type="text" id="regNombre" required placeholder="Ej. Comercial Don Pedro - Puesto 45" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                </div>
+
+                <!-- Rubro Principal -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Rubro Principal <span class="text-rose-500">*</span></label>
+                    <select id="regRubro" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                        <option value="" disabled selected>Selecciona un rubro</option>
+                        <option value="Abarrotes y alimentos">Abarrotes y alimentos</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Carnicerías">Carnicerías</option>
+                        <option value="Pescaderías">Pescaderías</option>
+                        <option value="Frutas y verduras">Frutas y verduras</option>
+                        <option value="Productos regionales">Productos regionales</option>
+                        <option value="Restaurantes y comidas">Restaurantes y comidas</option>
+                        <option value="Panaderías y dulcerías">Panaderías y dulcerías</option>
+                        <option value="Lácteos">Lácteos</option>
+                        <option value="Salud y bienestar">Salud y bienestar</option>
+                        <option value="Belleza y cuidado personal">Belleza y cuidado personal</option>
+                        <option value="Moda y calzado">Moda y calzado</option>
+                        <option value="Tecnología y electrónica">Tecnología y electrónica</option>
+                        <option value="Hogar y decoración">Hogar y decoración</option>
+                        <option value="Ferretería y construcción">Ferretería y construcción</option>
+                        <option value="Limpieza">Limpieza</option>
+                        <option value="Mascotas">Mascotas</option>
+                        <option value="Librerías y juguetes">Librerías y juguetes</option>
+                        <option value="Automotriz y repuestos">Automotriz y repuestos</option>
+                        <option value="Servicios y reparaciones">Servicios y reparaciones</option>
+                    </select>
+                </div>
+
+                <!-- Descripción Breve -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Descripción Breve</label>
+                    <textarea id="regDescripcion" rows="2" placeholder="Venta de productos frescos y de primera calidad a excelente precio." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40"></textarea>
+                </div>
+
+                <!-- Distrito -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Distrito <span class="text-rose-500">*</span></label>
+                    <select id="regDistrito" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                        <option value="Paita" selected>Paita (Capital)</option>
+                        <option value="Amotape">Amotape</option>
+                        <option value="Colán">Colán</option>
+                        <option value="El Arenal">El Arenal</option>
+                        <option value="La Huaca">La Huaca</option>
+                        <option value="Tamarindo">Tamarindo</option>
+                        <option value="Vichayal">Vichayal</option>
+                    </select>
+                </div>
+
+                <!-- Ubicación GPS (Opcional) -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Ubicación GPS (Opcional)</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="regGPS" placeholder="Coordenadas o Google Maps link" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                        <button type="button" onclick="detectGPSLocation()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl whitespace-nowrap flex items-center space-x-1">
+                            <i class="fa-solid fa-location-crosshairs text-brand-green"></i>
+                            <span>Detectar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- WhatsApp -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">WhatsApp del Puesto <span class="text-rose-500">*</span></label>
+                    <input type="tel" id="regWhatsapp" required placeholder="930528649" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                </div>
+
+                <!-- Enlace Web / Facebook -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Catálogo Virtual o Facebook (Opcional)</label>
+                    <input type="url" id="regWeb" placeholder="https://facebook.com/mipuesto" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                </div>
+
+                <!-- Checkbox Protección de datos -->
+                <div class="flex items-start space-x-2 pt-1">
+                    <input type="checkbox" id="regAccept" required class="mt-0.5 rounded border-slate-300 text-brand-green focus:ring-brand-green">
+                    <label for="regAccept" class="text-[11px] text-slate-500 leading-tight">
+                        Acepto que mis datos personales y comerciales sean protegidos y visibles con fines publicitarios en Paita Mercado.
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full py-3 bg-brand-green hover:bg-brand-greenDark text-white font-bold rounded-xl shadow-md transition transform active:scale-95 text-sm">
+                    Guardar y Publicar Puesto
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 2: APOYO VOLUNTARIO (DONACIONES) ==================== -->
+    <div id="modalSupport" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+            <button onclick="closeModal('modalSupport')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="mb-4 text-center">
+                <div class="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-500 flex items-center justify-center mb-2 text-xl">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900">Apoyo Voluntario</h3>
+                <p class="text-xs text-slate-500">Ayuda a mantener activa y sostenible esta plataforma local.</p>
+            </div>
+
+            <form onsubmit="handleSupportSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nombres y Apellidos (Opcional)</label>
+                    <input type="text" id="supNombre" placeholder="Tu nombre" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">WhatsApp de contacto (Opcional)</label>
+                    <input type="tel" id="supWhatsapp" placeholder="930528649" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Medio de Pago Seleccionado <span class="text-rose-500">*</span></label>
+                    <select id="supMedio" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40">
+                        <option value="Yape">Yape</option>
+                        <option value="Plin">Plin</option>
+                        <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Mensaje / Nota Opcional</label>
+                    <textarea id="supNota" rows="2" placeholder="¡Muchos éxitos con la plataforma!" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-amber-500 to-brand-orange hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-xl shadow-md transition transform active:scale-95 text-sm flex items-center justify-center space-x-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Enviar Aporte por WhatsApp</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT & BACKEND INTEGRATION ==================== -->
+    <script>
+        /**
+         * PAITA MERCADO - CORE JAVASCRIPT ARCHITECTURE
+         * Configured with Local Storage + API integration ready for Google Apps Script
+         */
+
+        // 1. CONFIGURATION & STATE MANAGEMENT
+        const APPS_SCRIPT_URL = ""; // Optional: Paste Google Apps Script Web App URL here
+        
+        let puestosData = [];
+        let bannersData = [];
+        let favoritesList = JSON.parse(localStorage.getItem('paita_favs') || '[]');
+        let currentRubroFilter = 'TODOS';
+        let showFavsOnly = false;
+        let currentBannerIndex = 0;
+        let bannerTimer = null;
+
+        // Default Districts GPS Centroids Fallback
+        const DISTRICT_MAPS = {
+            'Paita': 'https://maps.google.com/?q=-5.0892,-81.1144',
+            'Amotape': 'https://maps.google.com/?q=-4.8875,-81.0183',
+            'Colán': 'https://maps.google.com/?q=-5.0242,-81.0617',
+            'El Arenal': 'https://maps.google.com/?q=-4.8847,-81.0264',
+            'La Huaca': 'https://maps.google.com/?q=-4.9122,-80.9611',
+            'Tamarindo': 'https://maps.google.com/?q=-4.8722,-80.9786',
+            'Vichayal': 'https://maps.google.com/?q=-4.8889,-81.0639'
+        };
+
+        // Seed Puestos Mock Data
+        const INITIAL_PUESTOS = [
+            {
+                id: 'PM-001',
+                nombre: 'Pescadería El Rey del Mar',
+                rubro: 'Pescaderías',
+                descripcion: 'Pescado fresco del día directo del muelle artesanal de Paita. Cabrilla, mero y cachema.',
+                distrito: 'Paita',
+                gps: 'https://maps.google.com/?q=-5.0892,-81.1144',
+                whatsapp: '51930528649',
+                web: 'https://facebook.com',
+                votesCount: 42,
+                totalRating: 205 // Avg 4.88 (97.6%)
+            },
+            {
+                id: 'PM-002',
+                nombre: 'Frutería Doña María',
+                rubro: 'Frutas y verduras',
+                descripcion: 'Las mejores frutas de la región: mangos, limones piuranos, plátanos y verduras seleccionadas.',
+                distrito: 'Paita',
+                gps: '',
+                whatsapp: '51930528649',
+                web: '',
+                votesCount: 28,
+                totalRating: 140 // 5.0 (100%)
+            },
+            {
+                id: 'PM-003',
+                nombre: 'Abarrotes & Novedades San Pedro',
+                rubro: 'Abarrotes y alimentos',
+                descripcion: 'Venta por mayor y menor de arroz, azúcar, aceites, lácteos y enlatados al mejor precio.',
+                distrito: 'Colán',
+                gps: '',
+                whatsapp: '51930528649',
+                web: 'https://facebook.com',
+                votesCount: 19,
+                totalRating: 88 // 4.63 (92%)
+            },
+            {
+                id: 'PM-004',
+                nombre: 'Cevichería El Puerto Marino',
+                rubro: 'Restaurantes y comidas',
+                descripcion: 'Ceviches, parihuelas y arroz con mariscos preparados con la sazón auténtica paitena.',
+                distrito: 'Paita',
+                gps: 'https://maps.google.com/?q=-5.0892,-81.1144',
+                whatsapp: '51930528649',
+                web: 'https://facebook.com',
+                votesCount: 56,
+                totalRating: 275 // 4.91 (98%)
+            }
+        ];
+
+        // Seed Banners Mock Data
+        const INITIAL_BANNERS = [
+            {
+                image: 'https://placehold.co/1200x400/10b981/ffffff?text=Gran+Mercado+de+Paita+-+Productos+Frescos+Todos+los+Dias',
+                link: 'https://wa.me/51930528649',
+                duration: 5000
+            },
+            {
+                image: 'https://placehold.co/1200x400/f97316/ffffff?text=Anuncia+Tu+Puesto+Gratis+Aqui',
+                link: 'javascript:openModal("modalRegister")',
+                duration: 5000
+            }
+        ];
+
+        // 2. INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPuestos();
+            loadBanners();
+            setupScrollListener();
+            updateFavsBadge();
+        });
+
+        // Load Puestos Data
+        async function loadPuestos() {
+            if (APPS_SCRIPT_URL) {
+                try {
+                    const response = await fetch(`${APPS_SCRIPT_URL}?action=getPuestos`);
+                    const data = await response.json();
+                    puestosData = data.length ? data : INITIAL_PUESTOS;
+                } catch (error) {
+                    console.warn('Falling back to local storage:', error);
+                    puestosData = JSON.parse(localStorage.getItem('paita_puestos')) || INITIAL_PUESTOS;
+                }
+            } else {
+                puestosData = JSON.parse(localStorage.getItem('paita_puestos')) || INITIAL_PUESTOS;
+            }
+            renderRubroButtons();
+            filterPuestos();
+        }
+
+        // Save Puestos Data
+        function savePuestosLocal() {
+            localStorage.setItem('paita_puestos', JSON.stringify(puestosData));
+        }
+
+        // 3. FINGERPRINT & VOTE SECURITY SYSTEM
+        function getDeviceFingerprint() {
+            // Simulated unique hardware device fingerprint using browser attributes
+            const nav = window.navigator;
+            const screen = window.screen;
+            let str = `${nav.userAgent}-${nav.language}-${screen.colorDepth}-${screen.width}x${screen.height}-${new Date().getTimezoneOffset()}`;
+            
+            // Simple hash algorithm
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                let char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0;
+            }
+            return 'FP-' + Math.abs(hash);
+        }
+
+        function hasVotedForPuesto(puestoId) {
+            const votesHistory = JSON.parse(localStorage.getItem('paita_votes_history') || '{}');
+            const fp = getDeviceFingerprint();
+            return !!(votesHistory[puestoId] || votesHistory[`fp_${fp}_${puestoId}`]);
+        }
+
+        function registerVote(puestoId, ratingValue) {
+            if (hasVotedForPuesto(puestoId)) {
+                alert('¡Ya has calificado la atención de este puesto anteriormente desde este dispositivo!');
+                return;
+            }
+
+            const puesto = puestosData.find(p => p.id === puestoId);
+            if (!puesto) return;
+
+            puesto.votesCount = (puesto.votesCount || 0) + 1;
+            puesto.totalRating = (puesto.totalRating || 0) + ratingValue;
+
+            // Save vote security fingerprint
+            const fp = getDeviceFingerprint();
+            const votesHistory = JSON.parse(localStorage.getItem('paita_votes_history') || '{}');
+            votesHistory[puestoId] = true;
+            votesHistory[`fp_${fp}_${puestoId}`] = true;
+            localStorage.setItem('paita_votes_history', JSON.stringify(votesHistory));
+
+            savePuestosLocal();
+            filterPuestos(); // Re-render grid
+
+            // Remote Sync
+            if (APPS_SCRIPT_URL) {
+                fetch(`${APPS_SCRIPT_URL}?action=vote`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: puestoId, rating: ratingValue, fingerprint: fp })
+                }).catch(e => console.log(e));
+            }
+
+            alert(`¡Gracias por calificar a ${puesto.nombre} con ${ratingValue} soles!`);
+        }
+
+        // 4. SMART RUBROS ENGINE
+        function renderRubroButtons() {
+            const rubrosContainer = document.getElementById('rubrosContainer');
+            
+            // Extract registered categories
+            const activeRubros = Array.from(new Set(puestosData.map(p => p.rubro))).filter(Boolean);
+
+            let html = `
+                <button onclick="selectRubro('TODOS')" class="px-3 py-1.5 rounded-full text-xs font-bold transition whitespace-nowrap ${currentRubroFilter === 'TODOS' ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+                    Todos
+                </button>
+            `;
+
+            activeRubros.forEach(rubro => {
+                const isActive = currentRubroFilter === rubro;
+                html += `
+                    <button onclick="selectRubro('${rubro}')" class="px-3 py-1.5 rounded-full text-xs font-bold transition whitespace-nowrap ${isActive ? 'bg-brand-green text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+                        ${rubro}
+                    </button>
+                `;
+            });
+
+            rubrosContainer.innerHTML = html;
+        }
+
+        function selectRubro(rubro) {
+            currentRubroFilter = rubro;
+            renderRubroButtons();
+            filterPuestos();
+        }
+
+        // 5. SEARCH & FILTERING ENGINE
+        function filterPuestos() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+            const districtVal = document.getElementById('districtFilter').value;
+
+            let filtered = puestosData.filter(p => {
+                // Search term match
+                const matchSearch = !searchVal || 
+                    p.nombre.toLowerCase().includes(searchVal) || 
+                    p.id.toLowerCase().includes(searchVal) || 
+                    p.rubro.toLowerCase().includes(searchVal) || 
+                    (p.descripcion && p.descripcion.toLowerCase().includes(searchVal));
+
+                // District match
+                const matchDistrict = districtVal === 'TODOS' || p.distrito === districtVal;
+
+                // Rubro match
+                const matchRubro = currentRubroFilter === 'TODOS' || p.rubro === currentRubroFilter;
+
+                // Favorites filter match
+                const matchFavs = !showFavsOnly || favoritesList.includes(p.id);
+
+                return matchSearch && matchDistrict && matchRubro && matchFavs;
+            });
+
+            // Sort algorithm: Highest rating average & votes count first
+            filtered.sort((a, b) => {
+                const avgA = a.votesCount ? (a.totalRating / a.votesCount) : 0;
+                const avgB = b.votesCount ? (b.totalRating / b.votesCount) : 0;
+                if (avgB !== avgA) return avgB - avgA;
+                return (b.votesCount || 0) - (a.votesCount || 0);
+            });
+
+            renderGrid(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('districtFilter').value = 'TODOS';
+            currentRubroFilter = 'TODOS';
+            showFavsOnly = false;
+            document.getElementById('btnFavsFilter').classList.remove('bg-rose-500', 'text-white');
+            document.getElementById('iconFavFilter').className = 'fa-regular fa-heart text-sm';
+            renderRubroButtons();
+            filterPuestos();
+        }
+
+        // 6. RENDER PUESTOS GRID
+        function renderGrid(puestos) {
+            const grid = document.getElementById('puestosGrid');
+            const emptyState = document.getElementById('emptyState');
+            const puestosCount = document.getElementById('puestosCount');
+
+            puestosCount.textContent = `${puestos.length} puesto${puestos.length !== 1 ? 's' : ''}`;
+
+            if (puestos.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            let html = '';
+            puestos.forEach(p => {
+                const isFav = favoritesList.includes(p.id);
+                const votes = p.votesCount || 0;
+                const avgScore = votes > 0 ? (p.totalRating / votes) : 0;
+                const percentage = Math.round((avgScore / 5) * 100);
+                const gpsUrl = p.gps || DISTRICT_MAPS[p.distrito] || DISTRICT_MAPS['Paita'];
+
+                html += `
+                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between overflow-hidden relative group">
+                        
+                        <!-- Top Header Card -->
+                        <div class="p-3.5 pb-2">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <h4 class="font-bold text-sm text-slate-800 line-clamp-1 leading-tight">${p.nombre}</h4>
+                                    <span class="inline-block mt-1 text-[10px] font-bold text-brand-green bg-emerald-50 px-2 py-0.5 rounded-md">
+                                        <i class="fa-solid fa-tag text-[9px] mr-1"></i>${p.rubro}
+                                    </span>
+                                </div>
+                                <!-- Heart Fav Button -->
+                                <button onclick="toggleFavorite('${p.id}')" class="text-slate-300 hover:text-rose-500 transition p-1 text-base">
+                                    <i class="${isFav ? 'fa-solid text-rose-500' : 'fa-regular'} fa-heart"></i>
+                                </button>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-snug">
+                                ${p.descripcion || 'Puesto oficial registrado en la red de mercados de la Provincia de Paita.'}
+                            </p>
+
+                            <!-- Location Badge -->
+                            <div class="mt-2 text-[11px] font-semibold text-slate-500 flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-rose-400"></i>
+                                <span>${p.distrito}</span>
+                            </div>
+                        </div>
+
+                        <!-- Rating Section -->
+                        <div class="px-3.5 py-2 bg-slate-50/70 border-t border-b border-slate-100 flex items-center justify-between">
+                            <!-- Percentage -->
+                            <span class="text-[11px] font-extrabold text-slate-700 min-w-[36px]">
+                                ${percentage}%
+                            </span>
+
+                            <!-- 5 Sun Icons -->
+                            <div class="flex space-x-1">
+                                ${[1, 2, 3, 4, 5].map(star => {
+                                    const active = star <= Math.round(avgScore);
+                                    return `
+                                        <button onclick="registerVote('${p.id}', ${star})" title="Calificar con ${star} Soles" class="focus:outline-none sun-spin">
+                                            <i class="fa-solid fa-sun text-xs ${active ? 'text-amber-400' : 'text-slate-200'}"></i>
+                                        </button>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <!-- Total Voters -->
+                            <span class="text-[10px] text-slate-400 font-medium">
+                                <i class="fa-solid fa-user text-[9px] mr-0.5"></i>${votes}
+                            </span>
+                        </div>
+
+                        <!-- Action Buttons Row (3 Compact Buttons) -->
+                        <div class="p-2 grid grid-cols-3 gap-1.5 bg-white">
+                            <!-- Web/Facebook -->
+                            ${p.web ? `
+                                <a href="${p.web}" target="_blank" rel="noopener" class="py-1.5 px-2 bg-gradient-to-r from-orange-500 to-brand-orange text-white rounded-xl text-center text-xs font-bold shadow-sm hover:opacity-90 flex items-center justify-center space-x-1">
+                                    <i class="fa-solid fa-globe"></i>
+                                    <span>Web</span>
+                                </a>
+                            ` : `
+                                <button disabled class="py-1.5 px-2 bg-slate-100 text-slate-400 rounded-xl text-center text-xs font-bold cursor-not-allowed flex items-center justify-center space-x-1">
+                                    <i class="fa-solid fa-globe"></i>
+                                    <span>Web</span>
+                                </button>
+                            `}
+
+                            <!-- GPS -->
+                            <a href="${gpsUrl}" target="_blank" rel="noopener" class="py-1.5 px-2 bg-slate-900 text-white rounded-xl text-center text-xs font-bold shadow-sm hover:bg-slate-800 flex items-center justify-center space-x-1">
+                                <i class="fa-solid fa-location-arrow text-emerald-400"></i>
+                                <span>GPS</span>
+                            </a>
+
+                            <!-- WhatsApp -->
+                            <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20${encodeURIComponent(p.nombre)}%20en%20PaitaMercado" target="_blank" rel="noopener" class="py-1.5 px-2 bg-emerald-500 text-white rounded-xl text-center text-xs font-bold shadow-sm hover:bg-emerald-600 flex items-center justify-center space-x-1">
+                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                                <span>Chat</span>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+        }
+
+        // 7. FAVORITES SYSTEM
+        function toggleFavorite(id) {
+            const index = favoritesList.indexOf(id);
+            if (index > -1) {
+                favoritesList.splice(index, 1);
+            } else {
+                favoritesList.push(id);
+            }
+            localStorage.setItem('paita_favs', JSON.stringify(favoritesList));
+            updateFavsBadge();
+            filterPuestos();
+        }
+
+        function updateFavsBadge() {
+            document.getElementById('favsCountBadge').textContent = favoritesList.length;
+        }
+
+        function toggleFavoritesFilter() {
+            showFavsOnly = !showFavsOnly;
+            const btn = document.getElementById('btnFavsFilter');
+            const icon = document.getElementById('iconFavFilter');
+            if (showFavsOnly) {
+                btn.classList.add('bg-rose-500', 'text-white');
+                btn.classList.remove('bg-rose-50', 'text-rose-600');
+                icon.className = 'fa-solid fa-heart text-sm text-white';
+            } else {
+                btn.classList.remove('bg-rose-500', 'text-white');
+                btn.classList.add('bg-rose-50', 'text-rose-600');
+                icon.className = 'fa-regular fa-heart text-sm';
+            }
+            filterPuestos();
+        }
+
+        // 8. BANNERS CAROUSEL SYSTEM
+        function loadBanners() {
+            bannersData = INITIAL_BANNERS;
+            renderBanners();
+            startBannerTimer();
+        }
+
+        function renderBanners() {
+            const container = document.getElementById('bannerContainer');
+            const dots = document.getElementById('carouselDots');
+            
+            container.innerHTML = '';
+            dots.innerHTML = '';
+
+            bannersData.forEach((banner, idx) => {
+                const isHidden = idx !== currentBannerIndex ? 'hidden' : '';
+                container.innerHTML += `
+                    <div class="absolute inset-0 transition-opacity duration-700 ease-in-out ${isHidden}" id="bannerSlide-${idx}">
+                        <a href="${banner.link}" ${banner.link.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}>
+                            <img src="${banner.image}" alt="Banner Promocional Paita Mercado" class="w-full h-full object-cover">
+                        </a>
+                    </div>
+                `;
+
+                dots.innerHTML += `
+                    <button onclick="setBanner(${idx})" class="w-2.5 h-2.5 rounded-full transition ${idx === currentBannerIndex ? 'bg-white w-6' : 'bg-white/50'}"></button>
+                `;
+            });
+        }
+
+        function setBanner(index) {
+            currentBannerIndex = index;
+            renderBanners();
+        }
+
+        function nextBanner() {
+            currentBannerIndex = (currentBannerIndex + 1) % bannersData.length;
+            renderBanners();
+        }
+
+        function prevBanner() {
+            currentBannerIndex = (currentBannerIndex - 1 + bannersData.length) % bannersData.length;
+            renderBanners();
+        }
+
+        function startBannerTimer() {
+            clearInterval(bannerTimer);
+            bannerTimer = setInterval(() => {
+                nextBanner();
+            }, 5000);
+        }
+
+        // 9. MODALS CONTROL & FORMS SUBMISSION
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function detectGPSLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    document.getElementById('regGPS').value = `https://maps.google.com/?q=${lat},${lng}`;
+                }, () => {
+                    alert('No se pudo acceder a tu ubicación actual. Se usará la del distrito predeterminado.');
+                });
+            } else {
+                alert('Geolocalización no soportada en este navegador.');
+            }
+        }
+
+        function handleRegisterSubmit(e) {
+            e.preventDefault();
+            
+            const newPuesto = {
+                id: 'PM-' + Math.floor(100 + Math.random() * 900),
+                nombre: document.getElementById('regNombre').value.trim(),
+                rubro: document.getElementById('regRubro').value,
+                descripcion: document.getElementById('regDescripcion').value.trim(),
+                distrito: document.getElementById('regDistrito').value,
+                gps: document.getElementById('regGPS').value.trim(),
+                whatsapp: document.getElementById('regWhatsapp').value.trim().replace(/\D/g, ''),
+                web: document.getElementById('regWeb').value.trim(),
+                votesCount: 1,
+                totalRating: 5 // Default initial vote 5.0
+            };
+
+            puestosData.unshift(newPuesto);
+            savePuestosLocal();
+            renderRubroButtons();
+            filterPuestos();
+
+            // Submit to Google Sheets API if available
+            if (APPS_SCRIPT_URL) {
+                fetch(`${APPS_SCRIPT_URL}?action=register`, {
+                    method: 'POST',
+                    body: JSON.stringify(newPuesto)
+                }).catch(err => console.warn(err));
+            }
+
+            closeModal('modalRegister');
+            document.getElementById('formRegisterPuesto').reset();
+            alert(`¡El puesto "${newPuesto.nombre}" ha sido registrado correctamente!`);
+        }
+
+        function handleSupportSubmit(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('supNombre').value.trim() || 'Amigo de Paita Mercado';
+            const medio = document.getElementById('supMedio').value;
+            const nota = document.getElementById('supNota').value.trim();
+
+            const text = `Hola, quiero realizar un aporte voluntario a Paita Mercado.\n\nNombre: ${nombre}\nMedio de Pago: ${medio}\nNota: ${nota}`;
+            const waUrl = `https://wa.me/51930528649?text=${encodeURIComponent(text)}`;
+            
+            window.open(waUrl, '_blank');
+            closeModal('modalSupport');
+        }
+
+        // 10. SCROLL UTILITIES
+        function setupScrollListener() {
+            const btnScrollTop = document.getElementById('btnScrollTop');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    btnScrollTop.classList.remove('hidden');
+                } else {
+                    btnScrollTop.classList.add('hidden');
+                }
+            });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
