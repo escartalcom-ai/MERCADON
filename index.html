@@ -47,7 +47,7 @@
             scrollbar-width: none;
         }
         .sun-spin:hover {
-            transform: rotate(20deg) scale(1.15);
+            transform: rotate(20deg) scale(1.2);
             transition: transform 0.2s ease-in-out;
         }
         /* Touch friendly buttons */
@@ -56,144 +56,146 @@
         }
     </style>
 </head>
-<body class="bg-brand-bg text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-green selection:text-white">
+<body class="bg-brand-bg text-slate-800 font-sans text-[15px] antialiased min-h-screen flex flex-col justify-between selection:bg-brand-green selection:text-white">
 
-    <!-- ==================== TOP HEADER ==================== -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
-            <!-- Brand Logo -->
-            <div class="flex items-center space-x-2 cursor-pointer" onclick="resetFilters()">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-green to-emerald-400 flex items-center justify-center text-white shadow-md shadow-emerald-200">
-                    <i class="fa-solid font-bold fa-store text-lg"></i>
+    <!-- ==================== TOP HEADER WITH INTEGRATED SEARCH ==================== -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100 py-2">
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-2">
+            
+            <!-- Left Side: Brand Logo & Integrated Search Bar -->
+            <div class="flex items-center gap-2 w-full md:w-auto flex-1">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-2 cursor-pointer shrink-0" onclick="resetFilters()">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-green to-emerald-400 flex items-center justify-center text-white shadow-md shadow-emerald-200">
+                        <i class="fa-solid font-bold fa-store text-base"></i>
+                    </div>
+                    <div class="hidden sm:block">
+                        <h1 class="text-lg font-extrabold tracking-tight leading-none text-slate-900">
+                            Paita<span class="text-brand-green">Mercado</span>
+                        </h1>
+                        <p class="text-[9px] font-medium text-slate-500 uppercase tracking-wider">Provincia de Paita</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-xl font-extrabold tracking-tight leading-none text-slate-900">
-                        Paita<span class="text-brand-green">Mercado</span>
-                    </h1>
-                    <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Provincia de Paita</p>
+
+                <!-- Integrated Compact Search & District Input -->
+                <div class="flex items-center gap-1.5 flex-1 max-w-xl">
+                    <!-- Search Input -->
+                    <div class="relative flex-1">
+                        <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <input type="text" id="searchInput" oninput="filterPuestos()" placeholder="Buscar puesto, ID o producto..." class="w-full pl-8 pr-2 py-1.5 bg-slate-100 border border-slate-200 rounded-full text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green transition">
+                    </div>
+
+                    <!-- District Selector -->
+                    <div class="relative w-28 sm:w-36 shrink-0">
+                        <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-brand-green text-xs">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <select id="districtFilter" onchange="filterPuestos()" class="w-full pl-6 pr-5 py-1.5 bg-slate-100 border border-slate-200 rounded-full text-xs font-semibold text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green transition appearance-none truncate">
+                            <option value="TODOS">Todos</option>
+                            <option value="Paita" selected>Paita</option>
+                            <option value="Amotape">Amotape</option>
+                            <option value="Colán">Colán</option>
+                            <option value="El Arenal">El Arenal</option>
+                            <option value="La Huaca">La Huaca</option>
+                            <option value="Tamarindo">Tamarindo</option>
+                            <option value="Vichayal">Vichayal</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Header Action Buttons -->
-            <div class="flex items-center space-x-2">
+            <!-- Right Side: Header Action Buttons -->
+            <div class="flex items-center space-x-2 shrink-0 self-end md:self-auto">
                 <!-- Favorites Toggle Button -->
-                <button id="btnFavsFilter" onclick="toggleFavoritesFilter()" class="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold rounded-full border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 transition shadow-sm">
-                    <i id="iconFavFilter" class="fa-regular fa-heart text-sm"></i>
+                <button id="btnFavsFilter" onclick="toggleFavoritesFilter()" class="flex items-center space-x-1 px-2.5 py-1.5 text-xs font-semibold rounded-full border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 transition shadow-sm">
+                    <i id="iconFavFilter" class="fa-regular fa-heart text-xs"></i>
                     <span class="hidden sm:inline">Favoritos</span>
-                    <span id="favsCountBadge" class="bg-rose-600 text-white rounded-full text-[10px] px-1.5 py-0.2 font-bold ml-1">0</span>
+                    <span id="favsCountBadge" class="bg-rose-600 text-white rounded-full text-[10px] px-1.5 py-0.2 font-bold ml-0.5">0</span>
                 </button>
 
                 <!-- Register Post Button -->
-                <button onclick="openModal('modalRegister')" class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-brand-green to-emerald-500 hover:from-brand-greenDark hover:to-emerald-600 text-white text-xs sm:text-sm font-bold rounded-full shadow-md shadow-emerald-200 hover:shadow-lg transition transform active:scale-95">
-                    <i class="fa-solid fa-plus-circle text-sm"></i>
+                <button onclick="openModal('modalRegister')" class="flex items-center space-x-1 px-3 py-1.5 bg-gradient-to-r from-brand-green to-emerald-500 hover:from-brand-greenDark hover:to-emerald-600 text-white text-xs font-bold rounded-full shadow-md shadow-emerald-200 hover:shadow-lg transition transform active:scale-95">
+                    <i class="fa-solid fa-plus-circle text-xs"></i>
                     <span>Registrar Puesto</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- ==================== BANNER CAROUSEL (DYNAMIC FROM GOOGLE SHEETS) ==================== -->
-    <section class="relative w-full bg-slate-100 overflow-hidden shadow-inner">
-        <div id="bannerContainer" class="relative w-full h-44 sm:h-56 md:h-64 lg:h-72 transition-all duration-500">
+    <!-- ==================== BANNER CAROUSEL (TOUCH SLIDE + SUBTLE ICONS) ==================== -->
+    <section class="relative w-full bg-slate-100 overflow-hidden shadow-inner select-none">
+        <div id="bannerContainer" class="relative w-full h-36 sm:h-48 md:h-56 lg:h-64 transition-all duration-500 touch-pan-y">
             <!-- Banners injected by JS -->
         </div>
 
-        <!-- Carousel Navigation Controls -->
-        <button onclick="prevBanner()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-700 w-9 h-9 rounded-full flex items-center justify-center shadow-md backdrop-blur-sm transition focus:outline-none">
-            <i class="fa-solid fa-chevron-left"></i>
+        <!-- Carousel Navigation Controls (Subtle & Transparent) -->
+        <button onclick="prevBanner()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white/80 hover:text-white w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shadow-sm backdrop-blur-xs transition focus:outline-none z-20">
+            <i class="fa-solid fa-chevron-left text-xs sm:text-sm"></i>
         </button>
-        <button onclick="nextBanner()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-700 w-9 h-9 rounded-full flex items-center justify-center shadow-md backdrop-blur-sm transition focus:outline-none">
-            <i class="fa-solid fa-chevron-right"></i>
+        <button onclick="nextBanner()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white/80 hover:text-white w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shadow-sm backdrop-blur-xs transition focus:outline-none z-20">
+            <i class="fa-solid fa-chevron-right text-xs sm:text-sm"></i>
         </button>
 
         <!-- Carousel Indicators -->
-        <div id="carouselDots" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1.5 z-10">
+        <div id="carouselDots" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1.5 z-20">
             <!-- Dynamic dots -->
         </div>
     </section>
 
     <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full space-y-6">
+    <main class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 flex-grow w-full space-y-4">
 
-        <!-- SEARCH AND DISTRICT FILTER BAR -->
-        <section class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
-                <!-- Search Box -->
-                <div class="relative md:col-span-8">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-                    <input type="text" id="searchInput" oninput="filterPuestos()" placeholder="Buscar por puesto, ID, productos o servicios..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green transition">
-                </div>
-
-                <!-- District Selector -->
-                <div class="relative md:col-span-4">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-green">
-                        <i class="fa-solid fa-location-dot"></i>
-                    </div>
-                    <select id="districtFilter" onchange="filterPuestos()" class="w-full pl-10 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green transition appearance-none">
-                        <option value="TODOS">Todos los Distritos de Paita</option>
-                        <option value="Paita" selected>Distrito de Paita (Capital)</option>
-                        <option value="Amotape">Amotape</option>
-                        <option value="Colán">Colán / Pueblo Nuevo</option>
-                        <option value="El Arenal">El Arenal</option>
-                        <option value="La Huaca">La Huaca</option>
-                        <option value="Tamarindo">Tamarindo</option>
-                        <option value="Vichayal">Vichayal</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-chevron-down text-xs"></i>
-                    </div>
-                </div>
+        <!-- SMART RUBROS / CATEGORIES -->
+        <section class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
+            <div class="flex items-center justify-between mb-1.5">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-tags text-brand-orange"></i> Rubros Comerciales
+                </h3>
+                <span id="puestosCount" class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Cargando...</span>
             </div>
-
-            <!-- SMART RUBROS / CATEGORIES -->
-            <div class="pt-2">
-                <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                        <i class="fa-solid fa-tags text-brand-orange"></i> Rubros Comerciales
-                    </h3>
-                    <span id="puestosCount" class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Cargando...</span>
-                </div>
-                <!-- Horizontally Scrollable Rubros Container -->
-                <div id="rubrosContainer" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1">
-                    <!-- Dynamic Rubro Buttons -->
-                </div>
+            <!-- Horizontally Scrollable Rubros Container -->
+            <div id="rubrosContainer" class="flex items-center space-x-1.5 overflow-x-auto hide-scrollbar py-0.5">
+                <!-- Dynamic Rubro Buttons -->
             </div>
         </section>
 
-        <!-- ==================== PUESTOS GRID ==================== -->
+        <!-- ==================== PUESTOS GRID (COMPACT CARDS) ==================== -->
         <section>
-            <div id="puestosGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div id="puestosGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
                 <!-- Cards render dynamically via JavaScript -->
             </div>
 
             <!-- Empty State -->
             <div id="emptyState" class="hidden text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200">
-                <div class="w-16 h-16 mx-auto bg-amber-50 rounded-full flex items-center justify-center text-amber-500 mb-3 text-2xl">
+                <div class="w-14 h-14 mx-auto bg-amber-50 rounded-full flex items-center justify-center text-amber-500 mb-2 text-xl">
                     <i class="fa-solid fa-store-slash"></i>
                 </div>
-                <h4 class="text-base font-bold text-slate-700">No se encontraron puestos</h4>
+                <h4 class="text-sm font-bold text-slate-700">No se encontraron puestos</h4>
                 <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Intenta cambiando los filtros de búsqueda o el rubro seleccionado.</p>
-                <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition">
+                <button onclick="resetFilters()" class="mt-3 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition">
                     Restablecer Filtros
                 </button>
             </div>
         </section>
 
         <!-- ==================== PROMOTIONAL VIRTUAL CATALOG BANNER ==================== -->
-        <section class="bg-gradient-to-r from-amber-500 via-brand-orange to-orange-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
-            <div class="absolute -right-6 -bottom-6 text-white/10 text-9xl font-black pointer-events-none select-none">
+        <section class="bg-gradient-to-r from-amber-500 via-brand-orange to-orange-600 rounded-2xl p-5 text-white shadow-md relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl font-black pointer-events-none select-none">
                 <i class="fa-solid fa-basket-shopping"></i>
             </div>
             <div class="relative z-10 max-w-2xl space-y-2">
-                <span class="bg-white/20 text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider">Impulsa tu Negocio</span>
-                <h3 class="text-xl sm:text-2xl font-black tracking-tight leading-tight">¿Quieres tener tu propio catálogo virtual para ventas?</h3>
+                <span class="bg-white/20 text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider">Impulsa tu Negocio</span>
+                <h3 class="text-lg sm:text-xl font-black tracking-tight leading-tight">¿Quieres tener tu propio catálogo virtual para ventas?</h3>
                 <p class="text-xs sm:text-sm text-amber-100">
                     Ten tu catálogo digital personalizado con enlace y código QR. Cotizamos según la cantidad de productos de tu puesto en modalidad mensual o anual.
                 </p>
-                <div class="pt-2">
-                    <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Cat%C3%A1logo%20Virtual%20para%20mi%20puesto%20en%20Paita%20Mercado" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 bg-white text-brand-orangeDark hover:bg-amber-50 font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow transition transform active:scale-95">
+                <div class="pt-1">
+                    <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Cat%C3%A1logo%20Virtual%20para%20mi%20puesto%20en%20Paita%20Mercado" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 bg-white text-brand-orangeDark hover:bg-amber-50 font-extrabold text-xs px-4 py-2 rounded-full shadow transition transform active:scale-95">
                         <i class="fa-brands fa-whatsapp text-emerald-600 text-base"></i>
                         <span>Cotizar Mi Catálogo Virtual</span>
                     </a>
@@ -202,44 +204,44 @@
         </section>
 
         <!-- ==================== FREE SOCIAL MEDIA PUBLISHING BANNER & NETWORKS ==================== -->
-        <section class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center space-y-4">
-            <div class="max-w-xl mx-auto space-y-2">
-                <div class="inline-flex items-center space-x-1.5 text-xs font-bold text-brand-green bg-emerald-50 px-3 py-1 rounded-full">
+        <section class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm text-center space-y-3">
+            <div class="max-w-xl mx-auto space-y-1.5">
+                <div class="inline-flex items-center space-x-1 text-xs font-bold text-brand-green bg-emerald-50 px-2.5 py-0.5 rounded-full">
                     <i class="fa-solid fa-bullhorn"></i>
                     <span>¡Publicación 100% Gratuita!</span>
                 </div>
-                <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Publicamos tus puestos o productos en nuestras Redes Oficiales</h3>
+                <h3 class="text-sm sm:text-base font-extrabold text-slate-800">Publicamos tus puestos o productos en nuestras Redes Oficiales</h3>
                 <p class="text-xs text-slate-600 leading-relaxed">
-                    Si quieres publicar contenido de tus puestos o productos en nuestras redes sociales lo puedes hacer de manera <strong class="text-slate-800">GRATUITA</strong>. Horario de recepción: <strong>Lunes a Sábado de 10 am a 1 pm y 2 pm a 5 pm</strong>. Las publicaciones se realizarán en orden de recepción y deben contar con el material visual adecuado.
+                    Si quieres publicar contenido de tus puestos o productos en nuestras redes sociales lo puedes hacer de manera <strong class="text-slate-800">GRATUITA</strong>. Horario de recepción: <strong>Lunes a Sábado de 10 am a 1 pm y 2pm a 5 pm</strong>. Las publicaciones se realizarán en orden de recepción y deben contar con el material visual adecuado.
                 </p>
                 <div class="pt-1">
-                    <a href="https://wa.me/51930528649?text=Hola,%20quiero%20publicar%20mi%20puesto/producto%20en%20sus%20redes%20sociales%20de%20forma%20gratuitam" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition">
+                    <a href="https://wa.me/51930528649?text=Hola,%20quiero%20publicar%20mi%20puesto/producto%20en%20sus%20redes%20sociales%20de%20forma%20gratuitam" target="_blank" rel="noopener" class="inline-flex items-center space-x-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-full shadow transition">
                         <i class="fa-brands fa-whatsapp text-sm"></i>
                         <span>Enviar Publicación por WhatsApp</span>
                     </a>
                 </div>
             </div>
 
-            <hr class="border-slate-100 my-4">
+            <hr class="border-slate-100 my-3">
 
             <!-- Social Media Icons -->
-            <div class="space-y-2">
+            <div class="space-y-1.5">
                 <p class="text-xs font-semibold text-slate-500">Síguenos en nuestras plataformas</p>
-                <div class="flex items-center justify-center space-x-4">
+                <div class="flex items-center justify-center space-x-3">
                     <!-- Facebook -->
-                    <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center text-lg transition shadow-sm">
+                    <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center text-base transition shadow-sm">
                         <i class="fa-brands fa-facebook-f"></i>
                     </a>
                     <!-- TikTok -->
-                    <a href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok" class="w-10 h-10 rounded-full bg-slate-100 text-slate-900 hover:bg-slate-900 hover:text-white flex items-center justify-center text-lg transition shadow-sm">
+                    <a href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok" class="w-9 h-9 rounded-full bg-slate-100 text-slate-900 hover:bg-slate-900 hover:text-white flex items-center justify-center text-base transition shadow-sm">
                         <i class="fa-brands fa-tiktok"></i>
                     </a>
                     <!-- Instagram -->
-                    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="w-10 h-10 rounded-full bg-pink-50 text-pink-600 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 hover:text-white flex items-center justify-center text-lg transition shadow-sm">
+                    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="w-9 h-9 rounded-full bg-pink-50 text-pink-600 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 hover:text-white flex items-center justify-center text-base transition shadow-sm">
                         <i class="fa-brands fa-instagram"></i>
                     </a>
                     <!-- YouTube -->
-                    <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube" class="w-10 h-10 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center text-lg transition shadow-sm">
+                    <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube" class="w-9 h-9 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center text-base transition shadow-sm">
                         <i class="fa-brands fa-youtube"></i>
                     </a>
                 </div>
@@ -249,8 +251,8 @@
     </main>
 
     <!-- ==================== FOOTER ==================== -->
-    <footer class="bg-white border-t border-slate-200 py-6 mt-8">
-        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+    <footer class="bg-white border-t border-slate-200 py-4 mt-6">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1">
             <p class="text-xs text-slate-600 font-medium">
                 © 2026 PaitaMercado - Todos los derechos reservados.
             </p>
@@ -261,14 +263,14 @@
     </footer>
 
     <!-- ==================== FLOATING ACTION BUTTONS ==================== -->
-    <div class="fixed bottom-4 right-4 z-30 flex flex-col space-y-2.5">
+    <div class="fixed bottom-4 right-4 z-30 flex flex-col space-y-2">
         <!-- Scroll to Top Button -->
-        <button id="btnScrollTop" onclick="scrollToTop()" class="hidden w-10 h-10 bg-white border border-slate-200 text-slate-600 rounded-full shadow-lg flex items-center justify-center hover:bg-slate-50 transition">
-            <i class="fa-solid fa-arrow-up"></i>
+        <button id="btnScrollTop" onclick="scrollToTop()" class="hidden w-9 h-9 bg-white border border-slate-200 text-slate-600 rounded-full shadow-lg flex items-center justify-center hover:bg-slate-50 transition">
+            <i class="fa-solid fa-arrow-up text-xs"></i>
         </button>
 
         <!-- Volunteer Support Button -->
-        <button onclick="openModal('modalSupport')" class="flex items-center space-x-2 px-3.5 py-2.5 bg-gradient-to-r from-amber-500 to-brand-orange text-white text-xs font-bold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition transform">
+        <button onclick="openModal('modalSupport')" class="flex items-center space-x-1.5 px-3 py-2 bg-gradient-to-r from-amber-500 to-brand-orange text-white text-xs font-bold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition transform">
             <i class="fa-solid fa-heart text-white animate-pulse"></i>
             <span class="hidden sm:inline">Apoyar Plataforma</span>
         </button>
@@ -276,33 +278,33 @@
 
     <!-- ==================== MODAL 1: REGISTRAR PUESTO ==================== -->
     <div id="modalRegister" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative my-8 border border-slate-100">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-5 shadow-2xl relative my-8 border border-slate-100">
             <!-- Close Modal -->
             <button onclick="closeModal('modalRegister')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
             <!-- Header Modal -->
-            <div class="mb-4">
-                <div class="w-10 h-10 rounded-full bg-emerald-100 text-brand-green flex items-center justify-center mb-2">
-                    <i class="fa-solid fa-store text-lg"></i>
+            <div class="mb-3">
+                <div class="w-9 h-9 rounded-full bg-emerald-100 text-brand-green flex items-center justify-center mb-1.5">
+                    <i class="fa-solid fa-store text-base"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900">Registrar Puesto Gratis</h3>
+                <h3 class="text-base font-bold text-slate-900">Registrar Puesto Gratis</h3>
                 <p class="text-xs text-slate-500">Únete al directorio oficial de la Provincia de Paita.</p>
             </div>
 
             <!-- Form -->
-            <form id="formRegisterPuesto" onsubmit="handleRegisterSubmit(event)" class="space-y-3.5 text-xs">
+            <form id="formRegisterPuesto" onsubmit="handleRegisterSubmit(event)" class="space-y-3 text-xs">
                 <!-- Nombre Puesto -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Nombre y/o ID del Puesto <span class="text-rose-500">*</span></label>
-                    <input type="text" id="regNombre" required placeholder="Ej. Comercial Don Pedro - Puesto 45" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                    <label class="block font-bold text-slate-700 mb-0.5">Nombre y/o ID del Puesto <span class="text-rose-500">*</span></label>
+                    <input type="text" id="regNombre" required placeholder="Ej. Comercial Don Pedro - Puesto 45" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
                 </div>
 
                 <!-- Rubro Principal -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Rubro Principal <span class="text-rose-500">*</span></label>
-                    <select id="regRubro" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                    <label class="block font-bold text-slate-700 mb-0.5">Rubro Principal <span class="text-rose-500">*</span></label>
+                    <select id="regRubro" required class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
                         <option value="" disabled selected>Selecciona un rubro</option>
                         <option value="Abarrotes y alimentos">Abarrotes y alimentos</option>
                         <option value="Bebidas">Bebidas</option>
@@ -329,14 +331,14 @@
 
                 <!-- Descripción Breve -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Descripción Breve</label>
-                    <textarea id="regDescripcion" rows="2" placeholder="Venta de productos frescos y de primera calidad a excelente precio." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40"></textarea>
+                    <label class="block font-bold text-slate-700 mb-0.5">Descripción Breve</label>
+                    <textarea id="regDescripcion" rows="2" placeholder="Venta de productos frescos y de primera calidad a excelente precio." class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40"></textarea>
                 </div>
 
                 <!-- Distrito -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Distrito <span class="text-rose-500">*</span></label>
-                    <select id="regDistrito" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                    <label class="block font-bold text-slate-700 mb-0.5">Distrito <span class="text-rose-500">*</span></label>
+                    <select id="regDistrito" required class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
                         <option value="Paita" selected>Paita (Capital)</option>
                         <option value="Amotape">Amotape</option>
                         <option value="Colán">Colán</option>
@@ -349,10 +351,10 @@
 
                 <!-- Ubicación GPS (Opcional) -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Ubicación GPS (Opcional)</label>
+                    <label class="block font-bold text-slate-700 mb-0.5">Ubicación GPS (Opcional)</label>
                     <div class="flex gap-2">
-                        <input type="text" id="regGPS" placeholder="Coordenadas o Google Maps link" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
-                        <button type="button" onclick="detectGPSLocation()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl whitespace-nowrap flex items-center space-x-1">
+                        <input type="text" id="regGPS" placeholder="Coordenadas o Google Maps link" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                        <button type="button" onclick="detectGPSLocation()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl whitespace-nowrap flex items-center space-x-1">
                             <i class="fa-solid fa-location-crosshairs text-brand-green"></i>
                             <span>Detectar</span>
                         </button>
@@ -361,14 +363,14 @@
 
                 <!-- WhatsApp -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">WhatsApp del Puesto <span class="text-rose-500">*</span></label>
-                    <input type="tel" id="regWhatsapp" required placeholder="930528649" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                    <label class="block font-bold text-slate-700 mb-0.5">WhatsApp del Puesto <span class="text-rose-500">*</span></label>
+                    <input type="tel" id="regWhatsapp" required placeholder="930528649" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
                 </div>
 
                 <!-- Enlace Web / Facebook -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Catálogo Virtual o Facebook (Opcional)</label>
-                    <input type="url" id="regWeb" placeholder="https://facebook.com/mipuesto" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
+                    <label class="block font-bold text-slate-700 mb-0.5">Catálogo Virtual o Facebook (Opcional)</label>
+                    <input type="url" id="regWeb" placeholder="https://facebook.com/mipuesto" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-green/40">
                 </div>
 
                 <!-- Checkbox Protección de datos -->
@@ -380,7 +382,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="w-full py-3 bg-brand-green hover:bg-brand-greenDark text-white font-bold rounded-xl shadow-md transition transform active:scale-95 text-sm">
+                <button type="submit" class="w-full py-2.5 bg-brand-green hover:bg-brand-greenDark text-white font-bold rounded-xl shadow-md transition transform active:scale-95 text-xs">
                     Guardar y Publicar Puesto
                 </button>
             </form>
@@ -389,33 +391,33 @@
 
     <!-- ==================== MODAL 2: APOYO VOLUNTARIO (DONACIONES) ==================== -->
     <div id="modalSupport" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+        <div class="bg-white rounded-3xl max-w-md w-full p-5 shadow-2xl relative border border-slate-100">
             <button onclick="closeModal('modalSupport')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <div class="mb-4 text-center">
-                <div class="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-500 flex items-center justify-center mb-2 text-xl">
+            <div class="mb-3 text-center">
+                <div class="w-10 h-10 mx-auto rounded-full bg-amber-100 text-amber-500 flex items-center justify-center mb-1.5 text-lg">
                     <i class="fa-solid fa-heart"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900">Apoyo Voluntario</h3>
+                <h3 class="text-base font-bold text-slate-900">Apoyo Voluntario</h3>
                 <p class="text-xs text-slate-500">Ayuda a mantener activa y sostenible esta plataforma local.</p>
             </div>
 
-            <form onsubmit="handleSupportSubmit(event)" class="space-y-3 text-xs">
+            <form onsubmit="handleSupportSubmit(event)" class="space-y-2.5 text-xs">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Nombres y Apellidos (Opcional)</label>
-                    <input type="text" id="supNombre" placeholder="Tu nombre" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40">
+                    <label class="block font-bold text-slate-700 mb-0.5">Nombres y Apellidos (Opcional)</label>
+                    <input type="text" id="supNombre" placeholder="Tu nombre" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40">
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">WhatsApp de contacto (Opcional)</label>
-                    <input type="tel" id="supWhatsapp" placeholder="930528649" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40">
+                    <label class="block font-bold text-slate-700 mb-0.5">WhatsApp de contacto (Opcional)</label>
+                    <input type="tel" id="supWhatsapp" placeholder="930528649" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40">
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Medio de Pago Seleccionado <span class="text-rose-500">*</span></label>
-                    <select id="supMedio" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40">
+                    <label class="block font-bold text-slate-700 mb-0.5">Medio de Pago Seleccionado <span class="text-rose-500">*</span></label>
+                    <select id="supMedio" required class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40">
                         <option value="Yape">Yape</option>
                         <option value="Plin">Plin</option>
                         <option value="Transferencia Bancaria">Transferencia Bancaria</option>
@@ -423,12 +425,12 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Mensaje / Nota Opcional</label>
-                    <textarea id="supNota" rows="2" placeholder="¡Muchos éxitos con la plataforma!" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40"></textarea>
+                    <label class="block font-bold text-slate-700 mb-0.5">Mensaje / Nota Opcional</label>
+                    <textarea id="supNota" rows="2" placeholder="¡Muchos éxitos con la plataforma!" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-orange/40"></textarea>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-gradient-to-r from-amber-500 to-brand-orange hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-xl shadow-md transition transform active:scale-95 text-sm flex items-center justify-center space-x-2">
-                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-brand-orange hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-xl shadow-md transition transform active:scale-95 text-xs flex items-center justify-center space-x-2">
+                    <i class="fa-brands fa-whatsapp text-base"></i>
                     <span>Enviar Aporte por WhatsApp</span>
                 </button>
             </form>
@@ -514,6 +516,18 @@
                 web: 'https://facebook.com',
                 votesCount: 56,
                 totalRating: 275 // 4.91 (98%)
+            },
+            {
+                id: 'PM-005',
+                nombre: 'Novedades y Regalos Sofía',
+                rubro: 'Librerías y juguetes',
+                descripcion: 'Artículos escolares, de oficina y regalos especiales.',
+                distrito: 'Paita',
+                gps: '',
+                whatsapp: '51930528649',
+                web: '',
+                votesCount: 0,
+                totalRating: 0 // Sin calificación inicial
             }
         ];
 
@@ -536,6 +550,7 @@
             loadPuestos();
             loadBanners();
             setupScrollListener();
+            setupTouchSwipe();
             updateFavsBadge();
         });
 
@@ -564,12 +579,10 @@
 
         // 3. FINGERPRINT & VOTE SECURITY SYSTEM
         function getDeviceFingerprint() {
-            // Simulated unique hardware device fingerprint using browser attributes
             const nav = window.navigator;
             const screen = window.screen;
             let str = `${nav.userAgent}-${nav.language}-${screen.colorDepth}-${screen.width}x${screen.height}-${new Date().getTimezoneOffset()}`;
             
-            // Simple hash algorithm
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 let char = str.charCodeAt(i);
@@ -622,11 +635,10 @@
         function renderRubroButtons() {
             const rubrosContainer = document.getElementById('rubrosContainer');
             
-            // Extract registered categories
             const activeRubros = Array.from(new Set(puestosData.map(p => p.rubro))).filter(Boolean);
 
             let html = `
-                <button onclick="selectRubro('TODOS')" class="px-3 py-1.5 rounded-full text-xs font-bold transition whitespace-nowrap ${currentRubroFilter === 'TODOS' ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+                <button onclick="selectRubro('TODOS')" class="px-2.5 py-1 rounded-full text-xs font-bold transition whitespace-nowrap ${currentRubroFilter === 'TODOS' ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
                     Todos
                 </button>
             `;
@@ -634,7 +646,7 @@
             activeRubros.forEach(rubro => {
                 const isActive = currentRubroFilter === rubro;
                 html += `
-                    <button onclick="selectRubro('${rubro}')" class="px-3 py-1.5 rounded-full text-xs font-bold transition whitespace-nowrap ${isActive ? 'bg-brand-green text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+                    <button onclick="selectRubro('${rubro}')" class="px-2.5 py-1 rounded-full text-xs font-bold transition whitespace-nowrap ${isActive ? 'bg-brand-green text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
                         ${rubro}
                     </button>
                 `;
@@ -655,20 +667,14 @@
             const districtVal = document.getElementById('districtFilter').value;
 
             let filtered = puestosData.filter(p => {
-                // Search term match
                 const matchSearch = !searchVal || 
                     p.nombre.toLowerCase().includes(searchVal) || 
                     p.id.toLowerCase().includes(searchVal) || 
                     p.rubro.toLowerCase().includes(searchVal) || 
                     (p.descripcion && p.descripcion.toLowerCase().includes(searchVal));
 
-                // District match
                 const matchDistrict = districtVal === 'TODOS' || p.distrito === districtVal;
-
-                // Rubro match
                 const matchRubro = currentRubroFilter === 'TODOS' || p.rubro === currentRubroFilter;
-
-                // Favorites filter match
                 const matchFavs = !showFavsOnly || favoritesList.includes(p.id);
 
                 return matchSearch && matchDistrict && matchRubro && matchFavs;
@@ -691,12 +697,12 @@
             currentRubroFilter = 'TODOS';
             showFavsOnly = false;
             document.getElementById('btnFavsFilter').classList.remove('bg-rose-500', 'text-white');
-            document.getElementById('iconFavFilter').className = 'fa-regular fa-heart text-sm';
+            document.getElementById('iconFavFilter').className = 'fa-regular fa-heart text-xs';
             renderRubroButtons();
             filterPuestos();
         }
 
-        // 6. RENDER PUESTOS GRID
+        // 6. RENDER PUESTOS GRID (COMPACT & ICON-ONLY ACTION BUTTONS)
         function renderGrid(puestos) {
             const grid = document.getElementById('puestosGrid');
             const emptyState = document.getElementById('emptyState');
@@ -717,89 +723,85 @@
                 const isFav = favoritesList.includes(p.id);
                 const votes = p.votesCount || 0;
                 const avgScore = votes > 0 ? (p.totalRating / votes) : 0;
-                const percentage = Math.round((avgScore / 5) * 100);
+                const percentage = votes > 0 ? Math.round((avgScore / 5) * 100) : 0;
                 const gpsUrl = p.gps || DISTRICT_MAPS[p.distrito] || DISTRICT_MAPS['Paita'];
 
                 html += `
-                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between overflow-hidden relative group">
+                    <div class="bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between overflow-hidden relative group">
                         
                         <!-- Top Header Card -->
-                        <div class="p-3.5 pb-2">
-                            <div class="flex items-start justify-between gap-2">
-                                <div>
-                                    <h4 class="font-bold text-sm text-slate-800 line-clamp-1 leading-tight">${p.nombre}</h4>
-                                    <span class="inline-block mt-1 text-[10px] font-bold text-brand-green bg-emerald-50 px-2 py-0.5 rounded-md">
-                                        <i class="fa-solid fa-tag text-[9px] mr-1"></i>${p.rubro}
+                        <div class="p-2 sm:p-2.5 pb-1.5">
+                            <div class="flex items-start justify-between gap-1">
+                                <div class="w-full min-w-0">
+                                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate leading-tight">${p.nombre}</h4>
+                                    <span class="inline-block mt-0.5 text-[9px] font-bold text-brand-green bg-emerald-50 px-1.5 py-0.2 rounded">
+                                        ${p.rubro}
                                     </span>
                                 </div>
                                 <!-- Heart Fav Button -->
-                                <button onclick="toggleFavorite('${p.id}')" class="text-slate-300 hover:text-rose-500 transition p-1 text-base">
+                                <button onclick="toggleFavorite('${p.id}')" class="text-slate-300 hover:text-rose-500 transition p-0.5 text-xs shrink-0">
                                     <i class="${isFav ? 'fa-solid text-rose-500' : 'fa-regular'} fa-heart"></i>
                                 </button>
                             </div>
 
                             <!-- Description -->
-                            <p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-snug">
-                                ${p.descripcion || 'Puesto oficial registrado en la red de mercados de la Provincia de Paita.'}
+                            <p class="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-tight">
+                                ${p.descripcion || 'Puesto oficial registrado en Paita Mercado.'}
                             </p>
 
                             <!-- Location Badge -->
-                            <div class="mt-2 text-[11px] font-semibold text-slate-500 flex items-center gap-1">
+                            <div class="mt-1.5 text-[10px] font-semibold text-slate-500 flex items-center gap-1">
                                 <i class="fa-solid fa-location-dot text-rose-400"></i>
-                                <span>${p.distrito}</span>
+                                <span class="truncate">${p.distrito}</span>
                             </div>
                         </div>
 
                         <!-- Rating Section -->
-                        <div class="px-3.5 py-2 bg-slate-50/70 border-t border-b border-slate-100 flex items-center justify-between">
+                        <div class="px-2 py-1 bg-slate-50 border-t border-b border-slate-100 flex items-center justify-between">
                             <!-- Percentage -->
-                            <span class="text-[11px] font-extrabold text-slate-700 min-w-[36px]">
-                                ${percentage}%
+                            <span class="text-[10px] font-extrabold text-slate-700">
+                                ${votes > 0 ? percentage + '%' : '-'}
                             </span>
 
-                            <!-- 5 Sun Icons -->
-                            <div class="flex space-x-1">
+                            <!-- 5 Sun Icons (Increased Size & Uncolored if 0 rating) -->
+                            <div class="flex space-x-0.5">
                                 ${[1, 2, 3, 4, 5].map(star => {
-                                    const active = star <= Math.round(avgScore);
+                                    const active = votes > 0 && star <= Math.round(avgScore);
                                     return `
                                         <button onclick="registerVote('${p.id}', ${star})" title="Calificar con ${star} Soles" class="focus:outline-none sun-spin">
-                                            <i class="fa-solid fa-sun text-xs ${active ? 'text-amber-400' : 'text-slate-200'}"></i>
+                                            <i class="fa-solid fa-sun text-sm ${active ? 'text-amber-400' : 'text-slate-200'}"></i>
                                         </button>
                                     `;
                                 }).join('')}
                             </div>
 
                             <!-- Total Voters -->
-                            <span class="text-[10px] text-slate-400 font-medium">
-                                <i class="fa-solid fa-user text-[9px] mr-0.5"></i>${votes}
+                            <span class="text-[9px] text-slate-400 font-medium">
+                                <i class="fa-solid fa-user text-[8px]"></i> ${votes}
                             </span>
                         </div>
 
-                        <!-- Action Buttons Row (3 Compact Buttons) -->
-                        <div class="p-2 grid grid-cols-3 gap-1.5 bg-white">
-                            <!-- Web/Facebook -->
+                        <!-- Action Buttons Row (Icon-Only Compact Buttons) -->
+                        <div class="p-1.5 grid grid-cols-3 gap-1 bg-white">
+                            <!-- Web/Facebook Icon -->
                             ${p.web ? `
-                                <a href="${p.web}" target="_blank" rel="noopener" class="py-1.5 px-2 bg-gradient-to-r from-orange-500 to-brand-orange text-white rounded-xl text-center text-xs font-bold shadow-sm hover:opacity-90 flex items-center justify-center space-x-1">
+                                <a href="${p.web}" target="_blank" rel="noopener" title="Visitar Web / Facebook" class="py-1.5 px-1 bg-gradient-to-r from-orange-500 to-brand-orange text-white rounded-lg text-center text-xs font-bold shadow-xs hover:opacity-90 flex items-center justify-center">
                                     <i class="fa-solid fa-globe"></i>
-                                    <span>Web</span>
                                 </a>
                             ` : `
-                                <button disabled class="py-1.5 px-2 bg-slate-100 text-slate-400 rounded-xl text-center text-xs font-bold cursor-not-allowed flex items-center justify-center space-x-1">
+                                <button disabled title="Sin sitio Web" class="py-1.5 px-1 bg-slate-100 text-slate-300 rounded-lg text-center text-xs font-bold cursor-not-allowed flex items-center justify-center">
                                     <i class="fa-solid fa-globe"></i>
-                                    <span>Web</span>
                                 </button>
                             `}
 
-                            <!-- GPS -->
-                            <a href="${gpsUrl}" target="_blank" rel="noopener" class="py-1.5 px-2 bg-slate-900 text-white rounded-xl text-center text-xs font-bold shadow-sm hover:bg-slate-800 flex items-center justify-center space-x-1">
+                            <!-- GPS Icon -->
+                            <a href="${gpsUrl}" target="_blank" rel="noopener" title="Ver Ubicación GPS" class="py-1.5 px-1 bg-slate-900 text-white rounded-lg text-center text-xs font-bold shadow-xs hover:bg-slate-800 flex items-center justify-center">
                                 <i class="fa-solid fa-location-arrow text-emerald-400"></i>
-                                <span>GPS</span>
                             </a>
 
-                            <!-- WhatsApp -->
-                            <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20${encodeURIComponent(p.nombre)}%20en%20PaitaMercado" target="_blank" rel="noopener" class="py-1.5 px-2 bg-emerald-500 text-white rounded-xl text-center text-xs font-bold shadow-sm hover:bg-emerald-600 flex items-center justify-center space-x-1">
+                            <!-- WhatsApp Icon -->
+                            <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20${encodeURIComponent(p.nombre)}%20en%20PaitaMercado" target="_blank" rel="noopener" title="Contactar por WhatsApp" class="py-1.5 px-1 bg-emerald-500 text-white rounded-lg text-center text-xs font-bold shadow-xs hover:bg-emerald-600 flex items-center justify-center">
                                 <i class="fa-brands fa-whatsapp text-sm"></i>
-                                <span>Chat</span>
                             </a>
                         </div>
                     </div>
@@ -833,16 +835,16 @@
             if (showFavsOnly) {
                 btn.classList.add('bg-rose-500', 'text-white');
                 btn.classList.remove('bg-rose-50', 'text-rose-600');
-                icon.className = 'fa-solid fa-heart text-sm text-white';
+                icon.className = 'fa-solid fa-heart text-xs text-white';
             } else {
                 btn.classList.remove('bg-rose-500', 'text-white');
                 btn.classList.add('bg-rose-50', 'text-rose-600');
-                icon.className = 'fa-regular fa-heart text-sm';
+                icon.className = 'fa-regular fa-heart text-xs';
             }
             filterPuestos();
         }
 
-        // 8. BANNERS CAROUSEL SYSTEM
+        // 8. BANNERS CAROUSEL SYSTEM WITH TOUCH SLIDE
         function loadBanners() {
             bannersData = INITIAL_BANNERS;
             renderBanners();
@@ -867,7 +869,7 @@
                 `;
 
                 dots.innerHTML += `
-                    <button onclick="setBanner(${idx})" class="w-2.5 h-2.5 rounded-full transition ${idx === currentBannerIndex ? 'bg-white w-6' : 'bg-white/50'}"></button>
+                    <button onclick="setBanner(${idx})" class="w-2 h-2 rounded-full transition ${idx === currentBannerIndex ? 'bg-white w-5' : 'bg-white/50'}"></button>
                 `;
             });
         }
@@ -892,6 +894,34 @@
             bannerTimer = setInterval(() => {
                 nextBanner();
             }, 5000);
+        }
+
+        // Touch swipe functionality for banners
+        function setupTouchSwipe() {
+            const bannerElem = document.getElementById('bannerContainer');
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            bannerElem.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            bannerElem.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const threshold = 40; // Minimum swipe distance
+                if (touchEndX < touchStartX - threshold) {
+                    nextBanner(); // Swipe Left
+                    startBannerTimer();
+                }
+                if (touchEndX > touchStartX + threshold) {
+                    prevBanner(); // Swipe Right
+                    startBannerTimer();
+                }
+            }
         }
 
         // 9. MODALS CONTROL & FORMS SUBMISSION
@@ -929,8 +959,8 @@
                 gps: document.getElementById('regGPS').value.trim(),
                 whatsapp: document.getElementById('regWhatsapp').value.trim().replace(/\D/g, ''),
                 web: document.getElementById('regWeb').value.trim(),
-                votesCount: 1,
-                totalRating: 5 // Default initial vote 5.0
+                votesCount: 0,
+                totalRating: 0
             };
 
             puestosData.unshift(newPuesto);
