@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MercadoPlaza - Tu mercado en un solo lugar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brandBlue: '#0047AB',
+                        brandGreen: '#10B981',
+                        brandOrange: '#F97316',
+                        brandYellow: '#EAB308',
+                        brandRed: '#EF4444',
+                        brandDark: '#1E293B',
+                        brandLight: '#F8FAFC'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #1e293b; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-white min-h-screen flex flex-col antialiased">
+    <div id="root"></div>
+
+    <!-- React and ReactDOM CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel Standalone for JSX compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // Provinces and Districts Data of Piura
+        const PIURA_LOCATIONS = {
+            "Piura": ["Piura", "Castilla", "Catacaos", "Cura Mori", "El Tallán", "La Arena", "La Unión", "Las Lomas", "Tambogrande"],
+            "Ayabaca": ["Ayabaca", "Frías", "Jililí", "Montero", "Paimas", "Sapillica", "Sicchez", "Suyo", "Lagunas"],
+            "Huancabamba": ["Huancabamba", "Canchaque", "El Carmen de la Frontera", "Huarmaca", "Lalaquiz", "San Miguel de El Faique", "Sondor", "Sondorillo"],
+            "Morropón": ["Chulucanas", "Buenos Aires", "Chalaco", "La Matanza", "Morropón", "Salitral", "San Juan de Bigote", "Santa Catalina de Mossa", "Santo Domingo", "Yamango"],
+            "Paita": ["Paita", "Amotape", "Arenal", "Colán", "La Huaca", "Tamarindo", "Vichayal"],
+            "Sullana": ["Sullana", "Bellavista", "Ignacio Escudero", "Lancones", "Marcavelica", "Miguel Checa", "Querecotillo", "Salitral"],
+            "Talara": ["Pariñas", "El Alto", "La Brea", "Lobitos", "Los Órganos", "Máncora"],
+            "Sechura": ["Sechura", "Bellavista de la Unión", "Bernal", "Cristo Nos Valga", "Rinconada Llicuar", "Vice"]
+        };
+
+        const OFFICIAL_CATEGORIES = [
+            { id: "abarrotes", name: "Abarrotes y alimentos", icon: "shopping-cart" },
+            { id: "bebidas", name: "Bebidas", icon: "coffee" },
+            { id: "carnicerias", name: "Carnicerías", icon: "utensils" },
+            { id: "pescaderias", name: "Pescaderías", icon: "fish" },
+            { id: "frutas", name: "Frutas y verduras", icon: "apple" },
+            { id: "regionales", name: "Productos regionales", icon: "package" },
+            { id: "restaurantes", name: "Restaurantes y comidas", icon: "soup" },
+            { id: "panaderias", name: "Panaderías y dulcerías", icon: "cake" },
+            { id: "lacteos", name: "Lácteos", icon: "milk" },
+            { id: "salud", name: "Salud y bienestar", icon: "heart-pulse" },
+            { id: "belleza", name: "Belleza y cuidado personal", icon: "scissors" },
+            { id: "moda", name: "Moda y calzado", icon: "shirt" },
+            { id: "tecnologia", name: "Tecnología y electrónica", icon: "smartphone" },
+            { id: "hogar", name: "Hogar y decoración", icon: "home" },
+            { id: "ferreteria", name: "Ferretería y construcción", icon: "wrench" },
+            { id: "limpieza", name: "Limpieza", icon: "sparkles" },
+            { id: "mascotas", name: "Mascotas", icon: "bone" },
+            { id: "libreria", name: "Librerías y juguetes", icon: "book-open" },
+            { id: "automotriz", name: "Automotriz y repuestos", icon: "car" },
+            { id: "servicios", name: "Servicios y reparaciones", icon: "settings" }
+        ];
+
+        const INITIAL_BANNERS = [
+            {
+                id: 1,
+                title: "Apoya el comercio local - Compra en tu mercado",
+                subtitle: "¡Juntos hacemos crecer nuestra comunidad!",
+                image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80",
+                link: "https://wa.me/51930528649?text=Hola,%20quiero%20saber%20más%20sobre%20MercadoPlaza"
+            },
+            {
+                id: 2,
+                title: "¡Registra tu puesto gratis hoy mismo!",
+                subtitle: "Conecta con miles de clientes en Piura y provincias.",
+                image: "https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?auto=format&fit=crop&w=1200&q=80",
+                link: "#registrar"
+            },
+            {
+                id: 3,
+                title: "Catálogos Virtuales para tu Negocio",
+                subtitle: "Vende por WhatsApp con tu propio catálogo profesional.",
+                image: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=1200&q=80",
+                link: "https://wa.me/51930528649?text=Hola,%20quiero%20cotizar%20un%20catálogo%20virtual"
+            }
+        ];
+
+        const INITIAL_BUSINESSES = [
+            {
+                id: 1,
+                name: "Frutas El Sol",
+                category: "frutas",
+                categoryName: "Frutas y verduras",
+                description: "Frutas frescas y de calidad directo del productor piurano.",
+                rating: 4.8,
+                reviewsCount: 124,
+                province: "Piura",
+                district: "Piura",
+                image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80",
+                webUrl: "https://wa.me/51930528649?text=Hola,%20vi%20Frutas%20El%20Sol%20en%20MercadoPlaza",
+                mapUrl: "https://maps.google.com/?q=Piura,Peru",
+                whatsapp: "51930528649"
+            },
+            {
+                id: 2,
+                name: "Pollería La Esquina",
+                category: "restaurantes",
+                categoryName: "Restaurantes y comidas",
+                description: "El mejor pollo a la brasa y parrillas de la región.",
+                rating: 4.7,
+                reviewsCount: 98,
+                province: "Piura",
+                district: "Castilla",
+                image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+                webUrl: "https://wa.me/51930528649?text=Hola,%20vi%20Polleria%20La%20Esquina%20en%20MercadoPlaza",
+                mapUrl: "https://maps.google.com/?q=Castilla,Piura",
+                whatsapp: "51930528649"
+            },
+            {
+                id: 3,
+                name: "Pescadería Mar Azul",
+                category: "pescaderias",
+                categoryName: "Pescaderías",
+                description: "Pescados y mariscos frescos del mar de Grau.",
+                rating: 4.7,
+                reviewsCount: 85,
+                province: "Paita",
+                district: "Paita",
+                image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80",
+                webUrl: "https://wa.me/51930528649?text=Hola,%20vi%20Pescaderia%20Mar%20Azul%20en%20MercadoPlaza",
+                mapUrl: "https://maps.google.com/?q=Paita,Peru",
+                whatsapp: "51930528649"
+            },
+            {
+                id: 4,
+                name: "Panadería Delicias",
+                category: "panaderias",
+                categoryName: "Panaderías y dulcerías",
+                description: "Panes y dulces artesanales recién horneados cada mañana.",
+                rating: 4.6,
+                reviewsCount: 110,
+                province: "Sullana",
+                district: "Sullana",
+                image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
+                webUrl: "https://wa.me/51930528649?text=Hola,%20vi%20Panaderia%20Delicias%20en%20MercadoPlaza",
+                mapUrl: "https://maps.google.com/?q=Sullana,Peru",
+                whatsapp: "51930528649"
+            },
+            {
+                id: 5,
+                name: "Abarrotes Doña Lupita",
+                category: "abarrotes",
+                categoryName: "Abarrotes y alimentos",
+                description: "Víveres al por mayor y menor con delivery local.",
+                rating: 4.8,
+                reviewsCount: 76,
+                province: "Talara",
+                district: "Pariñas",
+                image: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=600&q=80",
+                webUrl: "https://wa.me/51930528649?text=Hola,%20vi%20Abarrotes%20Dona%20Lupita%20en%20MercadoPlaza",
+                mapUrl: "https://maps.google.com/?q=Talara,Peru",
+                whatsapp: "51930528649"
+            },
+            {
+                id: 6,
+                name: "Carnes Finas Piura",
+                category: "carnicerias",
+                categoryName: "Carnicerías",
+                description: "Cortes seleccionados de res, cerdo y pollo.",
+                rating: 4.7,
+                reviewsCount: 64,
+                province: "Piura",
+                district: "Piura",
+                image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=600&q=80",
+                webUrl: "https://wa.me/51930528649?text=Hola,%20vi%20Carnes%20Finas%20Piura",
+                mapUrl: "https://maps.google.com/?q=Piura,Peru",
+                whatsapp: "51930528649"
+            }
+        ];
+
+        function App() {
+            const [businesses, setBusinesses] = useState(() => {
+                const saved = localStorage.getItem('mercadoplaza_businesses');
+                return saved ? JSON.parse(saved) : INITIAL_BUSINESSES;
+            });
+            const [favorites, setFavorites] = useState(() => {
+                const saved = localStorage.getItem('mercadoplaza_favorites');
+                return saved ? JSON.parse(saved) : [1, 3];
+            });
+
+            const [searchQuery, setSearchQuery] = useState("");
+            const [selectedProvince, setSelectedProvince] = useState("Piura");
+            const [selectedDistrict, setSelectedDistrict] = useState("Piura");
+            const [selectedCategory, setSelectedCategory] = useState("todos");
+
+            // Modal States
+            const [registerOpen, setRegisterOpen] = useState(false);
+            const [ratingModalOpen, setRatingModalOpen] = useState(false);
+            const [activeBusinessForRating, setActiveBusinessForRating] = useState(null);
+            const [favoritesModalOpen, setFavoritesModalOpen] = useState(false);
+            const [supportModalOpen, setSupportModalOpen] = useState(false);
+            const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
+            const [termsModalOpen, setTermsModalOpen] = useState(false);
+            const [toast, setToast] = useState(null);
+
+            // Banner Carousel State
+            const [currentBanner, setCurrentBanner] = useState(0);
+
+            useEffect(() => {
+                localStorage.setItem('mercadoplaza_businesses', JSON.stringify(businesses));
+            }, [businesses]);
+
+            useEffect(() => {
+                localStorage.setItem('mercadoplaza_favorites', JSON.stringify(favorites));
+            }, [favorites]);
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setCurrentBanner(prev => (prev + 1) % INITIAL_BANNERS.length);
+                }, 5000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const showToast = (message) => {
+                setToast(message);
+                setTimeout(() => setToast(null), 3500);
+            };
+
+            const toggleFavorite = (id) => {
+                setFavorites(prev => {
+                    if (prev.includes(id)) {
+                        showToast("Eliminado de mis favoritos");
+                        return prev.filter(item => item !== id);
+                    } else {
+                        showToast("¡Agregado a mis favoritos!");
+                        return [...prev, id];
+                    }
+                });
+            };
+
+            // Dynamic category counts
+            const categoryCounts = useMemo(() => {
+                const counts = {};
+                OFFICIAL_CATEGORIES.forEach(cat => {
+                    counts[cat.id] = businesses.filter(b => b.category === cat.id).length;
+                });
+                return counts;
+            }, [businesses]);
+
+            // Filtered businesses
+            const filteredBusinesses = useMemo(() => {
+                return businesses.filter(b => {
+                    const matchesSearch = b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                          b.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                          b.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
+                    const matchesCategory = selectedCategory === "todos" || b.category === selectedCategory;
+                    const matchesProvince = !selectedProvince || b.province === selectedProvince;
+                    const matchesDistrict = !selectedDistrict || b.district === selectedDistrict;
+                    return matchesSearch && matchesCategory && matchesProvince && matchesDistrict;
+                });
+            }, [businesses, searchQuery, selectedCategory, selectedProvince, selectedDistrict]);
+
+            return (
+                <div className="min-h-screen flex flex-col bg-white">
+                    {/* Toast Notification */}
+                    {toast && (
+                        <div className="fixed bottom-6 right-6 z-50 bg-brandDark text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3 border-l-4 border-brandGreen animate-bounce">
+                            <i data-lucide="check-circle" className="w-5 h-5 text-brandGreen"></i>
+                            <span className="font-medium text-sm">{toast}</span>
+                        </div>
+                    )}
+
+                    {/* HEADER */}
+                    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+                            {/* Logo */}
+                            <div className="flex items-center space-x-3 cursor-pointer" onClick={() => { setSelectedCategory("todos"); setSearchQuery(""); }}>
+                                <div className="w-11 h-11 bg-brandOrange rounded-xl flex items-center justify-center shadow-md">
+                                    <i data-lucide="store" className="w-6 h-6 text-white"></i>
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-black tracking-tight flex items-center">
+                                        <span className="text-brandBlue">Mercado</span>
+                                        <span className="text-brandGreen">Plaza</span>
+                                    </div>
+                                    <p className="text-xs text-slate-500 font-medium hidden sm:block">Tu mercado en un solo lugar</p>
+                                </div>
+                            </div>
+
+                            {/* Search Bar & Location (Desktop) */}
+                            <div className="hidden md:flex items-center flex-1 max-w-2xl bg-slate-100 rounded-full px-4 py-2 border border-slate-200 focus-within:ring-2 focus-within:ring-brandBlue/30">
+                                <i data-lucide="search" className="w-5 h-5 text-slate-400 mr-2"></i>
+                                <input 
+                                    type="text" 
+                                    placeholder="Buscar puestos, productos o rubros..." 
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="bg-transparent border-none outline-none w-full text-sm text-slate-800 placeholder-slate-400"
+                                />
+                                <div className="h-5 w-[1px] bg-slate-300 mx-3"></div>
+                                <div className="flex items-center text-sm text-slate-700 font-medium whitespace-nowrap">
+                                    <i data-lucide="map-pin" className="w-4 h-4 text-brandRed mr-1.5"></i>
+                                    <select 
+                                        value={selectedProvince}
+                                        onChange={(e) => {
+                                            setSelectedProvince(e.target.value);
+                                            setSelectedDistrict(PIURA_LOCATIONS[e.target.value][0]);
+                                        }}
+                                        className="bg-transparent border-none outline-none cursor-pointer font-semibold text-brandBlue"
+                                    >
+                                        {Object.keys(PIURA_LOCATIONS).map(prov => (
+                                            <option key={prov} value={prov}>{prov}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Right Actions */}
+                            <div className="flex items-center space-x-3">
+                                {/* Favorites Button */}
+                                <button 
+                                    onClick={() => setFavoritesModalOpen(true)}
+                                    className="relative p-2.5 rounded-full hover:bg-slate-100 text-slate-700 transition"
+                                    title="Mis Favoritos"
+                                >
+                                    <i data-lucide="heart" className="w-6 h-6 text-brandRed fill-brandRed"></i>
+                                    {favorites.length > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-brandRed text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+                                            {favorites.length}
+                                        </span>
+                                    )}
+                                </button>
+
+                                {/* Register Button */}
+                                <button 
+                                    onClick={() => setRegisterOpen(true)}
+                                    className="bg-brandGreen hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-emerald-500/20 flex items-center space-x-2 transition transform active:scale-95"
+                                >
+                                    <i data-lucide="store" className="w-4 h-4"></i>
+                                    <span className="hidden sm:inline">Registrar Puesto</span>
+                                    <span className="sm:hidden">Registrar</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Mobile Search & Location Bar */}
+                        <div className="md:hidden px-4 pb-3 flex items-center space-x-2">
+                            <div className="flex-1 flex items-center bg-slate-100 rounded-xl px-3 py-2 border border-slate-200">
+                                <i data-lucide="search" className="w-4 h-4 text-slate-400 mr-2"></i>
+                                <input 
+                                    type="text" 
+                                    placeholder="Buscar en MercadoPlaza..." 
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="bg-transparent border-none outline-none w-full text-xs text-slate-800"
+                                />
+                            </div>
+                            <select 
+                                value={selectedProvince}
+                                onChange={(e) => {
+                                    setSelectedProvince(e.target.value);
+                                    setSelectedDistrict(PIURA_LOCATIONS[e.target.value][0]);
+                                }}
+                                className="bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-brandBlue outline-none"
+                            >
+                                {Object.keys(PIURA_LOCATIONS).map(prov => (
+                                    <option key={prov} value={prov}>{prov}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </header>
+
+                    {/* MAIN CONTENT CONTAINER */}
+                    <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
+                        
+                        {/* BANNERS CAROUSEL */}
+                        <section className="relative overflow-hidden rounded-3xl shadow-lg bg-slate-900 group">
+                            <div className="relative h-56 sm:h-80 md:h-96 w-full">
+                                {INITIAL_BANNERS.map((banner, index) => (
+                                    <div 
+                                        key={banner.id}
+                                        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${index === currentBanner ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                                    >
+                                        <img src={banner.image} alt={banner.title} className="w-full h-full object-cover brightness-75" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent flex items-center p-6 sm:p-12">
+                                            <div className="max-w-xl text-white space-y-3">
+                                                <span className="bg-brandOrange text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">Destacado</span>
+                                                <h2 className="text-2xl sm:text-4xl font-extrabold leading-tight">{banner.title}</h2>
+                                                <p className="text-sm sm:text-lg text-slate-200 font-medium">{banner.subtitle}</p>
+                                                <a 
+                                                    href={banner.link} 
+                                                    onClick={(e) => {
+                                                        if(banner.link === '#registrar') {
+                                                            e.preventDefault();
+                                                            setRegisterOpen(true);
+                                                        }
+                                                    }}
+                                                    className="inline-flex items-center space-x-2 bg-brandGreen hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md transition"
+                                                >
+                                                    <span>Explorar ahora</span>
+                                                    <i data-lucide="arrow-right" className="w-4 h-4"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Carousel Controls */}
+                            <button 
+                                onClick={() => setCurrentBanner(prev => (prev - 1 + INITIAL_BANNERS.length) % INITIAL_BANNERS.length)}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm transition"
+                            >
+                                <i data-lucide="chevron-left" className="w-6 h-6"></i>
+                            </button>
+                            <button 
+                                onClick={() => setCurrentBanner(prev => (prev + 1) % INITIAL_BANNERS.length)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm transition"
+                            >
+                                <i data-lucide="chevron-right" className="w-6 h-6"></i>
+                            </button>
+
+                            {/* Indicators */}
+                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex space-x-2">
+                                {INITIAL_BANNERS.map((_, idx) => (
+                                    <button 
+                                        key={idx}
+                                        onClick={() => setCurrentBanner(idx)}
+                                        className={`w-3 h-3 rounded-full transition-all ${idx === currentBanner ? 'bg-brandGreen w-8' : 'bg-white/50'}`}
+                                    ></button>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* EXPLORE CATEGORIES */}
+                        <section className="space-y-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-brandBlue">
+                                        <i data-lucide="star" className="w-5 h-5 fill-brandBlue"></i>
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-slate-900">Explora nuestros rubros</h2>
+                                </div>
+                                <button 
+                                    onClick={() => setSelectedCategory("todos")}
+                                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${selectedCategory === 'todos' ? 'bg-brandBlue text-white shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
+                                >
+                                    Todos los rubros
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                                {OFFICIAL_CATEGORIES.map(cat => {
+                                    const count = categoryCounts[cat.id] || 0;
+                                    const isSelected = selectedCategory === cat.id;
+                                    return (
+                                        <div 
+                                            key={cat.id}
+                                            onClick={() => setSelectedCategory(isSelected ? "todos" : cat.id)}
+                                            className={`cursor-pointer bg-slate-50 hover:bg-blue-50/50 border rounded-2xl p-4 flex flex-col items-center text-center transition-all duration-200 group ${isSelected ? 'border-brandBlue bg-blue-50 ring-2 ring-brandBlue/20 shadow-md' : 'border-slate-200 hover:border-brandBlue/40'}`}
+                                        >
+                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition group-of-hover:scale-110 ${isSelected ? 'bg-brandBlue text-white' : 'bg-white text-brandBlue shadow-sm'}`}>
+                                                <i data-lucide={cat.icon} className="w-7 h-7"></i>
+                                            </div>
+                                            <h3 className="text-sm font-bold text-slate-800 mb-1 line-clamp-1">{cat.name}</h3>
+                                            <span className="text-xs font-semibold text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-full">{count} puestos</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </section>
+
+                        {/* FEATURED BUSINESSES */}
+                        <section className="space-y-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-brandYellow">
+                                        <i data-lucide="award" className="w-5 h-5 fill-brandYellow"></i>
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-slate-900">Puestos destacados</h2>
+                                </div>
+                                <span className="text-sm font-medium text-slate-500">Mostrando {filteredBusinesses.length} negocios</span>
+                            </div>
+
+                            {filteredBusinesses.length === 0 ? (
+                                <div className="bg-slate-50 border border-slate-200 rounded-3xl p-12 text-center space-y-4">
+                                    <div className="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mx-auto text-slate-500">
+                                        <i data-lucide="search-x" className="w-8 h-8"></i>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-slate-800">No se encontraron puestos</h3>
+                                    <p className="text-sm text-slate-500 max-w-md mx-auto">Prueba cambiando los filtros de rubro, provincia o distrito, o registra tu propio puesto totalmente gratis.</p>
+                                    <button 
+                                        onClick={() => { setSelectedCategory("todos"); setSearchQuery(""); }}
+                                        className="bg-brandBlue text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow"
+                                    >
+                                        Ver todos los puestos
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                    {filteredBusinesses.map(bus => {
+                                        const isFav = favorites.includes(bus.id);
+                                        return (
+                                            <div key={bus.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+                                                {/* Image & Header */}
+                                                <div className="relative h-48 w-full bg-slate-100 overflow-hidden">
+                                                    <img src={bus.image} alt={bus.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                                                    
+                                                    {/* Favorite Button */}
+                                                    <button 
+                                                        onClick={() => toggleFavorite(bus.id)}
+                                                        className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:scale-110 transition"
+                                                    >
+                                                        <i data-lucide="heart" className={`w-5 h-5 ${isFav ? 'text-brandRed fill-brandRed' : 'text-slate-400'}`}></i>
+                                                    </button>
+
+                                                    {/* Rating Badge */}
+                                                    <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow flex items-center space-x-1">
+                                                        <i data-lucide="star" className="w-4 h-4 text-brandYellow fill-brandYellow"></i>
+                                                        <span className="text-xs font-bold text-slate-800">{bus.rating}</span>
+                                                        <span className="text-[10px] text-slate-500">({bus.reviewsCount})</span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Content */}
+                                                <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                                                    <div className="space-y-1.5">
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="bg-blue-50 text-brandBlue text-[11px] font-bold px-2.5 py-0.5 rounded-full">{bus.categoryName}</span>
+                                                            <span className="text-[11px] text-slate-400 font-medium">{bus.province}</span>
+                                                        </div>
+                                                        <h3 className="text-base font-bold text-slate-900 group-hover:text-brandBlue transition">{bus.name}</h3>
+                                                        <p className="text-xs text-slate-500 line-clamp-2">{bus.description}</p>
+                                                    </div>
+
+                                                    {/* Rating Action link */}
+                                                    <button 
+                                                        onClick={() => { setActiveBusinessForRating(bus); setRatingModalOpen(true); }}
+                                                        className="text-xs font-semibold text-brandBlue hover:underline flex items-center space-x-1"
+                                                    >
+                                                        <i data-lucide="star" className="w-3.5 h-3.5"></i>
+                                                        <span>Calificar este puesto</span>
+                                                    </button>
+
+                                                    {/* Action Buttons */}
+                                                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
+                                                        {/* Red: Web/Catalog */}
+                                                        <a 
+                                                            href={bus.webUrl} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="bg-brandRed hover:bg-red-600 text-white p-2.5 rounded-xl flex items-center justify-center shadow transition"
+                                                            title="Catálogo / Web"
+                                                        >
+                                                            <i data-lucide="globe" className="w-4 h-4"></i>
+                                                        </a>
+                                                        {/* Dark: Maps */}
+                                                        <a 
+                                                            href={bus.mapUrl} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="bg-slate-800 hover:bg-slate-900 text-white p-2.5 rounded-xl flex items-center justify-center shadow transition"
+                                                            title="Ubicación Maps"
+                                                        >
+                                                            <i data-lucide="map-pin" className="w-4 h-4"></i>
+                                                        </a>
+                                                        {/* Green: WhatsApp */}
+                                                        <a 
+                                                            href={`https://wa.me/${bus.whatsapp}?text=Hola,%20vi%20su%20puesto%20${encodeURIComponent(bus.name)}%20en%20MercadoPlaza`}
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="bg-brandGreen hover:bg-emerald-600 text-white p-2.5 rounded-xl flex items-center justify-center shadow transition"
+                                                            title="WhatsApp"
+                                                        >
+                                                            <i data-lucide="message-circle" className="w-4 h-4"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </section>
+
+                        {/* PROMOTIONAL BANNERS SECTION */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Social Media Promo */}
+                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-sm">
+                                <div className="space-y-4">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="w-12 h-12 rounded-2xl bg-brandBlue text-white flex items-center justify-center shadow">
+                                            <i data-lucide="megaphone" className="w-6 h-6"></i>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-slate-900">¡Promociona tu puesto GRATIS en nuestras redes sociales!</h3>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center space-x-3 py-1">
+                                        <i data-lucide="facebook" className="w-6 h-6 text-blue-600"></i>
+                                        <i data-lucide="video" className="w-6 h-6 text-black"></i>
+                                        <i data-lucide="instagram" className="w-6 h-6 text-pink-600"></i>
+                                        <i data-lucide="youtube" className="w-6 h-6 text-red-600"></i>
+                                    </div>
+                                    <p className="text-xs sm:text-sm text-slate-600">
+                                        Envíanos tu material visual o audiovisual y te ayudaremos a promocionar tu puesto gratuitamente.
+                                    </p>
+                                    <div className="bg-white/80 rounded-2xl p-4 border border-blue-100 text-xs text-slate-700 space-y-1">
+                                        <p className="font-bold text-slate-900">Horario de recepción:</p>
+                                        <p>Lunes a sábado: 10:00 a. m. – 1:00 p. m. | 2:00 p. m. – 5:00 p. m.</p>
+                                    </div>
+                                </div>
+                                <a 
+                                    href="https://wa.me/51930528649?text=Hola,%20quiero%20publicar%20gratuitamente%20mi%20puesto%20o%20productos%20en%20las%20redes%20sociales%20de%20MercadoPlaza.%20Quisiera%20indicar%20las%20redes%20sociales%20donde%20deseo%20aparecer%20y%20consultar%20el%20procedimiento%20para%20enviar%20mi%20material."
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-brandGreen hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-emerald-500/20 text-center flex items-center justify-center space-x-2 transition"
+                                >
+                                    <i data-lucide="message-circle" className="w-5 h-5"></i>
+                                    <span>ENVIAR MI PUBLICACIÓN</span>
+                                </a>
+                            </div>
+
+                            {/* Virtual Catalog Promo */}
+                            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-sm">
+                                <div className="space-y-4">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="w-12 h-12 rounded-2xl bg-brandGreen text-white flex items-center justify-center shadow">
+                                            <i data-lucide="shopping-bag" className="w-6 h-6"></i>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-slate-900">¿Quieres tener tu propio catálogo virtual para vender más?</h3>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                                        Muestra tus productos, comparte tu catálogo mediante un enlace o código QR y facilita tus ventas desde cualquier dispositivo. Planes mensuales o anuales accesibles.
+                                    </p>
+                                    <div className="bg-white/80 rounded-2xl p-4 border border-emerald-100 text-xs text-slate-700 space-y-2">
+                                        <div className="flex items-center space-x-2">
+                                            <i data-lucide="check" className="w-4 h-4 text-brandGreen"></i>
+                                            <span>Enlace y código QR personalizado</span>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <i data-lucide="check" className="w-4 h-4 text-brandGreen"></i>
+                                            <span>Pedidos directos a tu WhatsApp</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a 
+                                    href="https://wa.me/51930528649?text=Hola,%20quiero%20cotizar%20un%20catálogo%20virtual%20para%20mi%20puesto%20en%20MercadoPlaza.%20Quisiera%20conocer%20los%20planes%20disponibles%20según%20la%20cantidad%20de%20productos."
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-brandGreen hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-emerald-500/20 text-center flex items-center justify-center space-x-2 transition"
+                                >
+                                    <i data-lucide="message-circle" className="w-5 h-5"></i>
+                                    <span>COTIZAR MI CATÁLOGO</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* SUPPORT & SOCIAL BANNER BAR */}
+                        <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                            <div className="flex items-center space-x-4">
+                                <div className="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center text-brandOrange">
+                                    <i data-lucide="heart-handshake" className="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-slate-900 text-base">¿Necesitas apoyo? Tu aporte nos ayuda a seguir creciendo</h4>
+                                    <p className="text-xs text-slate-500">Colabora voluntariamente para mantener la plataforma abierta a todos los comerciantes.</p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setSupportModalOpen(true)}
+                                className="bg-brandOrange hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-orange-500/20 flex items-center space-x-2 transition whitespace-nowrap"
+                            >
+                                <i data-lucide="heart" className="w-4 h-4 fill-white"></i>
+                                <span>Apoyar MercadoPlaza</span>
+                            </button>
+                        </div>
+                    </main>
+
+                    {/* FOOTER */}
+                    <footer className="bg-brandBlue text-white pt-12 pb-8 mt-16">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                            <div className="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-blue-800 pb-8">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-brandBlue">
+                                        <i data-lucide="store" className="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <span className="text-xl font-black">MercadoPlaza</span>
+                                        <p className="text-xs text-blue-200">Tu mercado en un solo lugar</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center space-x-4">
+                                    <span className="text-sm font-semibold text-blue-200">Síguenos en:</span>
+                                    <a href="#" className="w-9 h-9 bg-blue-800 hover:bg-blue-700 rounded-full flex items-center justify-center transition"><i data-lucide="facebook" className="w-4 h-4"></i></a>
+                                    <a href="#" className="w-9 h-9 bg-blue-800 hover:bg-blue-700 rounded-full flex items-center justify-center transition"><i data-lucide="video" className="w-4 h-4"></i></a>
+                                    <a href="#" className="w-9 h-9 bg-blue-800 hover:bg-blue-700 rounded-full flex items-center justify-center transition"><i data-lucide="instagram" className="w-4 h-4"></i></a>
+                                    <a href="#" className="w-9 h-9 bg-blue-800 hover:bg-blue-700 rounded-full flex items-center justify-center transition"><i data-lucide="youtube" className="w-4 h-4"></i></a>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col md:flex-row justify-between items-center text-xs text-blue-200 gap-4">
+                                <p>© 2026 PaitaMercado - Todos los derechos reservados. Desarrollado por <a href="https://comaxion.vercel.app" target="_blank" rel="noopener noreferrer" className="text-white font-bold underline">COMAXION</a>.</p>
+                                
+                                <div className="flex flex-wrap justify-center gap-6 font-medium">
+                                    <button onClick={() => setPrivacyModalOpen(true)} className="hover:text-white transition">Política de privacidad</button>
+                                    <button onClick={() => setTermsModalOpen(true)} className="hover:text-white transition">Términos y condiciones</button>
+                                    <a href="https://wa.me/51930528649" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Contacto</a>
+                                    <button onClick={() => setSupportModalOpen(true)} className="text-brandYellow hover:underline font-bold">Apoyar MercadoPlaza</button>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+
+                    {/* MODALS */}
+
+                    {/* 1. REGISTER BUSINESS MODAL */}
+                    {registerOpen && (
+                        <RegisterModal 
+                            onClose={() => setRegisterOpen(false)}
+                            onSuccess={(newBus) => {
+                                setBusinesses([newBus, ...businesses]);
+                                setRegisterOpen(false);
+                                showToast("¡Puesto registrado con éxito!");
+                            }}
+                        />
+                    )}
+
+                    {/* 2. RATING MODAL (OTP Simulation) */}
+                    {ratingModalOpen && activeBusinessForRating && (
+                        <RatingModal 
+                            business={activeBusinessForRating}
+                            onClose={() => { setRatingModalOpen(false); setActiveBusinessForRating(null); }}
+                            onSuccess={(updatedBus) => {
+                                setBusinesses(businesses.map(b => b.id === updatedBus.id ? updatedBus : b));
+                                setRatingModalOpen(false);
+                                showToast("¡Calificación verificada y registrada con éxito!");
+                            }}
+                        />
+                    )}
+
+                    {/* 3. FAVORITES MODAL / DRAWER */}
+                    {favoritesModalOpen && (
+                        <FavoritesModal 
+                            favorites={favorites}
+                            businesses={businesses}
+                            onClose={() => setFavoritesModalOpen(false)}
+                            onToggleFav={toggleFavorite}
+                        />
+                    )}
+
+                    {/* 4. SUPPORT / DONATION MODAL */}
+                    {supportModalOpen && (
+                        <SupportModal onClose={() => setSupportModalOpen(false)} />
+                    )}
+
+                    {/* 5. PRIVACY POLICY MODAL */}
+                    {privacyModalOpen && (
+                        <InfoModal 
+                            title="Política de Privacidad" 
+                            onClose={() => setPrivacyModalOpen(false)}
+                        >
+                            <p className="mb-3">En MercadoPlaza valoramos y protegemos la privacidad de nuestros comerciantes y visitantes. Los datos proporcionados durante el registro de puestos son utilizados exclusivamente con fines comerciales, de directorio y de visibilidad digital.</p>
+                            <p className="mb-3">Nunca compartimos números de WhatsApp ni información personal con terceros para fines publicitarios no autorizados. Los números se utilizan únicamente para los botones de contacto directo y validaciones de confianza.</p>
+                            <p>Para cualquier consulta o solicitud de eliminación de datos, puede contactarnos directamente a través de nuestros canales oficiales.</p>
+                        </InfoModal>
+                    )}
+
+                    {/* 6. TERMS & CONDITIONS MODAL */}
+                    {termsModalOpen && (
+                        <InfoModal 
+                            title="Términos y Condiciones" 
+                            onClose={() => setTermsModalOpen(false)}
+                        >
+                            <p className="mb-3">MercadoPlaza es una plataforma digital desarrollada por COMAXION para conectar puestos de mercados tradicionales con compradores locales en Piura y sus provincias.</p>
+                            <p className="mb-3">El registro de puestos es 100% gratuito. Los comerciantes son responsables de la veracidad de la información y los enlaces compartidos en sus tarjetas.</p>
+                            <p>La plataforma se reserva el derecho de moderar o retirar contenido que infrinja las normas de convivencia o normativas vigentes.</p>
+                        </InfoModal>
+                    )}
+                </div>
+            );
+        }
+
+        // REGISTRATION MODAL COMPONENT
+        function RegisterModal({ onClose, onSuccess }) {
+            const [province, setProvince] = useState("Piura");
+            const [district, setDistrict] = useState("Piura");
+            const [name, setName] = useState("");
+            const [category, setCategory] = useState("abarrotes");
+            const [description, setDescription] = useState("");
+            const [address, setAddress] = useState("");
+            const [whatsapp, setWhatsapp] = useState("");
+            const [webUrl, setWebUrl] = useState("");
+            const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+            const [loadingGps, setLoadingGps] = useState(false);
+            const [coords, setCoords] = useState(null);
+
+            const handleProvinceChange = (e) => {
+                const prov = e.target.value;
+                setProvince(prov);
+                setDistrict(PIURA_LOCATIONS[prov][0]);
+            };
+
+            const detectGps = () => {
+                if (navigator.geolocation) {
+                    setLoadingGps(true);
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            setCoords({ lat: position.coords.latitude, lng: position.coords.longitude });
+                            setLoadingGps(false);
+                            alert("Ubicación GPS detectada correctamente.");
+                        },
+                        (error) => {
+                            setLoadingGps(false);
+                            alert("No se pudo obtener la ubicación GPS. Verifique los permisos del navegador.");
+                        }
+                    );
+                } else {
+                    alert("La geolocalización no es compatible en este navegador.");
+                }
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!name || !whatsapp || !address) {
+                    alert("Por favor complete los campos obligatorios: Nombre, WhatsApp y Dirección.");
+                    return;
+                }
+                if (!acceptedPrivacy) {
+                    alert("Debe aceptar la política de privacidad para continuar.");
+                    return;
+                }
+
+                const catObj = OFFICIAL_CATEGORIES.find(c => c.id === category);
+
+                const newBusiness = {
+                    id: Date.now(),
+                    name,
+                    category,
+                    categoryName: catObj ? catObj.name : "Comercio",
+                    description: description || "Puesto registrado en MercadoPlaza.",
+                    rating: 5.0,
+                    reviewsCount: 1,
+                    province,
+                    district,
+                    image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80",
+                    webUrl: webUrl ? webUrl : `https://wa.me/51${whatsapp}?text=Hola,%20vi%20su%20puesto%20en%20MercadoPlaza`,
+                    mapUrl: coords ? `https://maps.google.com/?q=${coords.lat},${coords.lng}` : `https://maps.google.com/?q=${encodeURIComponent(address + ', ' + district + ', Piura')}`,
+                    whatsapp: whatsapp.replace(/\D/g, '')
+                };
+
+                onSuccess(newBusiness);
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+                    <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl my-8">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900">Registra tu puesto GRATIS</h3>
+                                <p className="text-xs text-slate-500">Forma parte de la gran plaza comercial digital de Piura</p>
+                            </div>
+                            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition">
+                                <i data-lucide="x" className="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Nombre y/o ID del puesto *</label>
+                                <input 
+                                    type="text" 
+                                    required 
+                                    placeholder="Ej: Abarrotes San Martín Puesto #12" 
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-brandGreen/30"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">Rubro principal *</label>
+                                    <select 
+                                        value={category}
+                                        onChange={(e) => setCategory(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none"
+                                    >
+                                        {OFFICIAL_CATEGORIES.map(cat => (
+                                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">WhatsApp del puesto *</label>
+                                    <input 
+                                        type="tel" 
+                                        required 
+                                        placeholder="Ej: 930528649" 
+                                        value={whatsapp}
+                                        onChange={(e) => setWhatsapp(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Descripción breve</label>
+                                <textarea 
+                                    rows="2"
+                                    placeholder="Cuéntanos brevemente qué productos o especialidades ofreces..."
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none"
+                                ></textarea>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">Provincia *</label>
+                                    <select 
+                                        value={province} 
+                                        onChange={handleProvinceChange}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none font-semibold text-brandBlue"
+                                    >
+                                        {Object.keys(PIURA_LOCATIONS).map(prov => (
+                                            <option key={prov} value={prov}>{prov}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">Distrito *</label>
+                                    <select 
+                                        value={district} 
+                                        onChange={(e) => setDistrict(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none font-semibold text-brandBlue"
+                                    >
+                                        {PIURA_LOCATIONS[province].map(dist => (
+                                            <option key={dist} value={dist}>{dist}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Dirección o referencia *</label>
+                                <input 
+                                    type="text" 
+                                    required 
+                                    placeholder="Ej: Mercado Central, Sector A, Puesto 45" 
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <div>
+                                    <p className="text-xs font-bold text-slate-800">Ubicación GPS (Opcional)</p>
+                                    <p className="text-[11px] text-slate-500">{coords ? `Lat: ${coords.lat.toFixed(4)}, Lng: ${coords.lng.toFixed(4)}` : "Facilita la llegada de tus clientes"}</p>
+                                </div>
+                                <button 
+                                    type="button" 
+                                    onClick={detectGps}
+                                    className="bg-brandBlue text-white text-xs font-bold px-4 py-2 rounded-lg shadow"
+                                >
+                                    {loadingGps ? "Detectando..." : "Detectar mi GPS"}
+                                </button>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Catálogo virtual o Facebook (Opcional)</label>
+                                <input 
+                                    type="url" 
+                                    placeholder="https://facebook.com/tupuesto o enlace de catálogo" 
+                                    value={webUrl}
+                                    onChange={(e) => setWebUrl(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none"
+                                />
+                            </div>
+
+                            <div className="flex items-start space-x-3 pt-2">
+                                <input 
+                                    type="checkbox" 
+                                    id="privacy" 
+                                    checked={acceptedPrivacy}
+                                    onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+                                    className="mt-1 w-4 h-4 text-brandGreen rounded border-slate-300 focus:ring-brandGreen"
+                                />
+                                <label htmlFor="privacy" className="text-xs text-slate-600">
+                                    Acepto la <span className="font-bold text-brandBlue">política de privacidad</span> y el tratamiento de mis datos para fines comerciales y del directorio MercadoPlaza.
+                                </label>
+                            </div>
+
+                            <div className="pt-4 border-t border-slate-100 flex items-center justify-end space-x-3">
+                                <button 
+                                    type="button" 
+                                    onClick={onClose}
+                                    className="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition"
+                                >
+                                    Cancelar
+                                </button>
+                                <button 
+                                    type="submit" 
+                                    className="bg-brandGreen hover:bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 text-sm transition"
+                                >
+                                    Completar Registro Gratuito
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        // RATING MODAL (OTP Simulation)
+        function RatingModal({ business, onClose, onSuccess }) {
+            const [step, setStep] = useState(1); // 1: input phone, 2: input OTP & rating
+            const [phone, setPhone] = useState("");
+            const [otpCode, setOtpCode] = useState("");
+            const [stars, setStars] = useState(5);
+            const [comment, setComment] = useState("");
+            const [loading, setLoading] = useState(false);
+
+            const requestOtp = (e) => {
+                e.preventDefault();
+                if (!phone || phone.length < 9) {
+                    alert("Ingrese un número de WhatsApp válido.");
+                    return;
+                }
+                setLoading(true);
+                setTimeout(() => {
+                    setLoading(false);
+                    setStep(2);
+                    alert("¡Código OTP enviado a su WhatsApp! (Código de prueba: 5432)");
+                }, 1000);
+            };
+
+            const submitRating = (e) => {
+                e.preventDefault();
+                if (otpCode !== "5432") {
+                    alert("Código OTP incorrecto. Ingrese '5432' como código de prueba.");
+                    return;
+                }
+
+                // Recalculate rating
+                const newReviewsCount = business.reviewsCount + 1;
+                const newRating = Number(((business.rating * business.reviewsCount + stars) / newReviewsCount).toFixed(1));
+
+                const updated = {
+                    ...business,
+                    rating: newRating,
+                    reviewsCount: newReviewsCount
+                };
+
+                onSuccess(updated);
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-900">Calificar Puesto</h3>
+                                <p className="text-xs text-brandBlue font-semibold">{business.name}</p>
+                            </div>
+                            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-500">
+                                <i data-lucide="x" className="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        {step === 1 ? (
+                            <form onSubmit={requestOtp} className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">Número de WhatsApp (Verificación OTP)</label>
+                                    <input 
+                                        type="tel" 
+                                        required 
+                                        placeholder="Ej: 930528649" 
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none"
+                                    />
+                                    <p className="text-[11px] text-slate-500 mt-1">Enviaremos un código de verificación para evitar votos duplicados.</p>
+                                </div>
+                                <button 
+                                    type="submit" 
+                                    className="w-full bg-brandBlue text-white font-bold py-3 rounded-xl shadow text-sm hover:bg-blue-700 transition"
+                                >
+                                    {loading ? "Enviando código..." : "Solicitar código de verificación"}
+                                </button>
+                            </form>
+                        ) : (
+                            <form onSubmit={submitRating} className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">Ingrese código OTP recibido</label>
+                                    <input 
+                                        type="text" 
+                                        required 
+                                        placeholder="Ej: 5432" 
+                                        value={otpCode}
+                                        onChange={(e) => setOtpCode(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none tracking-widest text-center font-bold text-lg"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">Seleccione estrellas (1 a 5)</label>
+                                    <div className="flex items-center justify-center space-x-2 py-2">
+                                        {[1, 2, 3, 4, 5].map((num) => (
+                                            <button 
+                                                type="button" 
+                                                key={num}
+                                                onClick={() => setStars(num)}
+                                                className="p-1 focus:outline-none"
+                                            >
+                                                <i data-lucide="star" className={`w-8 h-8 ${num <= stars ? 'text-brandYellow fill-brandYellow' : 'text-slate-300'}`}></i>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">Comentario o sugerencia (Opcional)</label>
+                                    <textarea 
+                                        rows="2"
+                                        placeholder="Excelente atención y productos muy frescos..."
+                                        value={comment}
+                                        onChange={(e) => setComment(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none"
+                                    ></textarea>
+                                </div>
+
+                                <button 
+                                    type="submit" 
+                                    className="w-full bg-brandGreen text-white font-bold py-3 rounded-xl shadow text-sm hover:bg-emerald-600 transition"
+                                >
+                                    Enviar Calificación Verificada
+                                </button>
+                            </form>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // FAVORITES MODAL
+        function FavoritesModal({ favorites, businesses, onClose, onToggleFav }) {
+            const favList = businesses.filter(b => favorites.includes(b.id));
+
+            return (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl max-h-[80vh] flex flex-col">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div className="flex items-center space-x-2">
+                                <i data-lucide="heart" className="w-6 h-6 text-brandRed fill-brandRed"></i>
+                                <h3 className="text-xl font-bold text-slate-900">Mis Favoritos</h3>
+                            </div>
+                            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-500">
+                                <i data-lucide="x" className="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+                            {favList.length === 0 ? (
+                                <div className="text-center py-12 space-y-3">
+                                    <div className="w-16 h-16 bg-red-50 text-brandRed rounded-full flex items-center justify-center mx-auto">
+                                        <i data-lucide="heart" className="w-8 h-8"></i>
+                                    </div>
+                                    <p className="text-sm font-bold text-slate-800">Aún no tienes puestos favoritos</p>
+                                    <p className="text-xs text-slate-500">Haz clic en el corazón rojo de cualquier puesto para guardarlo aquí.</p>
+                                </div>
+                            ) : (
+                                favList.map(bus => (
+                                    <div key={bus.id} className="flex items-center justify-between bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+                                        <div className="flex items-center space-x-3">
+                                            <img src={bus.image} alt={bus.name} className="w-14 h-14 rounded-xl object-cover" />
+                                            <div>
+                                                <span className="text-[10px] font-bold text-brandBlue uppercase">{bus.categoryName}</span>
+                                                <h4 className="font-bold text-sm text-slate-900">{bus.name}</h4>
+                                                <p className="text-xs text-slate-500">{bus.province} - {bus.district}</p>
+                                            </div>
+                                        </div>
+                                        <button 
+                                            onClick={() => onToggleFav(bus.id)}
+                                            className="p-2 hover:bg-red-100 text-brandRed rounded-xl transition"
+                                            title="Quitar de favoritos"
+                                        >
+                                            <i data-lucide="trash-2" className="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // SUPPORT MODAL
+        function SupportModal({ onClose }) {
+            const [name, setName] = useState("");
+            const [amount, setAmount] = useState("20");
+            const [method, setMethod] = useState("Yape");
+            const [note, setNote] = useState("");
+
+            const handleSupport = (e) => {
+                e.preventDefault();
+                const msg = `Hola,%20deseo%20apoyar%20a%20MercadoPlaza.%0A*Nombre:*%20${encodeURIComponent(name || 'Anónimo')}%0A*Medio:*%20${method}%0A*Monto:*%20S/%20${amount}%0A*Nota:*%20${encodeURIComponent(note || 'Sin nota')}`;
+                window.open(`https://wa.me/51930528649?text=${msg}`, '_blank');
+                onClose();
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900">Apoya a MercadoPlaza</h3>
+                                <p className="text-xs text-slate-500">Tu aporte voluntario nos ayuda a mantener vivo el comercio local</p>
+                            </div>
+                            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-500">
+                                <i data-lucide="x" className="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSupport} className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Nombres y Apellidos (Opcional)</label>
+                                <input 
+                                    type="text" 
+                                    placeholder="Ej: Juan Pérez" 
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">Medio de aporte</label>
+                                    <select 
+                                        value={method}
+                                        onChange={(e) => setMethod(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none font-semibold text-brandOrange"
+                                    >
+                                        <option value="Yape">Yape</option>
+                                        <option value="Plin">Plin</option>
+                                        <option value="Transferencia">Transferencia</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">Importe (S/)</label>
+                                    <input 
+                                        type="number" 
+                                        min="5" 
+                                        value={amount}
+                                        onChange={(e) => setAmount(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none font-bold"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Nota opcional</label>
+                                <textarea 
+                                    rows="2"
+                                    placeholder="¡Excelente iniciativa para los mercados de Piura!"
+                                    value={note}
+                                    onChange={(e) => setNote(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none"
+                                ></textarea>
+                            </div>
+
+                            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-[11px] text-amber-800">
+                                <p className="font-bold mb-0.5">Nota importante:</p>
+                                <p>Esta es una intención de aporte voluntario. Al enviar, se abrirá WhatsApp con el resumen para coordinar directamente.</p>
+                            </div>
+
+                            <button 
+                                type="submit" 
+                                className="w-full bg-brandOrange hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-orange-500/20 text-sm transition flex items-center justify-center space-x-2"
+                            >
+                                <i data-lucide="message-circle" className="w-5 h-5"></i>
+                                <span>Enviar intención de aporte</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        // GENERIC INFO MODAL
+        function InfoModal({ title, children, onClose }) {
+            return (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl max-h-[80vh] flex flex-col">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <h3 className="text-xl font-bold text-slate-900">{title}</h3>
+                            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-500">
+                                <i data-lucide="x" className="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div className="flex-1 overflow-y-auto text-sm text-slate-600 leading-relaxed pr-1">
+                            {children}
+                        </div>
+                        <div className="pt-4 border-t border-slate-100 text-right">
+                            <button 
+                                onClick={onClose} 
+                                className="bg-brandBlue text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow"
+                            >
+                                Entendido
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render React App
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        // Initialize Lucide icons after render
+        setTimeout(() => {
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        }, 100);
+    </script>
+</body>
+</html>
