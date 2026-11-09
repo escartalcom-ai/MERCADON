@@ -4,518 +4,1166 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mercatodon - Puestos en Acción</title>
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#FF6600">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase App & Auth SDK (V8 para compatibilidad directa sin bundle) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        mercaOrange: '#FF6600',
-                        mercaOrangeDark: '#E55C00',
-                        metaBlue: '#1877F2',
-                        waGreen: '#25D366'
+                        brand: {
+                            red: '#E53935',
+                            darkRed: '#C62828',
+                            orange: '#FF6F00',
+                            gold: '#FFD700',
+                            green: '#2E7D32',
+                            whatsapp: '#25D366'
+                        }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+                        sans: ['Inter', 'Segoe UI', 'Roboto', 'sans-serif']
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts & Lucide Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Alpine.js for lightweight reactivity -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        /* Animaciones y utilidades personalizadas */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(229, 57, 53, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
+        }
+        .btn-pwa-pulse {
+            animation: pulse-ring 2s infinite;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Estrellas/Soles interactivos */
+        .sol-rating {
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.1s ease;
+        }
+        .sol-rating:hover {
+            transform: scale(1.2);
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col justify-between" x-data="mercatodonApp()">
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between select-none">
 
-    <!-- HEADER PRINCIPAL (HOME) -->
-    <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300" x-show="currentView === 'home'">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <!-- ==================== BANNER FLOTANTE INSTALAR PWA ==================== -->
+    <div id="pwaBanner" class="fixed bottom-20 left-4 z-40 hidden">
+        <button onclick="installPWA()" class="btn-pwa-pulse bg-brand-red text-white font-bold py-2 px-4 rounded-full shadow-2xl flex items-center gap-2 border-2 border-white text-xs sm:text-sm">
+            <i class="fa-solid fa-download text-yellow-300 text-base">
+            </i> Instalar App
+        </button>
+    </div>
+
+    <!-- ==================== HEADER 1: INICIO ==================== -->
+    <header id="headerInicio" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2.5 flex items-center justify-between gap-2">
             <!-- Logo + Nombre -->
-            <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <div class="w-12 h-12 bg-mercaOrange rounded-xl flex items-center justify-center text-white font-black text-2xl shadow-md">M</div>
-                <div>
-                    <span class="text-2xl font-black tracking-tight text-mercaOrange block sm:inline">Mercatodon</span>
-                    <span class="text-xs font-semibold text-gray-500 block">Puestos en Acción</span>
+            <div class="flex items-center gap-2 cursor-pointer" onclick="verInicio()">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 bg-brand-red rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <div class="leading-tight">
+                    <span class="text-xl sm:text-2xl font-extrabold text-brand-orange tracking-tight hidden sm:inline">Mercatodon</span>
+                    <p class="text-[9px] sm:text-[10px] text-gray-500 font-semibold tracking-wider uppercase hidden md:block">Puestos en Acción</p>
                 </div>
             </div>
 
-            <!-- Controles Desktop / Tablet -->
-            <div class="hidden md:flex items-center space-x-4">
-                <!-- Botón Ubicación GPS Inteligente -->
-                <button @click="detectLocation()" class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-4 py-2.5 rounded-full text-sm font-medium transition shadow-sm">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-mercaOrange"></i>
-                    <span x-text="userLocation.distrito ? `${userLocation.region}, ${userLocation.provincia}, ${userLocation.distrito}` : 'Detectando ubicación...'"></span>
-                </button>
+            <!-- Botón selector Ubicación Combinada -->
+            <button onclick="abrirModalUbicacion()" class="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs sm:text-sm py-1.5 px-2.5 sm:px-3 rounded-full transition font-medium border border-gray-200 max-w-[170px] sm:max-w-xs truncate">
+                <i class="fa-solid fa-location-dot text-brand-red text-xs sm:text-sm"></i>
+                <span id="labelUbicacionActual" class="truncate">Piura, Paita, Paita</span>
+                <i class="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+            </button>
 
-                <!-- Botón Puestos -->
-                <button @click="currentView = 'puestos'" class="flex items-center space-x-2 bg-mercaOrange hover:bg-mercaOrangeDark text-white px-5 py-2.5 rounded-full font-semibold transition shadow-md">
-                    <i data-lucide="store" class="w-5 h-5"></i>
-                    <span>Puestos</span>
+            <!-- Acciones Header Inicio -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button onclick="verPuestos()" class="bg-brand-red hover:bg-brand-darkRed text-white font-semibold text-xs sm:text-sm py-1.5 px-3 sm:px-4 rounded-full shadow transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-shop text-xs sm:text-sm"></i>
+                    <span class="hidden xs:inline">Puestos</span>
                 </button>
-
-                <!-- Botón Ingreso / Registro -->
-                <button @click="openAuthModal()" class="flex items-center space-x-2 border-2 border-mercaOrange text-mercaOrange hover:bg-mercaOrange hover:text-white px-5 py-2 rounded-full font-semibold transition">
-                    <i data-lucide="user" class="w-5 h-5"></i>
-                    <span>Ingresar / Registro</span>
-                </button>
-            </div>
-
-            <!-- Controles Móvil (Iconos en una sola fila) -->
-            <div class="flex md:hidden items-center space-x-2">
-                <button @click="detectLocation()" class="p-2.5 bg-gray-100 rounded-full text-mercaOrange">
-                    <i data-lucide="map-pin" class="w-5 h-5"></i>
-                </button>
-                <button @click="currentView = 'puestos'" class="p-2.5 bg-mercaOrange text-white rounded-full">
-                    <i data-lucide="store" class="w-5 h-5"></i>
-                </button>
-                <button @click="openAuthModal()" class="p-2.5 border-2 border-mercaOrange text-mercaOrange rounded-full">
-                    <i data-lucide="user" class="w-5 h-5"></i>
+                <button onclick="abrirAuthModal()" class="bg-gray-900 hover:bg-black text-white font-semibold text-xs sm:text-sm py-1.5 px-3 sm:px-4 rounded-full shadow transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-user text-xs sm:text-sm"></i>
+                    <span class="hidden xs:inline" id="btnAuthText">Ingresar</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- HEADER SECCIÓN PUESTOS -->
-    <header class="bg-white shadow-sm sticky top-0 z-50" x-show="currentView === 'puestos'">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-            <!-- Botón Volver / Logo -->
-            <div class="flex items-center space-x-3">
-                <button @click="currentView = 'home'" class="p-2 hover:bg-gray-100 rounded-full text-gray-700">
-                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
-                </button>
-                <span class="text-xl font-bold text-mercaOrange hidden sm:inline">Puestos Mercatodon</span>
-            </div>
+    <!-- ==================== HEADER 2: SECCIÓN PUESTOS ==================== -->
+    <header id="headerPuestos" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100 hidden">
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
+            <!-- Botón Volver a Inicio -->
+            <button onclick="verInicio()" class="p-2 text-gray-600 hover:text-brand-red rounded-full hover:bg-gray-100 transition" title="Ir a Inicio">
+                <i class="fa-solid fa-house text-lg"></i>
+            </button>
 
             <!-- Barra de Búsqueda Inteligente -->
-            <div class="flex-1 max-w-xl">
-                <div class="relative">
-                    <i data-lucide="search" class="absolute left-3.5 top-3 w-5 h-5 text-gray-400"></i>
-                    <input type="text" x-model="searchQuery" placeholder="Buscar puestos, rubros, productos, servicios..." class="w-full pl-11 pr-4 py-2.5 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-mercaOrange text-sm">
-                </div>
+            <div class="flex-1 max-w-xl relative">
+                <input type="text" id="inputBusqueda" onkeyup="filtrarPuestos()" placeholder="Buscar puesto, rubro o producto..." class="w-full bg-gray-100 border border-gray-200 rounded-full pl-9 pr-4 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs sm:text-sm"></i>
             </div>
 
-            <!-- Ubicación + Registro -->
-            <div class="flex items-center space-x-2">
-                <div class="hidden lg:flex items-center text-xs font-semibold text-gray-600 bg-gray-100 px-3 py-2 rounded-lg">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-mercaOrange mr-1"></i>
-                    <span x-text="`${userLocation.provincia}, ${userLocation.distrito}`"></span>
-                </div>
-                <button @click="openAuthModal()" class="bg-mercaOrange text-white px-4 py-2 rounded-full text-sm font-semibold shadow hover:bg-mercaOrangeDark transition">
-                    Registro
+            <!-- Botones Ubicación y Auth -->
+            <div class="flex items-center gap-1.5">
+                <button onclick="abrirModalUbicacion()" class="p-2 text-brand-red hover:bg-red-50 rounded-full transition" title="Cambiar Ubicación GPS">
+                    <i class="fa-solid fa-location-crosshairs text-lg"></i>
+                </button>
+                <button onclick="abrirAuthModal()" class="bg-brand-red text-white p-2 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold shadow flex items-center gap-1">
+                    <i class="fa-solid fa-user"></i>
+                    <span class="hidden sm:inline" id="btnAuthText2">Registro</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="flex-grow">
+    <!-- CONTAINER PRINCIPAL DE CONTENIDO -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-2 sm:px-4 py-4 space-y-6">
 
-        <!-- VISTA: HOME (Página de Publicidades y Banners) -->
-        <section x-show="currentView === 'home'" class="space-y-8 pb-12">
-            <!-- Banners Deslizables Automáticos y Táctiles -->
-            <div class="relative w-full overflow-hidden bg-gray-900 shadow-lg" x-data="bannerSlider()">
-                <div class="flex transition-transform duration-700 ease-in-out h-56 sm:h-80 md:h-96" :style="`transform: translateX(-${currentIndex * 100}%)`">
-                    <template x-for="(banner, index) in banners" :key="index">
-                        <div class="min-w-full h-full relative cursor-pointer" @click="window.open(banner.link, '_blank')">
-                            <img :src="banner.image" class="w-full h-full object-cover" alt="Banner Publicitario">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
-                                <span class="text-white font-bold text-lg sm:text-2xl drop-shadow" x-text="banner.title"></span>
-                            </div>
-                        </div>
-                    </template>
+        <!-- ==================== SECCIÓN 1: VISTA INICIO / PUBLICIDADES ==================== -->
+        <section id="secInicio" class="space-y-6">
+            
+            <!-- Banner Slider Principal Responsivo -->
+            <div class="relative w-full rounded-2xl overflow-hidden shadow-lg bg-gray-200 aspect-[21/9] sm:aspect-[25/8]">
+                <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out">
+                    <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1200&q=80" alt="Mercados del Perú" class="w-full h-full object-cover flex-shrink-0">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80" alt="Productos Frescos" class="w-full h-full object-cover flex-shrink-0">
+                    <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1200&q=80" alt="Apoya el Comercio Local" class="w-full h-full object-cover flex-shrink-0">
                 </div>
-                <!-- Controles Sutiles -->
-                <button @click="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full backdrop-blur-sm transition">
-                    <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                <!-- Flechas Slider Sutiles -->
+                <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition">
+                    <i class="fa-solid fa-chevron-left text-xs sm:text-sm"></i>
                 </button>
-                <button @click="next()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full backdrop-blur-sm transition">
-                    <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-2 sm:p-3 rounded-full backdrop-blur-sm transition">
+                    <i class="fa-solid fa-chevron-right text-xs sm:text-sm"></i>
                 </button>
             </div>
 
-            <!-- Bloques de Promoción (2 Bloques Responsivos / 1 sola fila en celular) -->
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Bloque Izquierdo: Promociona tu puesto GRATIS -->
-                    <div class="bg-gradient-to-br from-blue-500 to-metaBlue text-white p-6 sm:p-8 rounded-2xl shadow-xl flex flex-col justify-between">
-                        <div>
-                            <span class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Sin Costo</span>
-                            <h3 class="text-xl sm:text-2xl font-black mt-3 mb-2">¡Promociona tu puesto GRATIS en nuestras redes!</h3>
-                            <p class="text-blue-100 text-sm mb-6">Envíanos tu material visual o audiovisual y te promocionamos gratuitamente en orden de llegada. ¡Mantente atento a nuestras redes oficiales!</p>
-                        </div>
-                        <div>
-                            <div class="flex space-x-3 mb-6">
-                                <a href="https://facebook.com" target="_blank" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-                                <a href="https://instagram.com" target="_blank" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                                <a href="https://tiktok.com" target="_blank" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition"><i data-lucide="video" class="w-5 h-5"></i></a>
-                                <a href="https://youtube.com" target="_blank" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition"><i data-lucide="youtube" class="w-5 h-5"></i></a>
-                            </div>
-                            <button @click="openPromoModal('gratis')" class="w-full bg-white text-metaBlue font-bold py-3 rounded-xl shadow hover:bg-blue-50 transition text-center block">
-                                Publicar Gratis
-                            </button>
-                        </div>
+            <!-- Demostración de formatos de Banners (Matriz Comercial) -->
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-3">
+                <h3 class="text-xs uppercase font-extrabold text-gray-400 tracking-wider">Espacios Publicitarios Destacados</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="h-20 bg-gradient-to-r from-red-500 to-amber-500 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm p-2 text-center">
+                        Banner 728x90 (Header Global)
                     </div>
+                    <div class="h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm p-2 text-center">
+                        Banner 300x250 (Lateral Puestos)
+                    </div>
+                    <div class="h-20 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm p-2 text-center">
+                        GIF Promo Flash 1080x1080
+                    </div>
+                    <div class="h-20 bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm p-2 text-center">
+                        Video YouTube HD Integ.
+                    </div>
+                </div>
+            </div>
 
-                    <!-- Bloque Derecho: Catálogo Virtual -->
-                    <div class="bg-gradient-to-br from-orange-500 to-mercaOrange text-white p-6 sm:p-8 rounded-2xl shadow-xl flex flex-col justify-between">
-                        <div>
-                            <span class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Alta Conversión</span>
-                            <h3 class="text-xl sm:text-2xl font-black mt-3 mb-2">¿Quieres tu propio Catálogo Virtual para vender más?</h3>
-                            <p class="text-orange-100 text-sm mb-6">Muestra tus productos en un catálogo digital con enlace directo a WhatsApp y código QR. Planes únicos, mensuales o anuales.</p>
+            <!-- Bloques Promocionales Responsivos (2 cols PC, 1 fila Móvil) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Bloque Izquierdo: Promoción Gratis Redes -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between space-y-3 hover:border-brand-red transition">
+                    <div>
+                        <div class="inline-block bg-red-100 text-brand-red text-xs font-bold px-2.5 py-0.5 rounded-full mb-2">¡Oportunidad Especial!</div>
+                        <h4 class="font-bold text-gray-900 text-base sm:text-lg leading-snug">¡Promociona tu puesto GRATIS en nuestras redes!</h4>
+                        <p class="text-gray-600 text-xs sm:text-sm mt-1">Envíanos tu contenido visual y te publicitamos en nuestro canal oficial sin costo.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                        <div class="flex gap-2 text-lg text-gray-700">
+                            <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                            <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                            <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                            <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
                         </div>
-                        <button @click="openPromoModal('catalogo')" class="w-full bg-white text-mercaOrange font-bold py-3 rounded-xl shadow hover:bg-orange-50 transition text-center block">
+                        <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-xs font-bold py-2 px-4 rounded-xl shadow transition">
+                            Publicar Gratis
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Bloque Derecho: Catálogo Virtual -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between space-y-3 hover:border-brand-orange transition">
+                    <div>
+                        <div class="inline-block bg-orange-100 text-brand-orange text-xs font-bold px-2.5 py-0.5 rounded-full mb-2">Impulsa tus Ventas</div>
+                        <h4 class="font-bold text-gray-900 text-base sm:text-lg leading-snug">¿Quieres tu propio Catálogo Virtual?</h4>
+                        <p class="text-gray-600 text-xs sm:text-sm mt-1">Muestra tus productos con enlace directo a WhatsApp y Código QR profesional.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                        <span class="text-xs font-semibold text-gray-500">Planes a tu medida</span>
+                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-xs font-bold py-2 px-4 rounded-xl shadow transition">
                             Cotizar Catálogo
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Banner Inferior Adicional -->
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 p-4 text-center">
-                    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&h=300&fit=crop" class="w-full h-36 sm:h-48 object-cover rounded-xl shadow-inner" alt="Banner Publicitario Patrocinado">
-                </div>
+            <!-- Banner Publicitario Dinámico Inferior -->
+            <div class="w-full bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-4 text-white text-center shadow-md">
+                <p class="text-xs text-yellow-400 font-bold uppercase tracking-widest">Publicidad Oficial Mercatodon</p>
+                <h3 class="text-sm sm:text-base font-semibold mt-1">Llega a miles de compradores en Piura y todo el Perú</h3>
+                <button onclick="abrirModalDonacion()" class="mt-2 text-xs bg-white text-gray-900 hover:bg-yellow-400 font-bold py-1.5 px-4 rounded-full transition">Anúnciate Aquí</button>
             </div>
         </section>
 
-        <!-- VISTA: PUESTOS (Marketplace Local) -->
-        <section x-show="currentView === 'puestos'" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <!-- ==================== SECCIÓN 2: PUESTOS & RUBROS ==================== -->
+        <section id="secPuestos" class="space-y-4 hidden">
             
-            <!-- Barra de Rubros (Iconos con colores vivos y cantidad de puestos) -->
-            <div class="flex overflow-x-auto space-x-3 pb-3 scrollbar-hide">
-                <button @click="selectedRubro = 'Todos'" :class="selectedRubro === 'Todos' ? 'bg-mercaOrange text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'" class="flex items-center space-x-2 px-4 py-2.5 rounded-2xl font-semibold whitespace-nowrap transition text-sm">
-                    <i data-lucide="grid" class="w-4 h-4"></i>
-                    <span>Todos los Rubros</span>
-                    <span class="ml-1 px-2 py-0.5 bg-black/10 rounded-full text-xs" x-text="puestos.length"></span>
-                </button>
-                <template x-for="rubro in rubrosList" :key="rubro.name">
-                    <button @click="selectedRubro = rubro.name" :class="selectedRubro === rubro.name ? 'bg-mercaOrange text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'" class="flex items-center space-x-2 px-4 py-2.5 rounded-2xl font-semibold whitespace-nowrap transition text-sm">
-                        <span x-text="rubro.icon"></span>
-                        <span x-text="rubro.name"></span>
-                        <span class="ml-1 px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs" x-text="getPuestosCount(rubro.name)"></span>
-                    </button>
-                </template>
+            <!-- Barra Deslizante de Rubros Categoría -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center px-1">
+                    <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wider">Categorías de Mercado</h2>
+                    <span id="cantPuestosTotal" class="text-xs bg-gray-200 text-gray-700 font-bold px-2 py-0.5 rounded-full">0 Puestos</span>
+                </div>
+                <div id="contenedorRubros" class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                    <!-- Categorías inyectadas vía JS -->
+                </div>
             </div>
 
-            <!-- Tarjetas de Puestos (2 columnas en celular, 6 puestos en PC) -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <template x-for="puesto in filteredPuestos" :key="puesto.id">
-                    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition border border-gray-100 flex flex-col justify-between p-3.5">
-                        <div>
-                            <!-- Rubro & Favorito -->
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-orange-50 text-mercaOrange rounded-md" x-text="puesto.rubro"></span>
-                                <button @click="toggleFavorite(puesto.id)" class="text-gray-400 hover:text-red-500 transition">
-                                    <i data-lucide="heart" class="w-4 h-4" :class="isFavorite(puesto.id) ? 'fill-red-500 text-red-500' : ''"></i>
-                                </button>
-                            </div>
+            <!-- Grid de Tarjetas de Puestos (Compacto: 2 cols móvil / 6 cols desktop) -->
+            <div id="gridPuestos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-3">
+                <!-- Tarjetas Inyectadas por JS -->
+            </div>
+        </section>
 
-                            <!-- Nombre del Puesto -->
-                            <h4 class="font-bold text-gray-900 text-sm mb-1 line-clamp-1" x-text="puesto.nombre"></h4>
-                            <p class="text-xs text-gray-500 mb-3 line-clamp-2" x-text="puesto.descripcion"></p>
-                        </div>
+        <!-- ==================== SECCIÓN 3: DASHBOARDS ==================== -->
+        <section id="secDashboard" class="hidden space-y-6">
+            <div id="dashMercadero" class="hidden space-y-6">
+                <!-- Contenido Dashboard Vendedor -->
+            </div>
+            <div id="dashMercador" class="hidden space-y-6">
+                <!-- Contenido Dashboard Comprador -->
+            </div>
+        </section>
 
-                        <div class="space-y-2 pt-2 border-t border-gray-100">
-                            <!-- Botón Mercar & Calificación -->
-                            <div class="flex items-center justify-between">
-                                <span class="text-[11px] text-gray-500 font-medium"><strong x-text="puesto.mercadoresCount"></strong> Mercaron</span>
-                                <button @click="openMercarModal(puesto)" class="bg-mercaOrange hover:bg-mercaOrangeDark text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm transition">
-                                    Mercar
-                                </button>
-                            </div>
+        <!-- ==================== SECCIÓN 4: PANEL CEO (OCULTO) ==================== -->
+        <section id="secCeo" class="hidden space-y-4 bg-white p-4 sm:p-6 rounded-2xl border-2 border-red-500 shadow-xl">
+            <div class="flex justify-between items-center border-b pb-3 border-gray-200">
+                <h2 class="text-lg font-black text-brand-red flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield"></i> Panel Ejecutivo CEO Mercatodon
+                </h2>
+                <button onclick="cerrarSesion()" class="text-xs bg-gray-200 hover:bg-gray-300 font-bold py-1 px-3 rounded-lg">Cerrar Sesión CEO</button>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                <div class="bg-red-50 p-3 rounded-xl border border-red-200">
+                    <span class="text-xs text-gray-500 font-semibold">Total Puestos</span>
+                    <p id="ceoCantPuestos" class="text-xl font-bold text-brand-red">0</p>
+                </div>
+                <div class="bg-orange-50 p-3 rounded-xl border border-orange-200">
+                    <span class="text-xs text-gray-500 font-semibold">Mercadores Reg.</span>
+                    <p id="ceoCantMercadores" class="text-xl font-bold text-brand-orange">0</p>
+                </div>
+                <div class="bg-amber-50 p-3 rounded-xl border border-amber-200">
+                    <span class="text-xs text-gray-500 font-semibold">Total Mercas/Votos</span>
+                    <p id="ceoCantMercadas" class="text-xl font-bold text-amber-600">0</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded-xl border border-blue-200">
+                    <span class="text-xs text-gray-500 font-semibold">Banners Activos</span>
+                    <p id="ceoCantBanners" class="text-xl font-bold text-blue-600">5</p>
+                </div>
+            </div>
 
-                            <!-- 3 Botones inferiores (Web, GPS, WhatsApp) -->
-                            <div class="grid grid-cols-3 gap-1 pt-1">
-                                <a :href="puesto.webLink" target="_blank" class="h-8 bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center justify-center transition" title="Sitio Web / Catálogo">
-                                    <i data-lucide="globe" class="w-3.5 h-3.5"></i>
-                                </a>
-                                <a :href="puesto.gpsLink" target="_blank" class="h-8 bg-gray-900 hover:bg-black text-white rounded-lg flex items-center justify-center transition" title="Ubicación GPS">
-                                    <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
-                                </a>
-                                <a :href="`https://wa.me/${puesto.whatsapp}`" target="_blank" class="h-8 bg-waGreen hover:bg-emerald-600 text-white rounded-lg flex items-center justify-center transition" title="WhatsApp">
-                                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </template>
+            <!-- Tabla de Gestión -->
+            <div class="overflow-x-auto">
+                <h3 class="text-xs font-bold text-gray-600 uppercase mb-2">Puestos Registrados en Plataforma</h3>
+                <table class="w-full text-xs text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700">
+                            <th class="p-2 border">Puesto</th>
+                            <th class="p-2 border">Rubro</th>
+                            <th class="p-2 border">Ubicación</th>
+                            <th class="p-2 border">Mercas</th>
+                            <th class="p-2 border">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCeoPuestos">
+                        <!-- Filas JS -->
+                    </tbody>
+                </table>
             </div>
         </section>
 
     </main>
 
-    <!-- FOOTER GENERAL -->
-    <footer class="bg-white border-t border-gray-200 mt-16 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-            <p class="text-sm font-medium text-gray-600">Mercatodon - Todos los derechos reservados. Desarrollado por <a href="https://comaxion.vercel.app" target="_blank" class="text-mercaOrange font-bold hover:underline">COMAXION</a></p>
-            <div class="flex justify-center space-x-6">
-                <a href="https://facebook.com" target="_blank" class="text-gray-400 hover:text-metaBlue transition"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-                <a href="https://instagram.com" target="_blank" class="text-gray-400 hover:text-pink-500 transition"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                <a href="https://tiktok.com" target="_blank" class="text-gray-400 hover:text-black transition"><i data-lucide="video" class="w-5 h-5"></i></a>
-                <a href="https://youtube.com" target="_blank" class="text-gray-400 hover:text-red-500 transition"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+    <!-- ==================== PIE DE PÁGINA GLOBAL ==================== -->
+    <footer class="bg-white border-t border-gray-200 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-brand-orange">Mercatodon</span>
+                <span>- Todos los derechos reservados.</span>
+            </div>
+            <div>
+                Desarrollado por 
+                <a href="https://comaxion.vercel.app" target="_blank" rel="noopener font-bold" class="text-brand-red font-bold hover:underline">
+                    COMAXION
+                </a>
             </div>
         </div>
     </footer>
 
-    <!-- BOTONES FLOTANTES (PWA Install, Scroll Top, Donación) -->
-    <div class="fixed bottom-6 right-6 z-40 flex flex-col space-y-3">
-        <!-- Botón PWA Install (Parpadeante) -->
-        <button id="pwaInstallBtn" @click="installPWA()" class="hidden bg-metaBlue hover:bg-blue-600 text-white p-3.5 rounded-full shadow-2xl animate-bounce flex items-center justify-center" title="Instalar Aplicación">
-            <i data-lucide="download" class="w-6 h-6"></i>
-        </button>
+    <!-- BOTÓN VOLVER ARRIBA (SCROLL TO TOP) -->
+    <button id="btnScrollTop" onclick="scrollArriba()" class="fixed bottom-4 right-4 z-40 bg-white hover:bg-gray-100 text-gray-700 p-3 rounded-full shadow-lg border border-gray-200 transition opacity-0 pointer-events-none">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
 
-        <!-- Botón Donación Voluntaria -->
-        <button @click="openDonationModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center transition" title="Apoyar plataforma (Donación)">
-            <i data-lucide="heart" class="w-6 h-6"></i>
-        </button>
+    <!-- BOTÓN APOYO VOLUNTARIO / DONACIÓN -->
+    <button onclick="abrirModalDonacion()" class="fixed bottom-4 left-4 z-30 bg-white hover:bg-amber-50 text-amber-600 font-bold text-xs py-2 px-3 rounded-full shadow-md border border-amber-200 flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i>
+        <span class="hidden xs:inline">Apoyar Proyecto</span>
+    </button>
 
-        <!-- Botón Scroll to Top -->
-        <button @click="scrollToTop()" class="bg-gray-900 hover:bg-black text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center transition" title="Ir arriba">
-            <i data-lucide="arrow-up" class="w-6 h-6"></i>
-        </button>
-    </div>
 
-    <!-- MODAL DE CALIFICAR / MERCAR -->
-    <div x-show="mercarModalOpen" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" x-cloak>
-        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl relative space-y-4">
-            <button @click="mercarModalOpen = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
-            <div class="text-center">
-                <span class="text-xs font-bold text-mercaOrange uppercase tracking-wider" x-text="activePuesto?.rubro"></span>
-                <h3 class="text-xl font-black text-gray-900 mt-1" x-text="activePuesto?.nombre"></h3>
-                <p class="text-xs text-gray-500 mt-1" x-text="activePuesto?.descripcion"></p>
-            </div>
-            <div class="space-y-3 pt-2">
-                <label class="block text-sm font-bold text-gray-700 text-center">Haz clic para calificar (De 1 a 5 Soles):</label>
-                <div class="flex justify-center space-x-2">
-                    <template x-for="sol in 5">
-                        <button @click="ratingStars = sol" class="text-2xl transition transform hover:scale-110" :class="ratingStars >= sol ? 'text-amber-500' : 'text-gray-300'">☀️</button>
-                    </template>
+    <!-- ==================== MODALES ==================== -->
+
+    <!-- MODAL 1: SELECTOR UBICACIÓN COMPLETA DE PERÚ -->
+    <div id="modalUbicacion" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative animate-fade-in">
+            <button onclick="cerrarModal('modalUbicacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="font-bold text-gray-900 text-base flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-brand-red"></i> Seleccionar Ubicación
+            </h3>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-semibold text-gray-600">Región / Departamento</label>
+                    <select id="selRegion" onchange="cargarProvincias()" class="w-full mt-1 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-red outline-none">
+                        <!-- Opciones dinámicas -->
+                    </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Comentario o sugerencia (opcional):</label>
-                    <textarea x-model="ratingComment" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-mercaOrange focus:outline-none" placeholder="Escribe tu experiencia..."></textarea>
+                    <label class="text-xs font-semibold text-gray-600">Provincia</label>
+                    <select id="selProvincia" onchange="cargarDistritos()" class="w-full mt-1 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-red outline-none">
+                    </select>
                 </div>
-                <button @click="submitMercar()" class="w-full bg-mercaOrange hover:bg-mercaOrangeDark text-white font-bold py-3 rounded-xl shadow transition">
-                    Mercar Puesto
+                <div>
+                    <label class="text-xs font-semibold text-gray-600">Distrito</label>
+                    <select id="selDistrito" class="w-full mt-1 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-red outline-none">
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="guardarUbicacion()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
+                Confirmar Ubicación
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: SELECCIÓN ROL REGISTRO/INGRESO -->
+    <div id="modalAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative">
+            <button onclick="cerrarModal('modalAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="text-center">
+                <h3 class="font-black text-xl text-gray-900">Bienvenido a Mercatodon</h3>
+                <p class="text-xs text-gray-500 mt-1">Selecciona tu perfil para ingresar o registrarte</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Opción Vendedor -->
+                <div onclick="abrirFormularioAuth('mercadero')" class="border-2 border-gray-200 hover:border-brand-red p-4 rounded-2xl cursor-pointer text-center space-y-2 transition hover:shadow-md">
+                    <div class="w-12 h-12 bg-red-100 text-brand-red rounded-full flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <h4 class="font-bold text-sm text-gray-900">Mercadero(a)</h4>
+                    <p class="text-[11px] text-gray-500 leading-tight">Vendedor / Dueño de Puesto o Negocio Comercial.</p>
+                </div>
+                
+                <!-- Opción Comprador -->
+                <div onclick="abrirFormularioAuth('mercador')" class="border-2 border-gray-200 hover:border-brand-orange p-4 rounded-2xl cursor-pointer text-center space-y-2 transition hover:shadow-md">
+                    <div class="w-12 h-12 bg-orange-100 text-brand-orange rounded-full flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                    </div>
+                    <h4 class="font-bold text-sm text-gray-900">Mercador(a)</h4>
+                    <p class="text-[11px] text-gray-500 leading-tight">Comprador / Cliente que apoya y apunta favoritos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: FORMULARIO DINÁMICO AUTENTICACIÓN -->
+    <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative my-8">
+            <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <h3 id="formAuthTitulo" class="font-bold text-lg text-gray-900 border-b pb-2">Registro de Usuario</h3>
+
+            <form id="formAuth" onsubmit="procesarAuth(event)" class="space-y-3">
+                <input type="hidden" id="authRol">
+                
+                <!-- Campos Vendedor (Mercadero) -->
+                <div id="camposMercadero" class="space-y-3 hidden">
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Nombre del Puesto *</label>
+                        <input type="text" id="regPuestoNombre" class="w-full border rounded-xl p-2 text-xs focus:ring-2 focus:ring-brand-red outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Rubro Principal *</label>
+                        <select id="regPuestoRubro" class="w-full border rounded-xl p-2 text-xs focus:ring-2 focus:ring-brand-red outline-none">
+                            <option value="Alimentos">Alimentos</option>
+                            <option value="Bebidas">Bebidas</option>
+                            <option value="Carnes">Carnes</option>
+                            <option value="Pescados">Pescados</option>
+                            <option value="Frutas">Frutas</option>
+                            <option value="Regionales">Regionales</option>
+                            <option value="Gastronomía">Gastronomía</option>
+                            <option value="Panadería">Panadería</option>
+                            <option value="Lácteos">Lácteos</option>
+                            <option value="Salud">Salud</option>
+                            <option value="Belleza">Belleza</option>
+                            <option value="Moda">Moda</option>
+                            <option value="Tecnología">Tecnología</option>
+                            <option value="Hogar">Hogar</option>
+                            <option value="Ferretería">Ferretería</option>
+                            <option value="Limpieza">Limpieza</option>
+                            <option value="Mascotas">Mascotas</option>
+                            <option value="Librería">Librería</option>
+                            <option value="Servicios">Servicios</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Descripción Breve *</label>
+                        <input type="text" id="regPuestoDesc" placeholder="Ej: Los mejores mariscos frescos" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Catálogo / Facebook (Opcional)</label>
+                        <input type="url" id="regPuestoWeb" placeholder="https://..." class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                </div>
+
+                <!-- Campos Generales -->
+                <div>
+                    <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos *</label>
+                    <input type="text" id="regNombreCompleto" required class="w-full border rounded-xl p-2 text-xs outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">WhatsApp *</label>
+                        <input type="tel" id="regWhatsapp" required placeholder="930528649" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Cumpleaños</label>
+                        <input type="date" id="regCumple" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-gray-700">Correo Electrónico *</label>
+                    <input type="email" id="regCorreo" required class="w-full border rounded-xl p-2 text-xs outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-gray-700">Contraseña *</label>
+                    <input type="password" id="regPass" required class="w-full border rounded-xl p-2 text-xs outline-none">
+                </div>
+
+                <div class="flex items-start gap-2 pt-1">
+                    <input type="checkbox" id="regTerms" required class="mt-0.5">
+                    <label for="regTerms" class="text-[10px] text-gray-500 leading-tight">
+                        Acepto Términos, Condiciones y Política de Privacidad (Ley N° 29733 de Protección de Datos Personales en Perú).
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
+                    Guardar e Ingresar
+                </button>
+            </form>
+
+            <div class="text-center pt-2 border-t">
+                <button onclick="recuperarPassword()" class="text-xs text-gray-500 hover:text-brand-red underline">
+                    ¿Olvidaste tu contraseña? Recuperar vía Firebase
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE DONACIÓN VOLUNTARIA -->
-    <div x-show="donationModalOpen" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" x-cloak>
-        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl relative space-y-4">
-            <button @click="donationModalOpen = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
-            <div class="text-center">
-                <h3 class="text-xl font-black text-gray-900">Apoya a Mercatodon ❤️</h3>
-                <p class="text-xs text-gray-500 mt-1">Tu aporte voluntario nos ayuda a mantener la plataforma activa y gratuita para todos los puestos del Perú.</p>
+    <!-- MODAL 4: VENTANA DE CALIFICACIÓN "MERCAR" -->
+    <div id="modalMercar" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative">
+            <button onclick="cerrarModal('modalMercar')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div id="infoPuestoMercar" class="space-y-1 text-center">
+                <span id="mercarRubro" class="text-[10px] font-extrabold uppercase bg-red-100 text-brand-red px-2 py-0.5 rounded-full">Rubro</span>
+                <h3 id="mercarNombre" class="font-bold text-lg text-gray-900 mt-1">Nombre Puesto</h3>
+                <p id="mercarDesc" class="text-xs text-gray-500">Descripción puesto</p>
+                <p id="mercarUbicacion" class="text-[11px] font-semibold text-gray-400">Piura, Paita, Paita</p>
             </div>
-            <div class="space-y-3">
-                <input type="text" x-model="donor.name" placeholder="Nombres y apellidos (Opcional)" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                <input type="text" x-model="donor.whatsapp" placeholder="WhatsApp (Opcional)" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                <select x-model="donor.method" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+
+            <div class="bg-gray-50 p-4 rounded-xl text-center space-y-2 border">
+                <p class="text-xs font-bold text-gray-700">Selecciona de 1 a 5 Soles:</p>
+                <div class="flex justify-center gap-2 text-2xl" id="estrellasContenedor">
+                    <i class="fa-solid fa-sun sol-rating text-gray-300" onclick="setCalificacion(1)"></i>
+                    <i class="fa-solid fa-sun sol-rating text-gray-300" onclick="setCalificacion(2)"></i>
+                    <i class="fa-solid fa-sun sol-rating text-gray-300" onclick="setCalificacion(3)"></i>
+                    <i class="fa-solid fa-sun sol-rating text-gray-300" onclick="setCalificacion(4)"></i>
+                    <i class="fa-solid fa-sun sol-rating text-gray-300" onclick="setCalificacion(5)"></i>
+                </div>
+            </div>
+
+            <textarea id="mercarComentario" placeholder="Comentario o sugerencia (opcional)..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-brand-red resize-none h-20"></textarea>
+
+            <button onclick="confirmarMercar()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
+                Mercar Puesto
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 5: DONACIÓN Y APOYO VOLUNTARIO -->
+    <div id="modalDonacion" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative">
+            <button onclick="cerrarModal('modalDonacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="text-center">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl mb-2">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <h3 class="font-bold text-base text-gray-900">Apoyo Voluntario al Proyecto</h3>
+                <p class="text-xs text-gray-500 mt-0.5">Tu contribución ayuda a mantener visible a los puestos del Perú.</p>
+            </div>
+
+            <div class="space-y-2.5">
+                <input type="text" id="donanteNombre" placeholder="Tu Nombre (Opcional)" class="w-full border rounded-xl p-2 text-xs outline-none">
+                <select id="donanteMetodo" class="w-full border rounded-xl p-2 text-xs outline-none">
                     <option value="Yape">Yape</option>
                     <option value="Plin">Plin</option>
                     <option value="Transferencia Bancaria">Transferencia Bancaria</option>
                 </select>
-                <input type="text" x-model="donor.amount" placeholder="Monto (Ej. S/ 20)" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                <textarea x-model="donor.note" rows="2" placeholder="Nota o mensaje (Opcional)" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
-                <button @click="sendDonation()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow transition">
-                    Enviar Aporte a WhatsApp (+51930528649)
-                </button>
+                <input type="number" id="donanteMonto" placeholder="Monto (S/.)" class="w-full border rounded-xl p-2 text-xs outline-none">
+                <textarea id="donanteNota" placeholder="Mensaje de apoyo (Opcional)..." class="w-full border rounded-xl p-2 text-xs outline-none h-16 resize-none"></textarea>
             </div>
+
+            <button onclick="enviarDonacion()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp"></i> Enviar Aporte vía WhatsApp
+            </button>
         </div>
     </div>
 
-    <!-- SCRIPT DE LÓGICA PRINCIPAL -->
+    <!-- ==================== LOGICA JAVASCRIPT NATIVA ==================== -->
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('mercatodonApp', () => ({
-                currentView: 'home',
-                searchQuery: '',
-                selectedRubro: 'Todos',
-                mercarModalOpen: false,
-                donationModalOpen: false,
-                activePuesto: null,
-                ratingStars: 5,
-                ratingComment: '',
-                favorites: JSON.parse(localStorage.getItem('merca_favs') || '[]'),
+        // CONFIGURACIÓN E INICIALIZACIÓN DE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForMercatodonAuth2026",
+            authDomain: "mercatodon-app.firebaseapp.com",
+            projectId: "mercatodon-app",
+            storageBucket: "mercatodon-app.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef123456"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // DATOS GEOGRÁFICOS DE PERÚ (REDUCCIÓN DEPARTAMENTOS Y ENFOCADO EN PIURA)
+        const ubigeoPeru = {
+            "Piura": {
+                "Paita": ["Paita", "Amotape", "Arenal", "Colán", "El Alto", "La Huaca", "Tamarindo", "Vichayal"],
+                "Piura": ["Piura", "Castilla", "Catacaos", "Cura Mori", "El Taller", "La Arena", "La Unión", "Las Lomas", "Tambo Grande"],
+                "Sullana": ["Sullana", "Bellavista", "Marcavelica", "Salitral", "Querecotillo", "Lancones"],
+                "Talara": ["Pariñas", "El Alto", "La Brea", "Lobitos", "Máncora", "Los Órganos"],
+                "Morropón": ["Chulucanas", "Buenos Aires", "Chalaco", "La Matanza", "Morropón", "Salitral", "San Juan de Bigote"]
+            },
+            "Lima": {
+                "Lima": ["Miraflores", "San Isidro", "Santiago de Surco", "Lima Cercado", "Los Olivos", "San Juan de Lurigancho"],
+                "Callao": ["Callao", "Bellavista", "Carmen de la Legua", "La Perla", "La Punta", "Ventanilla"]
+            },
+            "Arequipa": {
+                "Arequipa": ["Arequipa", "Cayma", "Cerro Colorado", "Yanahuara", "Misty"]
+            },
+            "La Libertad": {
+                "Trujillo": ["Trujillo", "Víctor Larco", "Moche", "Huanchaco"]
+            },
+            "Cusco": {
+                "Cusco": ["Cusco", "San Sebastián", "Santiago", "Wanchaq"]
+            }
+        };
+
+        // RUBROS OFICIALES CON ÍCONOS
+        const rubrosConfig = [
+            { nombre: "Todos", icon: "fa-border-all", color: "bg-gray-800 text-white" },
+            { nombre: "Alimentos", icon: "fa-utensils", color: "bg-red-500 text-white" },
+            { nombre: "Bebidas", icon: "fa-wine-glass", color: "bg-blue-500 text-white" },
+            { nombre: "Carnes", icon: "fa-drumstick-bite", color: "bg-amber-700 text-white" },
+            { nombre: "Pescados", icon: "fa-fish", color: "bg-cyan-600 text-white" },
+            { nombre: "Frutas", icon: "fa-apple-whole", color: "bg-emerald-500 text-white" },
+            { nombre: "Gastronomía", icon: "fa-bowl-food", color: "bg-orange-500 text-white" },
+            { nombre: "Panadería", icon: "fa-bread-slice", color: "bg-amber-500 text-white" },
+            { nombre: "Salud", icon: "fa-heart-pulse", color: "bg-rose-500 text-white" },
+            { nombre: "Tecnología", icon: "fa-laptop", color: "bg-indigo-600 text-white" },
+            { nombre: "Servicios", icon: "fa-wrench", color: "bg-slate-600 text-white" }
+        ];
+
+        // BASE DE DATOS LOCAL Y MOCK INITIAL DATA
+        let puestosBD = JSON.parse(localStorage.getItem('mercatodon_puestos')) || [
+            { id: 1, nombre: "Mini Market La Esquina", rubro: "Alimentos", desc: "Abarrotes y productos de primera necesidad al mejor precio.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 45, calificacion: 5, whatsapp: "51930528649", web: "https://facebook.com", fav: false },
+            { id: 2, nombre: "Cevichería El Puerto", rubro: "Gastronomía", desc: "Pescado fresco del día y los mejores ceviches del puerto.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 89, calificacion: 5, whatsapp: "51930528649", web: "", fav: true },
+            { id: 3, nombre: "Carnicería Don Lucho", rubro: "Carnes", desc: "Cortes de res, cerdo y pollo de alta calidad.", region: "Piura", provincia: "Paita", distrito: "Amotape", mercas: 23, calificacion: 4, whatsapp: "51930528649", web: "", fav: false },
+            { id: 4, nombre: "Boutique Moda Chic", rubro: "Moda", desc: "Ropa urbana y calzado para toda la familia.", region: "Piura", provincia: "Paita", distrito: "Colán", mercas: 12, calificacion: 4, whatsapp: "51930528649", web: "https://instagram.com", fav: false },
+            { id: 5, nombre: "Verdulería Doña María", rubro: "Frutas", desc: "Frutas y verduras traídas directamente del campo.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 67, calificacion: 5, whatsapp: "51930528649", web: "", fav: false },
+            { id: 6, nombre: "TecnoCel Paita", rubro: "Tecnología", desc: "Accesorios, servicio técnico y repuestos de celulares.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 34, calificacion: 4, whatsapp: "51930528649", web: "", fav: false }
+        ];
+
+        let usuarioActual = JSON.parse(localStorage.getItem('mercatodon_usuario')) || null;
+        let ubicacionActual = JSON.parse(localStorage.getItem('mercatodon_ubicacion')) || { region: "Piura", provincia: "Paita", distrito: "Paita" };
+        let rubroSeleccionado = "Todos";
+        let puestoSeleccionadoId = null;
+        let calificacionTemp = 5;
+        let slideIndex = 0;
+
+        // AL CARGAR LA PÁGINA
+        window.onload = function() {
+            inicializarUbicacionUI();
+            renderRubros();
+            renderPuestos();
+            actualizarHeaderUsuario();
+            iniciarSlider();
+            verificarInstalacionPWA();
+        };
+
+        // NAVEGACIÓN ENTRE VISTAS
+        function verInicio() {
+            document.getElementById('headerInicio').classList.remove('hidden');
+            document.getElementById('headerPuestos').classList.add('hidden');
+            document.getElementById('secInicio').classList.remove('hidden');
+            document.getElementById('secPuestos').classList.add('hidden');
+            document.getElementById('secDashboard').classList.add('hidden');
+            document.getElementById('secCeo').classList.add('hidden');
+        }
+
+        function verPuestos() {
+            document.getElementById('headerInicio').classList.add('hidden');
+            document.getElementById('headerPuestos').classList.remove('hidden');
+            document.getElementById('secInicio').classList.add('hidden');
+            document.getElementById('secPuestos').classList.remove('hidden');
+            document.getElementById('secDashboard').classList.add('hidden');
+            document.getElementById('secCeo').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function verDashboard() {
+            if (!usuarioActual) {
+                abrirAuthModal();
+                return;
+            }
+            document.getElementById('secInicio').classList.add('hidden');
+            document.getElementById('secPuestos').classList.add('hidden');
+            document.getElementById('secDashboard').classList.remove('hidden');
+            document.getElementById('secCeo').classList.add('hidden');
+
+            if (usuarioActual.rol === 'mercadero') {
+                document.getElementById('dashMercadero').classList.remove('hidden');
+                document.getElementById('dashMercador').classList.add('hidden');
+                renderDashMercadero();
+            } else {
+                document.getElementById('dashMercadero').classList.add('hidden');
+                document.getElementById('dashMercador').classList.remove('hidden');
+                renderDashMercador();
+            }
+        }
+
+        function verCeoPanel() {
+            document.getElementById('secInicio').classList.add('hidden');
+            document.getElementById('secPuestos').classList.add('hidden');
+            document.getElementById('secDashboard').classList.add('hidden');
+            document.getElementById('secCeo').classList.remove('hidden');
+            renderCeoTable();
+        }
+
+        // RENDERIZADO DE RUBROS Y TARJETAS
+        function renderRubros() {
+            const cont = document.getElementById('contenedorRubros');
+            cont.innerHTML = '';
+
+            rubrosConfig.forEach(r => {
+                const cant = r.nombre === "Todos" ? puestosBD.length : puestosBD.filter(p => p.rubro === r.nombre).length;
+                const active = rubroSeleccionado === r.nombre ? 'ring-2 ring-brand-red scale-105' : 'opacity-90';
                 
-                userLocation: {
-                    pais: 'Perú',
-                    region: 'Piura',
-                    provincia: 'Paita',
-                    distrito: 'Paita'
-                },
+                cont.innerHTML += `
+                    <button onclick="filtrarRubro('${r.nombre}')" class="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm ${r.color} ${active}">
+                        <i class="fa-solid ${r.icon}"></i>
+                        <span>${r.nombre}</span>
+                        <span class="bg-white/30 text-white text-[10px] px-1.5 py-0.2 rounded-full font-black">${cant}</span>
+                    </button>
+                `;
+            });
+            document.getElementById('cantPuestosTotal').innerText = `${puestosBD.length} Puestos`;
+        }
 
-                donor: { name: '', whatsapp: '', method: 'Yape', amount: '', note: '' },
+        function renderPuestos(lista = puestosBD) {
+            const grid = document.getElementById('gridPuestos');
+            grid.innerHTML = '';
 
-                rubrosList: [
-                    { name: 'Alimentos', icon: '🍎' },
-                    { name: 'Bebidas', icon: '🥤' },
-                    { name: 'Carnes', icon: '🥩' },
-                    { name: 'Pescados', icon: '🐟' },
-                    { name: 'Frutas', icon: '🍌' },
-                    { name: 'Regionales', icon: '🏺' },
-                    { name: 'Gastronomía', icon: '🍲' },
-                    { name: 'Panadería', icon: '🥖' },
-                    { name: 'Lácteos', icon: '🧀' },
-                    { name: 'Salud', icon: '💊' },
-                    { name: 'Belleza', icon: '✨' },
-                    { name: 'Moda', icon: '👕' },
-                    { name: 'Tecnología', icon: '💻' },
-                    { name: 'Hogar', icon: '🏠' },
-                    { name: 'Ferretería', icon: '🔨' },
-                    { name: 'Limpieza', icon: '🧹' },
-                    { name: 'Mascotas', icon: '🐾' },
-                    { name: 'Librería', icon: '📚' },
-                    { name: 'Servicios', icon: '⚙️' },
-                    { name: 'Otros', icon: '📦' }
-                ],
+            // Filtrar por rubro y ordenar por mayor cantidad de mercas (calificaciones)
+            let filtrados = lista.filter(p => rubroSeleccionado === "Todos" || p.rubro === rubroSeleccionado);
+            filtrados.sort((a, b) => b.mercas - a.mercas);
 
-                puestos: [
-                    { id: 1, nombre: 'Mini Market La Esquina', rubro: 'Alimentos', descripcion: 'Todo lo que necesitas para tu hogar cerca de ti en Paita.', mercadoresCount: 128, webLink: 'https://facebook.com', gpsLink: 'https://maps.google.com', whatsapp: '51930528649' },
-                    { id: 2, nombre: 'Pescados Frescos El Paitano', rubro: 'Pescados', descripcion: 'Pesca del día directo del muelle artesanal.', mercadoresCount: 245, webLink: 'https://facebook.com', gpsLink: 'https://maps.google.com', whatsapp: '51930528649' },
-                    { id: 3, nombre: 'Frutería Doña María', rubro: 'Frutas', descripcion: 'Frutas frescas y jugosas seleccionadas cada mañana.', mercadoresCount: 94, webLink: 'https://facebook.com', gpsLink: 'https://maps.google.com', whatsapp: '51930528649' },
-                    { id: 4, nombre: 'Gastronomía Criolla Sabor Norteño', rubro: 'Gastronomía', descripcion: 'Seco de cabrito, ceviche y platos típicos norteños.', mercadoresCount: 310, webLink: 'https://facebook.com', gpsLink: 'https://maps.google.com', whatsapp: '51930528649' },
-                    { id: 5, nombre: 'Ferretería El Constructor', rubro: 'Ferretería', descripcion: 'Herramientas, pinturas y materiales de construcción.', mercadoresCount: 88, webLink: 'https://facebook.com', gpsLink: 'https://maps.google.com', whatsapp: '51930528649' },
-                    { id: 6, nombre: 'Panadería San Pedro', rubro: 'Panadería', descripcion: 'Pan caliente todo el día y pasteles artesanales.', mercadoresCount: 156, webLink: 'https://facebook.com', gpsLink: 'https://maps.google.com', whatsapp: '51930528649' }
-                ],
+            if (filtrados.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-gray-400 text-xs">No se encontraron puestos en este rubro.</div>`;
+                return;
+            }
 
-                get filteredPuestos() {
-                    return this.puestos.filter(p => {
-                        const matchesRubro = this.selectedRubro === 'Todos' || p.rubro === this.selectedRubro;
-                        const matchesSearch = p.nombre.toLowerCase().includes(this.searchQuery.toLowerCase()) || p.descripcion.toLowerCase().includes(this.searchQuery.toLowerCase()) || p.rubro.toLowerCase().includes(this.searchQuery.toLowerCase());
-                        return matchesRubro && matchesSearch;
-                    });
-                },
+            filtrados.forEach(p => {
+                const corazonColor = p.fav ? 'text-red-500' : 'text-gray-300';
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl border border-gray-200 p-3 flex flex-col justify-between shadow-sm hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between gap-1 mb-1">
+                                <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-2 py-0.5 rounded-md truncate max-w-[70%]">${p.rubro}</span>
+                                <button onclick="toggleFavorito(${p.id})" class="text-xs ${corazonColor} hover:scale-110 transition">
+                                    <i class="fa-solid fa-heart"></i>
+                                </button>
+                            </div>
+                            <h4 class="font-bold text-gray-900 text-xs leading-tight line-clamp-1">${p.nombre}</h4>
+                            <p class="text-[10px] text-gray-500 mt-0.5 line-clamp-2 h-7 leading-tight">${p.desc}</p>
+                        </div>
 
-                getPuestosCount(rubroName) {
-                    return this.puestos.filter(p => p.rubro === rubroName).length;
-                },
+                        <div class="mt-2 space-y-2">
+                            <!-- Botón Mercar y Contador de Votos/Mercas -->
+                            <div class="flex items-center justify-between bg-gray-50 p-1.5 rounded-xl border border-gray-100">
+                                <div class="flex items-center gap-1 text-amber-500 font-extrabold text-[11px]">
+                                    <i class="fa-solid fa-sun"></i>
+                                    <span>${p.mercas} <span class="text-[9px] text-gray-400 font-normal">mercas</span></span>
+                                </div>
+                                <button onclick="abrirMercarModal(${p.id})" class="bg-brand-red hover:bg-brand-darkRed text-white font-extrabold text-[10px] py-1 px-2.5 rounded-lg transition shadow-sm">
+                                    Mercar
+                                </button>
+                            </div>
 
-                detectLocation() {
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(position => {
-                            // Simulación de geolocalización inteligente en Perú (Piura/Paita)
-                            this.userLocation = { pais: 'Perú', region: 'Piura', provincia: 'Paita', distrito: 'Paita' };
-                            alert('¡Ubicación detectada con éxito!');
-                        }, error => {
-                            alert('Ubicación predeterminada establecida: Piura, Paita.');
-                        });
-                    }
-                },
-
-                toggleFavorite(id) {
-                    if (this.favorites.includes(id)) {
-                        this.favorites = this.favorites.filter(fav => fav !== id);
-                    } else {
-                        this.favorites.push(id);
-                    }
-                    localStorage.setItem('merca_favs', JSON.stringify(this.favorites));
-                },
-
-                isFavorite(id) {
-                    return this.favorites.includes(id);
-                },
-
-                openMercarModal(puesto) {
-                    this.activePuesto = puesto;
-                    this.mercarModalOpen = true;
-                },
-
-                submitMercar() {
-                    alert(`¡Gracias por mercar! Has calificado al puesto con ${this.ratingStars} Soles.`);
-                    this.mercarModalOpen = false;
-                    this.ratingComment = '';
-                },
-
-                openDonationModal() {
-                    this.donationModalOpen = true;
-                },
-
-                sendDonation() {
-                    const text = `Hola, quiero realizar un aporte voluntario a Mercatodon.%0A*Nombre:* ${this.donor.name || 'Anónimo'}%0A*WhatsApp:* ${this.donor.whatsapp || 'No especificado'}%0A*Método:* ${this.donor.method}%0A*Monto:* ${this.donor.amount}%0A*Nota:* ${this.donor.note || 'Ninguna'}`;
-                    window.open(`https://wa.me/51930528649?text=${text}`, '_blank');
-                    this.donationModalOpen = false;
-                },
-
-                openPromoModal(type) {
-                    if(type === 'gratis') {
-                        window.open('https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS%20en%20las%20redes%20de%20Mercatodon.', '_blank');
-                    } else {
-                        window.open('https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20mi%20Catálogo%20Virtual%20en%20Mercatodon.', '_blank');
-                    }
-                },
-
-                scrollToTop() {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                },
-
-                installPWA() {
-                    if (window.deferredPrompt) {
-                        window.deferredPrompt.prompt();
-                        window.deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                document.getElementById('pwaInstallBtn').style.display = 'none';
-                            }
-                            window.deferredPrompt = null;
-                        });
-                    }
-                }
-            }));
-
-            // Banner Slider Component
-            Alpine.data('bannerSlider', () => ({
-                currentIndex: 0,
-                banners: [
-                    { title: '¡Bienvenido a Mercatodon - Puestos en Acción!', image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=400&fit=crop', link: '#' },
-                    { title: 'Conecta con los mejores mercados del Perú', image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&h=400&fit=crop', link: '#' },
-                    { title: 'Impulsa tus ventas con tu Catálogo Virtual', image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=1200&h=400&fit=crop', link: '#' }
-                ],
-                init() {
-                    setInterval(() => {
-                        this.next();
-                    }, 5000);
-                },
-                next() {
-                    this.currentIndex = (this.currentIndex + 1) % this.banners.length;
-                },
-                prev() {
-                    this.currentIndex = (this.currentIndex - 1 + this.banners.length) % this.banners.length;
-                }
-            }));
-        });
-
-        // PWA Service Worker Registration & Install prompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            window.deferredPrompt = e;
-            document.getElementById('pwaInstallBtn').style.display = 'flex';
-        });
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+                            <!-- 3 Botones Cortos de Acción -->
+                            <div class="grid grid-cols-3 gap-1">
+                                <a href="${p.web || '#'}" target="_blank" class="bg-red-600 hover:bg-red-700 text-white text-center py-1.5 rounded-lg text-xs transition" title="Web / Catálogo">
+                                    <i class="fa-solid fa-globe"></i>
+                                </a>
+                                <a href="https://maps.google.com/?q=${encodeURIComponent(p.nombre + ' ' + p.distrito)}" target="_blank" class="bg-black hover:bg-gray-800 text-white text-center py-1.5 rounded-lg text-xs transition" title="Ubicación GPS">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </a>
+                                <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20Mercatodon" target="_blank" class="bg-brand-whatsapp hover:bg-emerald-600 text-white text-center py-1.5 rounded-lg text-xs transition" title="WhatsApp Oficial">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
         }
 
-        // Inicializar iconos de Lucide
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
-        document.addEventListener('alpine:updated', () => {
-            lucide.createIcons();
-        });
+        function filtrarRubro(rubro) {
+            rubroSeleccionado = rubro;
+            renderRubros();
+            renderPuestos();
+        }
+
+        function filtrarPuestos() {
+            const query = document.getElementById('inputBusqueda').value.toLowerCase();
+            const res = puestosBD.filter(p => 
+                p.nombre.toLowerCase().includes(query) || 
+                p.rubro.toLowerCase().includes(query) || 
+                p.desc.toLowerCase().includes(query)
+            );
+            renderPuestos(res);
+        }
+
+        function toggleFavorito(id) {
+            if (!usuarioActual) {
+                abrirAuthModal();
+                return;
+            }
+            const puesto = puestosBD.find(p => p.id === id);
+            if (puesto) {
+                puesto.fav = !puesto.fav;
+                localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+                renderPuestos();
+            }
+        }
+
+        // FLUJO DE "MERCAR" (CALIFICACIÓN)
+        function abrirMercarModal(id) {
+            puestoSeleccionadoId = id;
+            const p = puestosBD.find(x => x.id === id);
+
+            document.getElementById('mercarRubro').innerText = p.rubro;
+            document.getElementById('mercarNombre').innerText = p.nombre;
+            document.getElementById('mercarDesc').innerText = p.desc;
+            document.getElementById('mercarUbicacion').innerText = `${p.region}, ${p.provincia}, ${p.distrito}`;
+            
+            setCalificacion(5);
+            document.getElementById('modalMercar').classList.remove('hidden');
+        }
+
+        function setCalificacion(num) {
+            calificacionTemp = num;
+            const soles = document.querySelectorAll('#estrellasContenedor i');
+            soles.forEach((sol, idx) => {
+                if (idx < num) {
+                    sol.classList.remove('text-gray-300');
+                    sol.classList.add('text-amber-400');
+                } else {
+                    sol.classList.remove('text-amber-400');
+                    sol.classList.add('text-gray-300');
+                }
+            });
+        }
+
+        function confirmarMercar() {
+            if (!usuarioActual) {
+                cerrarModal('modalMercar');
+                abrirAuthModal();
+                return;
+            }
+
+            const p = puestosBD.find(x => x.id === puestoSeleccionadoId);
+            if (p) {
+                p.mercas += 1;
+                localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+                renderPuestos();
+                cerrarModal('modalMercar');
+                alert(`¡Gracias! Has mercado el puesto con ${calificacionTemp} soles.`);
+            }
+        }
+
+        // SISTEMA UBICACIÓN PERÚ
+        function inicializarUbicacionUI() {
+            const selReg = document.getElementById('selRegion');
+            selReg.innerHTML = '';
+            Object.keys(ubigeoPeru).forEach(reg => {
+                selReg.innerHTML += `<option value="${reg}">${reg}</option>`;
+            });
+            selReg.value = ubicacionActual.region;
+            cargarProvincias();
+        }
+
+        function cargarProvincias() {
+            const reg = document.getElementById('selRegion').value;
+            const selProv = document.getElementById('selProvincia');
+            selProv.innerHTML = '';
+
+            if (ubigeoPeru[reg]) {
+                Object.keys(ubigeoPeru[reg]).forEach(prov => {
+                    selProv.innerHTML += `<option value="${prov}">${prov}</option>`;
+                });
+                selProv.value = ubicacionActual.provincia || Object.keys(ubigeoPeru[reg])[0];
+            }
+            cargarDistritos();
+        }
+
+        function cargarDistritos() {
+            const reg = document.getElementById('selRegion').value;
+            const prov = document.getElementById('selProvincia').value;
+            const selDis = document.getElementById('selDistrito');
+            selDis.innerHTML = '';
+
+            if (ubigeoPeru[reg] && ubigeoPeru[reg][prov]) {
+                ubigeoPeru[reg][prov].forEach(dis => {
+                    selDis.innerHTML += `<option value="${dis}">${dis}</option>`;
+                });
+            }
+        }
+
+        function guardarUbicacion() {
+            ubicacionActual = {
+                region: document.getElementById('selRegion').value,
+                provincia: document.getElementById('selProvincia').value,
+                distrito: document.getElementById('selDistrito').value
+            };
+            localStorage.setItem('mercatodon_ubicacion', JSON.stringify(ubicacionActual));
+            document.getElementById('labelUbicacionActual').innerText = `${ubicacionActual.region}, ${ubicacionActual.provincia}, ${ubicacionActual.distrito}`;
+            cerrarModal('modalUbicacion');
+        }
+
+        function abrirModalUbicacion() {
+            document.getElementById('modalUbicacion').classList.remove('hidden');
+        }
+
+        // SISTEMA DE AUTENTICACIÓN
+        function abrirAuthModal() {
+            if (usuarioActual) {
+                verDashboard();
+                return;
+            }
+            document.getElementById('modalAuth').classList.remove('hidden');
+        }
+
+        function abrirFormularioAuth(rol) {
+            cerrarModal('modalAuth');
+            document.getElementById('authRol').value = rol;
+            document.getElementById('formAuthTitulo').innerText = rol === 'mercadero' ? 'Registro Puesto (Mercadero)' : 'Registro Comprador (Mercador)';
+
+            if (rol === 'mercadero') {
+                document.getElementById('camposMercadero').classList.remove('hidden');
+            } else {
+                document.getElementById('camposMercadero').classList.add('hidden');
+            }
+
+            document.getElementById('modalFormAuth').classList.remove('hidden');
+        }
+
+        function procesarAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('regCorreo').value;
+            const pass = document.getElementById('regPass').value;
+
+            // Verificación Credenciales Panel CEO Oculto
+            if (email === "multivercado@gmail.com" && pass === "20701") {
+                cerrarModal('modalFormAuth');
+                verCeoPanel();
+                return;
+            }
+
+            const rol = document.getElementById('authRol').value;
+            usuarioActual = {
+                nombre: document.getElementById('regNombreCompleto').value,
+                correo: email,
+                whatsapp: document.getElementById('regWhatsapp').value,
+                rol: rol,
+                fecha: new Date().toLocaleDateString()
+            };
+
+            if (rol === 'mercadero') {
+                const nuevoPuesto = {
+                    id: Date.now(),
+                    nombre: document.getElementById('regPuestoNombre').value,
+                    rubro: document.getElementById('regPuestoRubro').value,
+                    desc: document.getElementById('regPuestoDesc').value,
+                    region: ubicacionActual.region,
+                    provincia: ubicacionActual.provincia,
+                    distrito: ubicacionActual.distrito,
+                    mercas: 1,
+                    calificacion: 5,
+                    whatsapp: usuarioActual.whatsapp,
+                    web: document.getElementById('regPuestoWeb').value,
+                    fav: false
+                };
+                puestosBD.push(nuevoPuesto);
+                localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+                renderRubros();
+                renderPuestos();
+            }
+
+            localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+            cerrarModal('modalFormAuth');
+            actualizarHeaderUsuario();
+            verDashboard();
+        }
+
+        function recuperarPassword() {
+            const email = document.getElementById('regCorreo').value;
+            if (!email) {
+                alert("Por favor ingresa tu correo electrónico en el campo superior.");
+                return;
+            }
+            firebase.auth().sendPasswordResetEmail(email)
+                .then(() => alert("Se ha enviado un correo de restablecimiento de contraseña vía Firebase."))
+                .catch(err => alert("Información de Firebase: Correo enviado o verifique su formato."));
+        }
+
+        function actualizarHeaderUsuario() {
+            if (usuarioActual) {
+                document.getElementById('btnAuthText').innerText = usuarioActual.nombre.split(' ')[0];
+                document.getElementById('btnAuthText2').innerText = usuarioActual.nombre.split(' ')[0];
+            } else {
+                document.getElementById('btnAuthText').innerText = 'Ingresar';
+                document.getElementById('btnAuthText2').innerText = 'Registro';
+            }
+        }
+
+        function cerrarSesion() {
+            usuarioActual = null;
+            localStorage.removeItem('mercatodon_usuario');
+            actualizarHeaderUsuario();
+            verInicio();
+        }
+
+        // RENDER DE DASHBOARDS
+        function renderDashMercadero() {
+            const container = document.getElementById('dashMercadero');
+            container.innerHTML = `
+                <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <div>
+                            <h3 class="font-black text-lg text-gray-900">Panel Mercadero</h3>
+                            <p class="text-xs text-gray-500">Bienvenido, ${usuarioActual.nombre}</p>
+                        </div>
+                        <button onclick="cerrarSesion()" class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-red-50 p-3 rounded-xl border border-red-100 text-center">
+                            <span class="text-xs text-gray-500">Total Mercas Recibidas</span>
+                            <p class="text-xl font-extrabold text-brand-red">124</p>
+                        </div>
+                        <div class="bg-amber-50 p-3 rounded-xl border border-amber-100 text-center">
+                            <span class="text-xs text-gray-500">Calificación Media</span>
+                            <p class="text-xl font-extrabold text-amber-500">4.9 <i class="fa-solid fa-sun text-xs"></i></p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-gray-700 uppercase">Comentarios de Compradores</h4>
+                        <div class="bg-gray-50 p-3 rounded-xl text-xs space-y-1">
+                            <div class="flex justify-between font-bold text-gray-800">
+                                <span>María García</span>
+                                <span class="text-gray-400 font-normal">Ayer 10:30 AM</span>
+                            </div>
+                            <p class="text-gray-600">Excelentes productos y muy buena atención en el puesto.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDashMercador() {
+            const container = document.getElementById('dashMercador');
+            const favoritos = puestosBD.filter(p => p.fav);
+            
+            container.innerHTML = `
+                <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <div>
+                            <h3 class="font-black text-lg text-gray-900">Mi Panel Mercador</h3>
+                            <p class="text-xs text-gray-500">Hola, ${usuarioActual.nombre}</p>
+                        </div>
+                        <button onclick="cerrarSesion()" class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-700 uppercase mb-2">Mis Puestos Favoritos (${favoritos.length})</h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            ${favoritos.map(f => `
+                                <div class="bg-gray-50 p-2 rounded-xl border text-xs">
+                                    <p class="font-bold truncate">${f.nombre}</p>
+                                    <span class="text-[9px] text-brand-red font-semibold">${f.rubro}</span>
+                                </div>
+                            `).join('') || '<p class="text-xs text-gray-400 col-span-full">No has marcado puestos favoritos aún.</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // PANEL CEO
+        function renderCeoTable() {
+            document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
+            document.getElementById('ceoCantMercadores').innerText = 18;
+            document.getElementById('ceoCantMercadas').innerText = puestosBD.reduce((acc, p) => acc + p.mercas, 0);
+
+            const tbody = document.getElementById('tablaCeoPuestos');
+            tbody.innerHTML = '';
+            puestosBD.forEach(p => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-2 font-bold">${p.nombre}</td>
+                        <td class="p-2">${p.rubro}</td>
+                        <td class="p-2">${p.distrito}</td>
+                        <td class="p-2">${p.mercas}</td>
+                        <td class="p-2">
+                            <button onclick="eliminarPuesto(${p.id})" class="text-red-600 hover:underline">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function eliminarPuesto(id) {
+            puestosBD = puestosBD.filter(p => p.id !== id);
+            localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+            renderCeoTable();
+            renderPuestos();
+        }
+
+        // SLIDER AUTOMÁTICO
+        function iniciarSlider() {
+            setInterval(() => {
+                nextSlide();
+            }, 5000);
+        }
+
+        function nextSlide() {
+            slideIndex = (slideIndex + 1) % 3;
+            actualizarSlide();
+        }
+
+        function prevSlide() {
+            slideIndex = (slideIndex - 1 + 3) % 3;
+            actualizarSlide();
+        }
+
+        function actualizarSlide() {
+            const wrapper = document.getElementById('sliderWrapper');
+            if (wrapper) {
+                wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
+            }
+        }
+
+        // APOYO VOLUNTARIO Y DONACIONES VÍA WHATSAPP
+        function abrirModalDonacion() {
+            document.getElementById('modalDonacion').classList.remove('hidden');
+        }
+
+        function enviarDonacion() {
+            const nombre = document.getElementById('donanteNombre').value || "Anónimo";
+            const metodo = document.getElementById('donanteMetodo').value;
+            const monto = document.getElementById('donanteMonto').value || "10";
+            const nota = document.getElementById('donanteNota').value || "¡Éxitos con la plataforma!";
+
+            const msg = `Hola,%20deseo%20realizar%20un%20apoyo%20voluntario%20a%20Mercatodon:%0A- Nombre: ${encodeURIComponent(nombre)}%0A- Método: ${encodeURIComponent(metodo)}%0A- Monto: S/.${encodeURIComponent(monto)}%0A- Nota: ${encodeURIComponent(nota)}`;
+            window.open(`https://wa.me/51930528649?text=${msg}`, '_blank');
+            cerrarModal('modalDonacion');
+        }
+
+        // UTILIDADES MODALES Y BOTÓN SCROLL TOP
+        function cerrarModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        window.onscroll = function() {
+            const btn = document.getElementById('btnScrollTop');
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                btn.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                btn.classList.add('opacity-0', 'pointer-events-none');
+            }
+        };
+
+        function scrollArriba() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function verificarInstalacionPWA() {
+            setTimeout(() => {
+                document.getElementById('pwaBanner').classList.remove('hidden');
+            }, 2000);
+        }
+
+        function installPWA() {
+            alert("¡Gracias por elegir Mercatodon! Agrega esta App Web a tu pantalla de inicio desde el menú de tu navegador para experiencia nativa PWA.");
+            document.getElementById('pwaBanner').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
