@@ -60,7 +60,6 @@
         .star-rating:hover {
             transform: scale(1.25);
         }
-        /* Toast notification */
         #toast {
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
@@ -68,20 +67,20 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between select-none m-0 p-0">
 
-    <!-- TOAST NOTIFICATION MODAL CUSTOM (EVITANDO ALERT) -->
+    <!-- TOAST NOTIFICACIÓN -->
     <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none flex items-center gap-2 border border-gray-700">
         <i class="fa-solid fa-circle-check text-brand-orange"></i>
         <span id="toastMsg">Mensaje del sistema</span>
     </div>
 
-    <!-- ==================== BOTÓN FLOTANTE INSTALAR PWA (AJUSTE 8: Solo Ícono, Parpadeo) ==================== -->
+    <!-- BOTÓN FLOTANTE PWA (Ajuste 3: Solo Ícono, Parpadeo) -->
     <div id="pwaBanner" class="fixed bottom-20 left-4 z-40 hidden">
         <button onclick="installPWA()" class="btn-pwa-pulse bg-brand-red text-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center border-2 border-white text-lg transition hover:scale-110" title="Instalar Aplicación Mercatodon">
             <i class="fa-solid fa-download text-yellow-300"></i>
         </button>
     </div>
 
-    <!-- ==================== HEADER 1: INICIO (AJUSTE 1: Ubicación más a la derecha y solo ícono en móviles) ==================== -->
+    <!-- HEADER 1: INICIO (Ajuste 1: Nombre en rojo visible en móvil y PC) -->
     <header id="headerInicio" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
             <!-- Logo + Nombre -->
@@ -90,14 +89,13 @@
                     <i class="fa-solid fa-store"></i>
                 </div>
                 <div class="leading-tight">
-                    <span class="text-lg sm:text-xl font-extrabold text-brand-orange tracking-tight hidden sm:inline">Mercatodon</span>
+                    <span class="text-base sm:text-xl font-extrabold text-brand-red tracking-tight">Mercatodon</span>
                     <p class="text-[9px] text-gray-500 font-semibold tracking-wider uppercase hidden md:block">Puestos en Acción</p>
                 </div>
             </div>
 
-            <!-- Acciones Derecha incluyendo Ubicación -->
+            <!-- Acciones Derecha -->
             <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
-                <!-- Botón selector Ubicación (Ajuste 1: Solo ícono en móvil, texto expandido en desktop) -->
                 <button onclick="abrirModalUbicacion()" class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200" title="Ubicación en Piura">
                     <i class="fa-solid fa-location-dot text-brand-red text-sm"></i>
                     <span id="labelUbicacionActual" class="hidden sm:inline truncate max-w-[140px]">Piura, Paita, Paita</span>
@@ -108,7 +106,7 @@
                     <i class="fa-solid fa-shop text-xs"></i>
                     <span class="hidden xs:inline">Puestos</span>
                 </button>
-                <button onclick="abrirAuthModal()" class="bg-gray-900 hover:bg-black text-white font-semibold text-xs py-1.5 px-3 rounded-full shadow transition flex items-center gap-1">
+                <button onclick="gestionarBotonUsuario()" class="bg-gray-900 hover:bg-black text-white font-semibold text-xs py-1.5 px-3 rounded-full shadow transition flex items-center gap-1">
                     <i class="fa-solid fa-user text-xs"></i>
                     <span class="hidden xs:inline" id="btnAuthText">Ingresar</span>
                 </button>
@@ -116,7 +114,7 @@
         </div>
     </header>
 
-    <!-- ==================== HEADER 2: SECCIÓN PUESTOS ==================== -->
+    <!-- HEADER 2: SECCIÓN PUESTOS -->
     <header id="headerPuestos" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100 hidden">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
             <button onclick="verInicio()" class="p-2 text-gray-600 hover:text-brand-red rounded-full hover:bg-gray-100 transition" title="Ir a Inicio">
@@ -132,7 +130,7 @@
                 <button onclick="abrirModalUbicacion()" class="p-2 text-brand-red hover:bg-red-50 rounded-full transition" title="Cambiar Ubicación">
                     <i class="fa-solid fa-location-crosshairs text-base"></i>
                 </button>
-                <button onclick="abrirAuthModal()" class="bg-brand-red text-white p-2 sm:px-3 sm:py-1.5 rounded-full text-xs font-semibold shadow flex items-center gap-1">
+                <button onclick="gestionarBotonUsuario()" class="bg-brand-red text-white p-2 sm:px-3 sm:py-1.5 rounded-full text-xs font-semibold shadow flex items-center gap-1">
                     <i class="fa-solid fa-user"></i>
                     <span class="hidden sm:inline" id="btnAuthText2">Registro</span>
                 </button>
@@ -140,13 +138,13 @@
         </div>
     </header>
 
-    <!-- CONTAINER PRINCIPAL DE CONTENIDO (AJUSTE 10: Minimizar espacios en blanco) -->
+    <!-- CONTAINER PRINCIPAL -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-2 sm:px-3 py-2 space-y-3">
 
-        <!-- ==================== SECCIÓN 1: VISTA INICIO / PUBLICIDADES ==================== -->
+        <!-- SECCIÓN 1: VISTA INICIO / PUBLICIDADES -->
         <section id="secInicio" class="space-y-3">
             
-            <!-- (AJUSTE 3) Banner Slider Principal a Ancho Completo Edge-to-Edge -->
+            <!-- (Ajuste 2) Banner Slider Principal a Ancho Completo Edge-to-Edge Absoluto -->
             <div class="relative w-full rounded-xl overflow-hidden shadow-md bg-gray-200 aspect-[21/8] sm:aspect-[24/7] -mx-2 sm:mx-0 sm:rounded-2xl">
                 <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out">
                     <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1400&q=80" alt="Mercados de Piura" class="w-full h-full object-cover flex-shrink-0">
@@ -161,7 +159,7 @@
                 </button>
             </div>
 
-            <!-- (AJUSTE 4 & 6) Banners Secundarios con Altura Aumentada y Sin Texto "Espacios Publicitarios Destacados" -->
+            <!-- Banners Secundarios Ampliados -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                 <div class="h-32 sm:h-40 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                     Banner 728x90 (Header Global Piura)
@@ -177,7 +175,7 @@
                 </div>
             </div>
 
-            <!-- Bloques Promocionales Responsivos -->
+            <!-- Bloques Promocionales -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div class="bg-white border border-gray-200 rounded-xl p-3.5 shadow-sm flex flex-col justify-between space-y-2 hover:border-brand-red transition">
                     <div>
@@ -213,7 +211,7 @@
                 </div>
             </div>
 
-            <!-- (AJUSTE 9) Banner Inferior Publicitario Mejorado enfocado en Piura -->
+            <!-- (Ajuste 9) Banner Inferior Publicitario Dirigido a Piura y WhatsApp -->
             <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-4 text-white text-center shadow-md space-y-2">
                 <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Publicidad Oficial Mercatodon</span>
                 <h3 class="text-sm sm:text-base font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
@@ -226,31 +224,43 @@
             </div>
         </section>
 
-        <!-- ==================== SECCIÓN 2: PUESTOS & RUBROS ==================== -->
+        <!-- SECCIÓN 2: PUESTOS & RUBROS -->
         <section id="secPuestos" class="space-y-3 hidden">
             <div class="space-y-1.5">
-                <div class="flex justify-between items-center px-1">
-                    <h2 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Categorías de Mercado en Piura</h2>
-                    <span id="cantPuestosTotal" class="text-xs bg-gray-200 text-gray-700 font-bold px-2 py-0.5 rounded-full">0 Puestos</span>
-                </div>
-                <div id="contenedorRubros" class="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
+                <!-- (Ajuste 10) Eliminado texto "CATEGORÍAS DE MERCADO EN PIURA" y contador -->
+                <div id="contenedorRubros" class="flex gap-1.5 overflow-x-auto no-scrollbar py-1 sticky top-12 bg-gray-50 z-20">
                     <!-- Dinámico JS -->
                 </div>
             </div>
 
-            <!-- Grid de Puestos (AJUSTE 10: 2 columnas en móvil y denso) -->
+            <!-- (Ajuste 8) Grid de Puestos con Contorno Dorado -->
             <div id="gridPuestos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
                 <!-- Dinámico JS -->
             </div>
+
+            <!-- (Ajuste 6) Bloque Completo de Publicidades al Finalizar la Lista de Puestos -->
+            <div class="mt-6 pt-4 border-t border-gray-200 space-y-3">
+                <h3 class="text-xs font-extrabold text-gray-700 uppercase tracking-wider">Espacios y Patrocinios Destacados en Piura</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-gradient-to-r from-red-700 to-red-500 rounded-xl p-4 text-white shadow">
+                        <h4 class="font-bold text-sm">Banner Superior Rotativo Piura</h4>
+                        <p class="text-[11px] text-white/90 mt-1">Máxima presencia visual en la cabecera de la plataforma web.</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-amber-600 to-orange-500 rounded-xl p-4 text-white shadow">
+                        <h4 class="font-bold text-sm">Patrocinio de Rubros y Categorías</h4>
+                        <p class="text-[11px] text-white/90 mt-1">Destaca tu puesto en los primeros lugares de búsqueda inteligente.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- ==================== SECCIÓN 3: DASHBOARDS ==================== -->
+        <!-- SECCIÓN 3: DASHBOARDS -->
         <section id="secDashboard" class="hidden space-y-4">
             <div id="dashMercadero" class="hidden space-y-4"></div>
             <div id="dashMercador" class="hidden space-y-4"></div>
         </section>
 
-        <!-- ==================== SECCIÓN 4: PANEL CEO (OCULTO) ==================== -->
+        <!-- SECCIÓN 4: PANEL CEO -->
         <section id="secCeo" class="hidden space-y-4 bg-white p-4 rounded-2xl border-2 border-red-500 shadow-xl">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="text-base font-black text-brand-red flex items-center gap-2">
@@ -279,7 +289,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <h3 class="text-xs font-bold text-gray-600 uppercase mb-2">Gestión de Puestos</h3>
+                <h3 class="text-xs font-bold text-gray-600 uppercase mb-2">Gestión Completa de Puestos (Mercaderos & Mercadores)</h3>
                 <table class="w-full text-xs text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-100 text-gray-700">
@@ -297,36 +307,28 @@
 
     </main>
 
-    <!-- ==================== PIE DE PÁGINA GLOBAL ==================== -->
-    <footer class="bg-white border-t border-gray-200 py-3 mt-4">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
-            <div class="flex items-center gap-1.5">
-                <span class="font-bold text-brand-orange">Mercatodon</span>
-                <span>- Todos los derechos reservados.</span>
-            </div>
-            <div>
-                Desarrollado por 
-                <a href="https://comaxion.vercel.app" target="_blank" rel="noopener" class="text-brand-red font-bold hover:underline">
-                    COMAXION
-                </a>
-            </div>
+    <!-- (Ajuste 5) PIE DE PÁGINA GLOBAL COMPACTO EN UNA SOLA LÍNEA -->
+    <footer class="bg-white border-t border-gray-200 py-2.5 mt-4">
+        <div class="max-w-7xl mx-auto px-3 flex items-center justify-between text-[11px] sm:text-xs text-gray-500 whitespace-nowrap overflow-hidden">
+            <span class="font-bold text-brand-orange truncate">Mercatodon - Todos los derechos reservados.</span>
+            <span class="ml-2 flex-shrink-0">Desarrollado por <a href="https://comaxion.vercel.app" target="_blank" rel="noopener" class="text-brand-red font-bold hover:underline">COMAXION</a></span>
         </div>
     </footer>
 
-    <!-- BOTONES FLOTANTES INFERIORES: Scroll Top & (AJUSTE 2) Donación -->
+    <!-- BOTONES FLOTANTES: Scroll Top & (Ajuste 4) Donación Fija Sutil -->
     <button id="btnScrollTop" onclick="scrollArriba()" class="fixed bottom-4 right-4 z-40 bg-white hover:bg-gray-100 text-gray-700 p-2.5 rounded-full shadow-lg border border-gray-200 transition opacity-0 pointer-events-none">
         <i class="fa-solid fa-arrow-up text-xs"></i>
     </button>
 
     <button onclick="abrirModalDonacion()" class="fixed bottom-4 left-4 z-30 bg-white hover:bg-amber-50 text-amber-600 font-bold text-xs py-2 px-3 rounded-full shadow-md border border-amber-200 flex items-center gap-1.5 transition">
         <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i>
-        <span class="hidden xs:inline">Apoyar Proyecto</span>
+        <span class="hidden xs:inline">Apoyo Voluntario a Mercatodon</span>
     </button>
 
 
-    <!-- ==================== MODALES ==================== -->
+    <!-- MODALES -->
 
-    <!-- MODAL 1: SELECTOR UBICACIÓN (AJUSTE 5: Foco Piura y Provincias) -->
+    <!-- MODAL 1: SELECTOR UBICACIÓN -->
     <div id="modalUbicacion" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalUbicacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -339,7 +341,7 @@
             <div class="space-y-3">
                 <div>
                     <label class="text-xs font-semibold text-gray-600">Región / Departamento</label>
-                    <select id="selRegion" onchange="cargarProvincias()" class="w-full mt-1 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-red outline-none">
+                    <select id="selRegion" class="w-full mt-1 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-red outline-none">
                         <option value="Piura">Piura</option>
                     </select>
                 </div>
@@ -369,22 +371,33 @@
             </button>
             <div class="text-center">
                 <h3 class="font-black text-xl text-gray-900">Bienvenido a Mercatodon</h3>
-                <p class="text-xs text-gray-500 mt-1">Selecciona tu perfil en Piura</p>
+                <p class="text-xs text-gray-500 mt-1">Selecciona tu perfil en Piura o ingresa con tu cuenta</p>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div onclick="abrirFormularioAuth('mercadero')" class="border-2 border-gray-200 hover:border-brand-red p-4 rounded-2xl cursor-pointer text-center space-y-2 transition hover:shadow-md">
-                    <div class="w-12 h-12 bg-red-100 text-brand-red rounded-full flex items-center justify-center mx-auto text-xl">
+            
+            <!-- Formulario de ingreso directo correo / contraseña para CEO o usuarios registrados -->
+            <div class="bg-gray-50 p-3 rounded-xl border space-y-2">
+                <p class="text-xs font-bold text-gray-700">¿Ya tienes cuenta o eres CEO?</p>
+                <input type="email" id="loginCorreoDirecto" placeholder="Correo electrónico" class="w-full border rounded-lg p-2 text-xs outline-none">
+                <input type="password" id="loginPassDirecto" placeholder="Contraseña" class="w-full border rounded-lg p-2 text-xs outline-none">
+                <button onclick="ejecutarLoginDirecto()" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-2 rounded-lg text-xs transition">
+                    Iniciar Sesión Directa / Panel CEO
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div onclick="abrirFormularioAuth('mercadero')" class="border-2 border-gray-200 hover:border-brand-red p-3 rounded-xl cursor-pointer text-center space-y-1 transition hover:shadow-md">
+                    <div class="w-10 h-10 bg-red-100 text-brand-red rounded-full flex items-center justify-center mx-auto text-base">
                         <i class="fa-solid fa-store"></i>
                     </div>
-                    <h4 class="font-bold text-sm text-gray-900">Mercadero(a)</h4>
-                    <p class="text-[11px] text-gray-500 leading-tight">Vendedor / Dueño de Puesto o Negocio.</p>
+                    <h4 class="font-bold text-xs text-gray-900">Mercadero(a)</h4>
+                    <p class="text-[10px] text-gray-500">Vendedor / Dueño de Puesto.</p>
                 </div>
-                <div onclick="abrirFormularioAuth('mercador')" class="border-2 border-gray-200 hover:border-brand-orange p-4 rounded-2xl cursor-pointer text-center space-y-2 transition hover:shadow-md">
-                    <div class="w-12 h-12 bg-orange-100 text-brand-orange rounded-full flex items-center justify-center mx-auto text-xl">
+                <div onclick="abrirFormularioAuth('mercador')" class="border-2 border-gray-200 hover:border-brand-orange p-3 rounded-xl cursor-pointer text-center space-y-1 transition hover:shadow-md">
+                    <div class="w-10 h-10 bg-orange-100 text-brand-orange rounded-full flex items-center justify-center mx-auto text-base">
                         <i class="fa-solid fa-basket-shopping"></i>
                     </div>
-                    <h4 class="font-bold text-sm text-gray-900">Mercador(a)</h4>
-                    <p class="text-[11px] text-gray-500 leading-tight">Comprador / Cliente que califica y guarda favoritos.</p>
+                    <h4 class="font-bold text-xs text-gray-900">Mercador(a)</h4>
+                    <p class="text-[10px] text-gray-500">Comprador / Calificador.</p>
                 </div>
             </div>
         </div>
@@ -479,7 +492,7 @@
         </div>
     </div>
 
-    <!-- MODAL 4: VENTANA "MERCAR" (AJUSTE 7: Estrellas vacías sin pintar que se pintan al calificar) -->
+    <!-- MODAL 4: VENTANA "MERCAR" (Ajuste 7: Estrellas sin pintar que se pintan al seleccionar) -->
     <div id="modalMercar" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalMercar')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -537,9 +550,8 @@
         </div>
     </div>
 
-    <!-- ==================== LOGICA JAVASCRIPT NATIVA ==================== -->
+    <!-- SCRIPT DE LÓGICA -->
     <script>
-        // CONFIGURACIÓN FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDummyKeyForMercatodonAuth2026",
             authDomain: "mercatodon-app.firebaseapp.com",
@@ -552,7 +564,6 @@
             firebase.initializeApp(firebaseConfig);
         }
 
-        // (AJUSTE 5) UBICACIÓN ENFOCADA EN REGIÓN PIURA Y SUS PROVINCIAS Y DISTRITOS
         const ubigeoPiura = {
             "Piura": {
                 "Paita": ["Paita", "Amotape", "Arenal", "Colán", "El Alto", "La Huaca", "Tamarindo", "Vichayal"],
@@ -605,7 +616,6 @@
             verificarInstalacionPWA();
         };
 
-        // TOAST NOTIFICATION PROFESIONAL
         function mostrarToast(mensaje) {
             const t = document.getElementById('toast');
             document.getElementById('toastMsg').innerText = mensaje;
@@ -615,7 +625,6 @@
             }, 3000);
         }
 
-        // NAVEGACIÓN
         function verInicio() {
             document.getElementById('headerInicio').classList.remove('hidden');
             document.getElementById('headerPuestos').classList.add('hidden');
@@ -664,24 +673,19 @@
             renderCeoTable();
         }
 
-        // RENDER RUBROS Y PUESTOS (AJUSTE 10: 2 cols móvil densas)
         function renderRubros() {
             const cont = document.getElementById('contenedorRubros');
             cont.innerHTML = '';
 
             rubrosConfig.forEach(r => {
-                const cant = r.nombre === "Todos" ? puestosBD.length : puestosBD.filter(p => p.rubro === r.nombre).length;
                 const active = rubroSeleccionado === r.nombre ? 'ring-2 ring-brand-red scale-105' : 'opacity-90';
-                
                 cont.innerHTML += `
-                    <button onclick="filtrarRubro('${r.nombre}')" class="flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold transition shadow-sm ${r.color} ${active}">
-                        <i class="fa-solid ${r.icon} text-[10px]"></i>
+                    <button onclick="filtrarRubro('${r.nombre}')" class="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm ${r.color} ${active}">
+                        <i class="fa-solid ${r.icon} text-xs"></i>
                         <span>${r.nombre}</span>
-                        <span class="bg-white/30 text-white text-[9px] px-1.5 py-0.2 rounded-full font-black">${cant}</span>
                     </button>
                 `;
             });
-            document.getElementById('cantPuestosTotal').innerText = `${puestosBD.length} Puestos`;
         }
 
         function renderPuestos(lista = puestosBD) {
@@ -699,7 +703,7 @@
             filtrados.forEach(p => {
                 const corazonColor = p.fav ? 'text-red-500' : 'text-gray-300';
                 grid.innerHTML += `
-                    <div class="bg-white rounded-xl border border-gray-200 p-2.5 flex flex-col justify-between shadow-sm hover:shadow transition">
+                    <div class="bg-white rounded-xl border-2 border-amber-300 p-2.5 flex flex-col justify-between shadow-sm hover:shadow transition">
                         <div>
                             <div class="flex items-center justify-between gap-1 mb-1">
                                 <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded truncate max-w-[75%]">${p.rubro}</span>
@@ -717,20 +721,22 @@
                                     <i class="fa-solid fa-star text-[10px]"></i>
                                     <span>${p.mercas} <span class="text-[9px] text-gray-400 font-normal">mercas</span></span>
                                 </div>
-                                <button onclick="abrirMercarModal(${p.id})" class="bg-brand-red hover:bg-brand-darkRed text-white font-extrabold text-[10px] py-1 px-2 rounded transition shadow-sm">
+                                <!-- (Ajuste 7) Botón Mercar Amarillo con letras negras -->
+                                <button onclick="abrirMercarModal(${p.id})" class="bg-brand-gold hover:bg-amber-400 text-gray-900 font-extrabold text-[10px] py-1 px-2.5 rounded transition shadow-sm">
                                     Mercar
                                 </button>
                             </div>
 
+                            <!-- (Ajuste 4) 3 botones de altura aumentada e íconos proporcionales -->
                             <div class="grid grid-cols-3 gap-1">
-                                <a href="${p.web || '#'}" target="_blank" class="bg-red-600 hover:bg-red-700 text-white text-center py-1 rounded text-xs transition" title="Web / Catálogo">
-                                    <i class="fa-solid fa-globe text-[10px]"></i>
+                                <a href="${p.web || '#'}" target="_blank" class="bg-red-600 hover:bg-red-700 text-white text-center py-1.5 rounded text-sm transition flex items-center justify-center" title="Web / Catálogo">
+                                    <i class="fa-solid fa-globe"></i>
                                 </a>
-                                <a href="https://maps.google.com/?q=${encodeURIComponent(p.nombre + ' ' + p.distrito + ' Piura')}" target="_blank" class="bg-black hover:bg-gray-800 text-white text-center py-1 rounded text-xs transition" title="GPS">
-                                    <i class="fa-solid fa-location-dot text-[10px]"></i>
+                                <a href="https://maps.google.com/?q=${encodeURIComponent(p.nombre + ' ' + p.distrito + ' Piura')}" target="_blank" class="bg-black hover:bg-gray-800 text-white text-center py-1.5 rounded text-sm transition flex items-center justify-center" title="GPS">
+                                    <i class="fa-solid fa-location-dot"></i>
                                 </a>
-                                <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20Mercatodon%20Piura" target="_blank" class="bg-brand-whatsapp hover:bg-emerald-600 text-white text-center py-1 rounded text-xs transition" title="WhatsApp">
-                                    <i class="fa-brands fa-whatsapp text-[10px]"></i>
+                                <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20Mercatodon%20Piura" target="_blank" class="bg-brand-whatsapp hover:bg-emerald-600 text-white text-center py-1.5 rounded text-sm transition flex items-center justify-center" title="WhatsApp">
+                                    <i class="fa-brands fa-whatsapp"></i>
                                 </a>
                             </div>
                         </div>
@@ -770,7 +776,6 @@
             }
         }
 
-        // FLUJO MERCAR CON ESTRELLAS (AJUSTE 7)
         function abrirMercarModal(id) {
             puestoSeleccionadoId = id;
             const p = puestosBD.find(x => x.id === id);
@@ -815,7 +820,6 @@
             }
         }
 
-        // SISTEMA UBICACIÓN PIURA (AJUSTE 5)
         function inicializarUbicacionUI() {
             const selProv = document.getElementById('selProvincia');
             selProv.innerHTML = '';
@@ -823,11 +827,6 @@
                 selProv.innerHTML += `<option value="${prov}">${prov}</option>`;
             });
             selProv.value = ubicacionActual.provincia || "Paita";
-            cargarDistritos();
-        }
-
-        function cargarProvincias() {
-            // Ya fijo en Piura
             cargarDistritos();
         }
 
@@ -859,13 +858,47 @@
             document.getElementById('modalUbicacion').classList.remove('hidden');
         }
 
-        // AUTENTICACIÓN Y FIREBASE
-        function abrirAuthModal() {
+        // (Ajuste 5) GESTIÓN DE SESIÓN Y BOTÓN USUARIO
+        function gestionarBotonUsuario() {
             if (usuarioActual) {
                 verDashboard();
+            } else {
+                abrirAuthModal();
+            }
+        }
+
+        function abrirAuthModal() {
+            document.getElementById('modalAuth').classList.remove('hidden');
+        }
+
+        function ejecutarLoginDirecto() {
+            const email = document.getElementById('loginCorreoDirecto').value;
+            const pass = document.getElementById('loginPassDirecto').value;
+
+            if (email === "multivercado@gmail.com" && pass === "20701") {
+                cerrarModal('modalAuth');
+                verCeoPanel();
+                mostrarToast("Acceso de CEO concedido correctamente");
                 return;
             }
-            document.getElementById('modalAuth').classList.remove('hidden');
+
+            if (!email || !pass) {
+                mostrarToast("Ingresa correo y contraseña.");
+                return;
+            }
+
+            // Simulación de autenticación de usuario registrado previamente
+            usuarioActual = {
+                nombre: email.split('@')[0],
+                correo: email,
+                rol: 'mercador',
+                fecha: new Date().toLocaleDateString()
+            };
+            localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+            cerrarModal('modalAuth');
+            actualizarHeaderUsuario();
+            verDashboard();
+            mostrarToast("Sesión iniciada correctamente");
         }
 
         function abrirFormularioAuth(rol) {
@@ -955,7 +988,7 @@
             localStorage.removeItem('mercatodon_usuario');
             actualizarHeaderUsuario();
             verInicio();
-            mostrarToast("Sesión cerrada");
+            mostrarToast("Sesión cerrada correctamente");
         }
 
         function renderDashMercadero() {
@@ -1038,7 +1071,6 @@
             mostrarToast("Puesto eliminado por CEO");
         }
 
-        // SLIDER
         function iniciarSlider() {
             setInterval(() => { nextSlide(); }, 5000);
         }
@@ -1055,7 +1087,6 @@
             if (wrapper) wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
         }
 
-        // DONACIÓN
         function abrirModalDonacion() {
             document.getElementById('modalDonacion').classList.remove('hidden');
         }
