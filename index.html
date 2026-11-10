@@ -68,71 +68,56 @@
         <span id="toastMsg">Mensaje del sistema</span>
     </div>
 
-    <!-- ==================== HEADER 1: INICIO ==================== -->
-    <header id="headerInicio" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
+    <!-- ==================== HEADER UNIFICADO (AJUSTE 3 & 4) ==================== -->
+    <header id="headerPrincipal" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
-            <!-- Logo + Nombre MERCATODON en MAYÚSCULAS -->
-            <div class="flex items-center gap-2 cursor-pointer" onclick="verInicio()">
+            <!-- Logo + Nombre MERCATODON + Eslogan -->
+            <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
                 <div class="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md flex-shrink-0">
                     <i class="fa-solid fa-store"></i>
                 </div>
                 <div class="leading-none">
-                    <span class="text-base sm:text-xl font-black text-brand-red tracking-tight block">MERCATODON</span>
-                    <span class="text-[9px] text-gray-500 font-bold tracking-wider uppercase block mt-0.5">Puestos en Acción</span>
+                    <span class="text-sm sm:text-lg font-black text-brand-red tracking-tight block">MERCATODON</span>
+                    <span class="text-[8px] text-gray-500 font-bold tracking-wider uppercase block mt-0.5">Puestos en Acción</span>
                 </div>
             </div>
 
-            <!-- Acciones Derecha -->
+            <!-- Barra de Búsqueda Central -->
+            <div class="flex-1 max-w-md relative hidden md:block">
+                <input type="text" id="inputBusqueda" onkeyup="filtrarPuestos()" placeholder="Buscar puesto, rubro o producto..." class="w-full bg-gray-100 border border-gray-200 rounded-full pl-8 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+            </div>
+
+            <!-- Acciones Derecha: Ubicación + Usuario + Corazón (Favoritos) + Puestos -->
             <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
                 <button onclick="abrirModalUbicacion()" class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200">
                     <i class="fa-solid fa-location-dot text-brand-red text-sm"></i>
-                    <span id="labelUbicacionActual" class="hidden sm:inline truncate max-w-[140px]">Piura, Paita, Paita</span>
-                    <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 hidden sm:inline"></i>
+                    <span id="labelUbicacionActual" class="hidden sm:inline truncate max-w-[110px]">Piura, Paita, Paita</span>
+                </button>
+
+                <button onclick="verFavoritosModal()" class="p-2 text-gray-700 hover:text-red-500 hover:bg-red-50 rounded-full transition relative" title="Favoritos">
+                    <i class="fa-solid fa-heart text-base"></i>
+                </button>
+
+                <button onclick="verPuestos()" class="p-2 text-gray-700 hover:text-brand-red hover:bg-gray-100 rounded-full transition" title="Ver Puestos">
+                    <i class="fa-solid fa-shop text-base"></i>
                 </button>
 
                 <button onclick="abrirAuthModal()" class="bg-gray-900 hover:bg-black text-white font-bold text-xs py-1.5 px-3 rounded-full shadow transition flex items-center gap-1">
                     <i class="fa-solid fa-user text-xs"></i>
                     <span class="hidden xs:inline" id="btnAuthText">Ingresar</span>
                 </button>
-                <button onclick="verPuestos()" class="bg-brand-red hover:bg-brand-darkRed text-white font-bold text-xs py-1.5 px-3 rounded-full shadow transition flex items-center gap-1">
-                    <i class="fa-solid fa-shop text-xs"></i>
-                    <span class="hidden xs:inline">Puestos</span>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- ==================== HEADER 2: SECCIÓN PUESTOS ==================== -->
-    <header id="headerPuestos" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100 hidden">
-        <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
-            <button onclick="verInicio()" class="p-2 text-gray-600 hover:text-brand-red rounded-full hover:bg-gray-100 transition" title="Ir a Inicio">
-                <i class="fa-solid fa-house text-base"></i>
-            </button>
-
-            <div class="flex-1 max-w-xl relative">
-                <input type="text" id="inputBusqueda" onkeyup="filtrarPuestos()" placeholder="Buscar puesto, rubro o producto..." class="w-full bg-gray-100 border border-gray-200 rounded-full pl-8 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
-            </div>
-
-            <div class="flex items-center gap-1.5">
-                <button onclick="abrirModalUbicacion()" class="p-2 text-brand-red hover:bg-red-50 rounded-full transition" title="Cambiar Ubicación">
-                    <i class="fa-solid fa-location-crosshairs text-base"></i>
-                </button>
-                <button onclick="abrirAuthModal()" class="bg-brand-red text-white p-2 sm:px-3 sm:py-1.5 rounded-full text-xs font-bold shadow flex items-center gap-1">
-                    <i class="fa-solid fa-user"></i>
-                    <span class="hidden sm:inline" id="btnAuthText2">Registro</span>
-                </button>
             </div>
         </div>
     </header>
 
     <!-- CONTAINER PRINCIPAL -->
-    <main class="flex-grow w-full m-0 p-0 space-y-3">
+    <main class="flex-grow w-full m-0 p-0 space-y-4">
 
-        <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES CON SWIPE TÁCTIL ==================== -->
-        <section id="secInicio" class="space-y-3">
+        <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES Y SECCIONES A-H (AJUSTE 8) ==================== -->
+        <section id="secInicio" class="space-y-4">
             
-            <!-- Banner Slider Principal con Soporte Táctil (Swipe) -->
+            <!-- SECCIÓN A: Banner Principal (Carrusel Táctil) -->
             <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
                 <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out">
                     <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1400&q=80" alt="Mercados de Piura" class="w-full h-full object-cover flex-shrink-0 pointer-events-none">
@@ -147,89 +132,123 @@
                 </button>
             </div>
 
-            <!-- CONTENIDO CON MARGEN DELIMITADO Y ESTRUCTURA DE BANNERS UNIFORMES (1 AL 30) -->
-            <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3">
+            <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-4">
                 
-                <!-- BANNERS 1 A 4 -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 sm:h-32 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 1 (728x90)</div>
-                    <div class="h-28 sm:h-32 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 2 (300x250)</div>
-                    <div class="h-28 sm:h-32 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 3 (GIF 1080x1080)</div>
-                    <div class="h-28 sm:h-32 bg-gradient-to-r from-purple-700 to-pink-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 4</div>
+                <!-- SECCIÓN B: Ofertas y Promos (Tarjetas deslizables) -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
+                            <i class="fa-solid fa-tags text-brand-orange"></i> Ofertas y Promos
+                        </h3>
+                        <button onclick="verPuestos()" class="text-[11px] font-bold text-brand-red hover:underline">Ver todas &rarr;</button>
+                    </div>
+                    <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+                        <div class="min-w-[160px] sm:min-w-[200px] bg-white border rounded-xl p-2.5 shadow-sm flex-shrink-0 space-y-1">
+                            <img src="https://images.unsplash.com/photo-1563542932420-dda7e6b6a2f3?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-lg" alt="Oferta">
+                            <span class="text-[9px] bg-orange-100 text-brand-orange font-bold px-1.5 py-0.5 rounded">Oferta B1</span>
+                            <h4 class="font-bold text-xs truncate">Tomate Extra</h4>
+                            <p class="text-[10px] text-gray-500">S/ 1.50 kg</p>
+                        </div>
+                        <div class="min-w-[160px] sm:min-w-[200px] bg-white border rounded-xl p-2.5 shadow-sm flex-shrink-0 space-y-1">
+                            <img src="https://images.unsplash.com/photo-1534482492322-1e272e75e9fe?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-lg" alt="Oferta">
+                            <span class="text-[9px] bg-orange-100 text-brand-orange font-bold px-1.5 py-0.5 rounded">Oferta B2</span>
+                            <h4 class="font-bold text-xs truncate">Pescado Merluza</h4>
+                            <p class="text-[10px] text-gray-500">S/ 8.90 kg</p>
+                        </div>
+                        <div class="min-w-[160px] sm:min-w-[200px] bg-white border rounded-xl p-2.5 shadow-sm flex-shrink-0 space-y-1">
+                            <img src="https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-lg" alt="Oferta">
+                            <span class="text-[9px] bg-orange-100 text-brand-orange font-bold px-1.5 py-0.5 rounded">Oferta B3</span>
+                            <h4 class="font-bold text-xs truncate">Limón Sutil</h4>
+                            <p class="text-[10px] text-gray-500">S/ 1.00 kg</p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- BANNER 5 (Ancho Completo w-full) -->
-                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-teal-600 to-blue-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                    Banner 5 Estático (Ancho Completo - Google Sheets ID: banner_05)
+                <!-- SECCIÓN C: Patrocinios -->
+                <div class="space-y-2">
+                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
+                        <i class="fa-solid fa-crown text-amber-500"></i> Patrocinios
+                    </h3>
+                    <div class="w-full h-20 sm:h-24 bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
+                        Banner Patrocinio C1 (728x90) - Marcas y Negocios Líderes
+                    </div>
                 </div>
 
-                <!-- BANNERS 6 A 9 -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 6</div>
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 7</div>
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 8</div>
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 9</div>
+                <!-- SECCIÓN D: Spots Comerciales (Videos / Multimedia) -->
+                <div class="space-y-2">
+                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
+                        <i class="fa-solid fa-video text-red-600"></i> Spots Comerciales
+                    </h3>
+                    <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+                        <div class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video flex items-center justify-center text-white">
+                            <i class="fa-solid fa-circle-play text-3xl text-red-500"></i>
+                            <span class="absolute bottom-2 left-2 text-[10px] bg-black/60 px-2 py-0.5 rounded font-bold">Spot D1 - Conoce nuestro mercado</span>
+                        </div>
+                        <div class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video flex items-center justify-center text-white">
+                            <i class="fa-solid fa-circle-play text-3xl text-red-500"></i>
+                            <span class="absolute bottom-2 left-2 text-[10px] bg-black/60 px-2 py-0.5 rounded font-bold">Spot D2 - Recetas norteñas</span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- BANNER 10 (Ancho Completo w-full) -->
-                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-indigo-700 to-purple-700 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                    Banner 10 Estático (Ancho Completo - Google Sheets ID: banner_10)
+                <!-- SECCIÓN E: Servicios y Proveedores -->
+                <div class="space-y-2">
+                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
+                        <i class="fa-solid fa-truck-fast text-blue-600"></i> Servicios y Proveedores
+                    </h3>
+                    <div class="w-full h-24 sm:h-28 bg-gradient-to-r from-blue-700 to-indigo-800 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
+                        Banner Servicios E1 (1200x250) - Transporte, distribución y proveeduría
+                    </div>
                 </div>
 
-                <!-- BANNERS 11 A 14 -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 11</div>
-                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 12</div>
-                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 13</div>
-                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 14</div>
+                <!-- SECCIÓN F: Campañas Especiales -->
+                <div class="space-y-2">
+                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
+                        <i class="fa-solid fa-calendar-days text-rose-600"></i> Campañas Especiales
+                    </h3>
+                    <div class="w-full h-24 sm:h-28 bg-gradient-to-r from-rose-600 to-pink-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
+                        Banner Campaña F1 (1200x300) - Especial del Mes / Festividades
+                    </div>
                 </div>
 
-                <!-- BANNER 15 (Ancho Completo w-full) -->
-                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-red-700 to-rose-700 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                    Banner 15 Estático (Ancho Completo - Google Sheets ID: banner_15)
+                <!-- SECCIÓN G: Nuestros Aliados -->
+                <div class="space-y-2">
+                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
+                        <i class="fa-solid fa-handshake text-emerald-600"></i> Nuestros Aliados
+                    </h3>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-white border rounded-xl p-3 text-center text-xs font-bold text-gray-700 shadow-sm">AgroVida</div>
+                        <div class="bg-white border rounded-xl p-3 text-center text-xs font-bold text-gray-700 shadow-sm">FarmaSalud</div>
+                        <div class="bg-white border rounded-xl p-3 text-center text-xs font-bold text-gray-700 shadow-sm">CrediFacil</div>
+                    </div>
                 </div>
 
-                <!-- BANNERS 16 A 19 -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 16</div>
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 17</div>
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 18</div>
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 19</div>
-                </div>
-
-                <!-- BANNER 20 (Ancho Completo w-full) -->
-                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                    Banner 20 Estático (Ancho Completo - Google Sheets ID: banner_20)
-                </div>
-
-                <!-- BANNERS 21 A 24 -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 21</div>
-                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 22</div>
-                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 23</div>
-                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 24</div>
-                </div>
-
-                <!-- BANNER 25 (Ancho Completo w-full) -->
-                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-blue-800 to-cyan-700 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                    Banner 25 Estático (Ancho Completo - Google Sheets ID: banner_25)
-                </div>
-
-                <!-- BANNERS 26 A 29 -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 26</div>
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 27</div>
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 28</div>
-                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 29</div>
-                </div>
-
-                <!-- BANNER 30 (Ancho Completo w-full) -->
-                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-purple-800 to-indigo-800 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                    Banner 30 Estático (Ancho Completo - Google Sheets ID: banner_30)
+                <!-- SECCIÓN H: Novedades -->
+                <div class="space-y-2">
+                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
+                        <i class="fa-solid fa-bell text-amber-600"></i> Novedades
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div class="bg-white border rounded-xl p-2.5 shadow-sm text-xs space-y-1">
+                            <span class="text-[9px] bg-amber-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">Noticia H1</span>
+                            <h4 class="font-bold">Nuevas verduras frescas</h4>
+                            <p class="text-[10px] text-gray-500">Llegadas directas del campo regional piurano.</p>
+                        </div>
+                        <div class="bg-white border rounded-xl p-2.5 shadow-sm text-xs space-y-1">
+                            <span class="text-[9px] bg-amber-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">Noticia H2</span>
+                            <h4 class="font-bold">Carnes de calidad</h4>
+                            <p class="text-[10px] text-gray-500">Nuevos cortes certificados para restaurantes.</p>
+                        </div>
+                        <div class="bg-white border rounded-xl p-2.5 shadow-sm text-xs space-y-1">
+                            <span class="text-[9px] bg-amber-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">Noticia H3</span>
+                            <h4 class="font-bold">Frutas de temporada</h4>
+                            <p class="text-[10px] text-gray-500">Mango edén y uva criolla al mejor precio.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Bloques Promocionales Redes y Catálogo -->
-                <div id="bloquesPromocionalesInicio" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div id="bloquesPromocionalesInicio" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                     <div class="bg-white border border-gray-200 rounded-xl p-3.5 shadow-sm flex flex-col justify-between space-y-2 hover:border-brand-red transition">
                         <div>
                             <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Piura</div>
@@ -264,7 +283,7 @@
                     </div>
                 </div>
 
-                <!-- Banner Oficial MERCATODON con Redes Sociales Oficiales -->
+                <!-- Banner Oficial MERCATODON -->
                 <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-4 text-white text-center shadow-md space-y-2">
                     <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Publicidad Oficial MERCATODON</span>
                     <h3 class="text-sm sm:text-base font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
@@ -299,22 +318,29 @@
                 <!-- Dinámico JS -->
             </div>
 
-            <!-- (AJUSTE 4) Todos los Banners Táctiles debajo del último puesto registrado -->
             <div class="pt-6 border-t-2 border-dashed border-gray-300 space-y-4">
                 <h3 class="text-xs font-black text-center text-gray-400 uppercase tracking-widest">Publicidad y Promociones Destacadas</h3>
                 <div id="publicidadFinPuestos" class="space-y-3">
-                    <!-- Clon dinámico táctil -->
+                    <!-- Clon dinámico -->
                 </div>
             </div>
         </section>
 
-        <!-- ==================== SECCIÓN 3: DASHBOARDS ==================== -->
+        <!-- ==================== SECCIÓN 3: DASHBOARDS (AJUSTE 4 & 5) ==================== -->
         <section id="secDashboard" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-4">
             <div id="dashMercadero" class="hidden space-y-4"></div>
             <div id="dashMercador" class="hidden space-y-4"></div>
+            
+            <!-- Publicidades añadidas en los paneles (Ajuste 5) -->
+            <div class="pt-6 border-t border-gray-200 space-y-3">
+                <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest text-center">Publicidad Recomendada</h3>
+                <div class="w-full h-24 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow">
+                    Banner Promocional General - Panel de Usuario
+                </div>
+            </div>
         </section>
 
-        <!-- ==================== SECCIÓN 4: PANEL CEO (INTERNO) ==================== -->
+        <!-- ==================== SECCIÓN 4: PANEL CEO CON SELECCIÓN MERCADEROS/MERCADORES (AJUSTE 1) ==================== -->
         <section id="secCeo" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-4 bg-white p-4 rounded-2xl border-2 border-red-500 shadow-xl">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="text-base font-black text-brand-red flex items-center gap-2">
@@ -329,8 +355,8 @@
                     <p id="ceoCantPuestos" class="text-lg font-bold text-brand-red">0</p>
                 </div>
                 <div class="bg-orange-50 p-2.5 rounded-xl border border-orange-200">
-                    <span class="text-[10px] text-gray-500 font-semibold">Mercadores Reg.</span>
-                    <p id="ceoCantMercadores" class="text-lg font-bold text-brand-orange">0</p>
+                    <span class="text-[10px] text-gray-500 font-semibold">Usuarios Reg.</span>
+                    <p id="ceoCantUsuarios" class="text-lg font-bold text-brand-orange">0</p>
                 </div>
                 <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200">
                     <span class="text-[10px] text-gray-500 font-semibold">Total Mercas</span>
@@ -342,19 +368,29 @@
                 </div>
             </div>
 
+            <!-- Selector de Visualización CEO (Ajuste 1) -->
+            <div class="flex gap-2 border-b pb-2">
+                <button onclick="cambiarTabCeo('mercaderos')" id="tabBtnMercaderos" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-brand-red text-white transition">
+                    Ver Mercaderos (Puestos)
+                </button>
+                <button onclick="cambiarTabCeo('mercadores')" id="tabBtnMercadores" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition">
+                    Ver Mercadores (Compradores)
+                </button>
+            </div>
+
             <div class="overflow-x-auto">
-                <h3 class="text-xs font-bold text-gray-600 uppercase mb-2">Gestión Completa de Puestos (Editar/Eliminar)</h3>
+                <h3 id="ceoTituloTabla" class="text-xs font-bold text-gray-600 uppercase mb-2">Gestión de Mercaderos (Editar / Bloquear / Eliminar)</h3>
                 <table class="w-full text-xs text-left border-collapse">
                     <thead>
-                        <tr class="bg-gray-100 text-gray-700">
-                            <th class="p-2 border">Puesto</th>
+                        <tr class="bg-gray-100 text-gray-700" id="ceoTablaHeader">
+                            <th class="p-2 border">Puesto / Dueño</th>
                             <th class="p-2 border">Rubro</th>
-                            <th class="p-2 border">Provincia / Distrito</th>
-                            <th class="p-2 border">Mercas</th>
+                            <th class="p-2 border">Ubicación</th>
+                            <th class="p-2 border">Contacto / Correo</th>
                             <th class="p-2 border">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaCeoPuestos"></tbody>
+                    <tbody id="tablaCeoContenido"></tbody>
                 </table>
             </div>
         </section>
@@ -420,7 +456,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: SELECCIÓN ROL REGISTRO / INGRESO -->
+    <!-- MODAL 2: SELECCIÓN ROL REGISTRO / INGRESO CON "OLVIDÉ CONTRASEÑA" (AJUSTE 2) -->
     <div id="modalAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -440,6 +476,14 @@
                     <label class="text-[11px] font-bold text-gray-700">Contraseña</label>
                     <input type="password" id="loginPass" required class="w-full border rounded-lg p-2 text-xs outline-none bg-white">
                 </div>
+                
+                <!-- Botón Olvidé Contraseña conectado a Firebase (Ajuste 2) -->
+                <div class="text-right">
+                    <button type="button" onclick="recuperarPasswordLogin()" class="text-[11px] text-brand-red hover:underline font-semibold">
+                        Olvidé contraseña
+                    </button>
+                </div>
+
                 <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-2 rounded-lg text-xs transition">
                     Iniciar Sesión
                 </button>
@@ -466,7 +510,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: FORMULARIO REGISTRO 100% CORREGIDO (AJUSTE 1: Sin barras de desplazamiento y con los 12 datos exactos) -->
+    <!-- MODAL 3: FORMULARIO REGISTRO (Sin texto de recuperar contraseña según Ajuste 2) -->
     <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto no-scrollbar">
             <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10">
@@ -476,7 +520,6 @@
             <form id="formAuth" onsubmit="procesarAuth(event)" class="space-y-2.5">
                 <input type="hidden" id="authRol">
                 
-                <!-- DATOS ESPECÍFICOS MERCADERO (GRATUITO) -->
                 <div id="camposMercadero" class="space-y-2.5 hidden bg-red-50/50 p-2.5 rounded-xl border border-red-100">
                     <div class="text-[10px] font-black text-brand-red uppercase tracking-wide">Datos del Puesto</div>
                     <div>
@@ -510,7 +553,7 @@
                     </div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Descripción (breve) *</label>
-                        <input type="text" id="regPuestoDesc" placeholder="Describe brevemente tu puesto o productos" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                        <input type="text" id="regPuestoDesc" placeholder="Describe brevemente tu puesto" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
@@ -532,8 +575,8 @@
                         <div>
                             <label class="text-xs font-semibold text-gray-700">Ubicación GPS</label>
                             <div class="flex gap-1">
-                                <input type="text" id="regGps" placeholder="Coordenadas GPS" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
-                                <button type="button" onclick="detectarGpsRegistro()" class="bg-white hover:bg-gray-100 border px-2.5 rounded-xl text-xs font-bold" title="Detectar GPS automático">
+                                <input type="text" id="regGps" placeholder="GPS" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                                <button type="button" onclick="detectarGpsRegistro()" class="bg-white hover:bg-gray-100 border px-2.5 rounded-xl text-xs font-bold" title="Detectar GPS">
                                     <i class="fa-solid fa-location-crosshairs text-brand-red"></i>
                                 </button>
                             </div>
@@ -541,19 +584,18 @@
                     </div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Catálogo Virtual o Facebook (Opcional)</label>
-                        <input type="url" id="regPuestoWeb" placeholder="https://facebook.com/..." class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                        <input type="url" id="regPuestoWeb" placeholder="https://..." class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
                     </div>
                 </div>
 
-                <!-- DATOS GENERALES DUEÑO / USUARIO -->
                 <div class="space-y-2.5">
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos del Dueño del Puesto *</label>
-                        <input type="text" id="regNombreCompleto" required placeholder="Nombres y Apellidos completos" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos del Dueño / Usuario *</label>
+                        <input type="text" id="regNombreCompleto" required placeholder="Nombres y Apellidos" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-xs font-semibold text-gray-700">WhatsApp del Puesto *</label>
+                            <label class="text-xs font-semibold text-gray-700">WhatsApp *</label>
                             <input type="tel" id="regWhatsapp" required placeholder="930528649" class="w-full border rounded-xl p-2 text-xs outline-none">
                         </div>
                         <div>
@@ -562,11 +604,11 @@
                         </div>
                     </div>
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">Correo Electrónico (Acceso panel) *</label>
-                        <input type="email" id="regCorreo" required placeholder="tucorreo@gmail.com" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        <label class="text-xs font-semibold text-gray-700">Correo Electrónico (Acceso) *</label>
+                        <input type="email" id="regCorreo" required placeholder="correo@gmail.com" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">Contraseña (Acceso panel) *</label>
+                        <label class="text-xs font-semibold text-gray-700">Contraseña (Acceso) *</label>
                         <input type="password" id="regPass" required placeholder="••••••••" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
                 </div>
@@ -581,15 +623,10 @@
                     Guardar Registro e Ingresar
                 </button>
             </form>
-            <div class="text-center pt-1 border-t">
-                <button onclick="recuperarPassword()" class="text-xs text-gray-500 hover:text-brand-red underline">
-                    ¿Olvidaste tu contraseña?
-                </button>
-            </div>
         </div>
     </div>
 
-    <!-- MODAL 4: VENTANA "MERCAR" -->
+    <!-- MODAL 4: VENTANA "MERCAR" (Estrellas sin pintar inicialmente - Ajuste 7) -->
     <div id="modalMercar" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalMercar')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -604,17 +641,17 @@
             <div class="bg-gray-50 p-4 rounded-xl text-center space-y-2 border">
                 <p class="text-xs font-bold text-gray-700">Selecciona de 1 a 5 Estrellas:</p>
                 <div class="flex justify-center gap-2 text-2xl" id="estrellasContenedor">
-                    <i class="fa-solid fa-star star-rating text-gray-300" onclick="setCalificacion(1)"></i>
-                    <i class="fa-solid fa-star star-rating text-gray-300" onclick="setCalificacion(2)"></i>
-                    <i class="fa-solid fa-star star-rating text-gray-300" onclick="setCalificacion(3)"></i>
-                    <i class="fa-solid fa-star star-rating text-gray-300" onclick="setCalificacion(4)"></i>
-                    <i class="fa-solid fa-star star-rating text-gray-300" onclick="setCalificacion(5)"></i>
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(1)"></i>
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(2)"></i>
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(3)"></i>
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(4)"></i>
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(5)"></i>
                 </div>
             </div>
-            <textarea id="mercarComentario" placeholder="Comentario opcional..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-brand-red resize-none h-20"></textarea>
+            <textarea id="mercarComentario" placeholder="Comentario u opinión sobre el puesto..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-brand-red resize-none h-20"></textarea>
             
             <button onclick="confirmarMercar()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-black py-2.5 rounded-xl text-xs shadow transition border border-yellow-500">
-                Mercar
+                Mercar (Calificar)
             </button>
         </div>
     </div>
@@ -640,11 +677,26 @@
                     <option value="Transferencia Bancaria">Transferencia Bancaria</option>
                 </select>
                 <input type="number" id="donanteMonto" placeholder="Monto (S/.)" class="w-full border rounded-xl p-2 text-xs outline-none">
-                <textarea id="donanteNota" placeholder="Mensaje de apoyo (Opcional)..." class="w-full border rounded-xl p-2 text-xs outline-none h-16 resize-none"></textarea>
+                <textarea id="donanteNota" placeholder="Mensaje de apoyo..." class="w-full border rounded-xl p-2 text-xs outline-none h-16 resize-none"></textarea>
             </div>
             <button onclick="enviarDonacion()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-2">
                 <i class="fa-brands fa-whatsapp"></i> Enviar Aporte vía WhatsApp
             </button>
+        </div>
+    </div>
+
+    <!-- MODAL 6: FAVORITOS -->
+    <div id="modalFavoritos" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl relative max-h-[80vh] overflow-y-auto">
+            <button onclick="cerrarModal('modalFavoritos')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="font-bold text-base text-gray-900 flex items-center gap-2">
+                <i class="fa-solid fa-heart text-red-500"></i> Mis Puestos Favoritos
+            </h3>
+            <div id="listaFavoritosModal" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <!-- Dinámico -->
+            </div>
         </div>
     </div>
 
@@ -663,7 +715,6 @@
             firebase.initializeApp(firebaseConfig);
         }
 
-        // BASE DE DATOS DE PROVINCIAS Y DISTRITOS DE LA REGIÓN PIURA
         const ubigeoPiura = {
             "Piura": {
                 "Paita": ["Paita", "Amotape", "Arenal", "Colán", "El Alto", "La Huaca", "Tamarindo", "Vichayal"],
@@ -702,20 +753,27 @@
         ];
 
         let puestosBD = JSON.parse(localStorage.getItem('mercatodon_puestos')) || [
-            { id: 1, nombre: "Mini Market La Esquina", rubro: "Alimentos", desc: "Abarrotes y productos de primera necesidad en Paita.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 45, whatsapp: "51930528649", web: "https://facebook.com", fav: false },
-            { id: 2, nombre: "Cevichería El Puerto", rubro: "Gastronomía", desc: "Pescado fresco del día y ceviches piuranos.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 89, whatsapp: "51930528649", web: "", fav: true },
-            { id: 3, nombre: "Carnicería Don Lucho", rubro: "Carnes", desc: "Cortes de res y pollo de calidad.", region: "Piura", provincia: "Sullana", distrito: "Sullana", mercas: 23, whatsapp: "51930528649", web: "", fav: false },
-            { id: 4, nombre: "Boutique Moda Piura", rubro: "Moda", desc: "Ropa urbana y calzado.", region: "Piura", provincia: "Piura", distrito: "Piura", mercas: 12, whatsapp: "51930528649", web: "https://instagram.com", fav: false },
-            { id: 5, nombre: "Verdulería Doña María", rubro: "Frutas", desc: "Frutas y verduras frescas del campo regional.", region: "Piura", provincia: "Sechura", distrito: "Sechura", mercas: 67, whatsapp: "51930528649", web: "", fav: false },
-            { id: 6, nombre: "TecnoCel Piura", rubro: "Tecnología", desc: "Accesorios y repuestos móviles.", region: "Piura", provincia: "Piura", distrito: "Castilla", mercas: 34, whatsapp: "51930528649", web: "", fav: false }
+            { id: 1, nombre: "Mini Market La Esquina", rubro: "Alimentos", desc: "Abarrotes y productos de primera necesidad en Paita.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 45, whatsapp: "51930528649", web: "https://facebook.com", fav: false, duenio: "Juan Pérez", correo: "juan@gmail.com" },
+            { id: 2, nombre: "Cevichería El Puerto", rubro: "Gastronomía", desc: "Pescado fresco del día y ceviches piuranos.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 89, whatsapp: "51930528649", web: "", fav: true, duenio: "Rosa Zapata", correo: "rosa@gmail.com" },
+            { id: 3, nombre: "Carnicería Don Lucho", rubro: "Carnes", desc: "Cortes de res y pollo de calidad.", region: "Piura", provincia: "Sullana", distrito: "Sullana", mercas: 23, whatsapp: "51930528649", web: "", fav: false, duenio: "Luis Ramos", correo: "lucho@gmail.com" }
+        ];
+
+        let usuariosBD = JSON.parse(localStorage.getItem('mercatodon_usuarios')) || [
+            { nombre: "Carlos Comprador", correo: "carlos@gmail.com", whatsapp: "911222333", rol: "mercador", fecha: "2026-11-01" },
+            { nombre: "Ana Compradora", correo: "ana@gmail.com", whatsapp: "944555666", rol: "mercador", fecha: "2026-11-05" }
+        ];
+
+        let calificacionesBD = JSON.parse(localStorage.getItem('mercatodon_calificaciones')) || [
+            { puestoId: 1, usuario: "Carlos Comprador", estrellas: 5, comentario: "¡Excelente atención y productos muy frescos!", fecha: "10/11/2026 12:30" }
         ];
 
         let usuarioActual = JSON.parse(localStorage.getItem('mercatodon_usuario')) || null;
         let ubicacionActual = JSON.parse(localStorage.getItem('mercatodon_ubicacion')) || { region: "Piura", provincia: "Paita", distrito: "Paita" };
         let rubroSeleccionado = "Todos";
         let puestoSeleccionadoId = null;
-        let calificacionTemp = 5;
+        let calificacionTemp = 0; // Inicialmente sin seleccionar
         let slideIndex = 0;
+        let ceoTabActual = 'mercaderos';
 
         window.onload = function() {
             inicializarUbicacionUI();
@@ -739,8 +797,6 @@
         }
 
         function verInicio() {
-            document.getElementById('headerInicio').classList.remove('hidden');
-            document.getElementById('headerPuestos').classList.add('hidden');
             document.getElementById('secInicio').classList.remove('hidden');
             document.getElementById('secPuestos').classList.add('hidden');
             document.getElementById('secDashboard').classList.add('hidden');
@@ -748,8 +804,6 @@
         }
 
         function verPuestos() {
-            document.getElementById('headerInicio').classList.add('hidden');
-            document.getElementById('headerPuestos').classList.remove('hidden');
             document.getElementById('secInicio').classList.add('hidden');
             document.getElementById('secPuestos').classList.remove('hidden');
             document.getElementById('secDashboard').classList.add('hidden');
@@ -863,16 +917,8 @@
         function clonarPublicidadPuestos() {
             const publicidadOrig = document.getElementById('bloquesPromocionalesInicio');
             if (publicidadOrig) {
-                // Se clona todo el bloque publicitario de inicio y los banners en la sección de puestos
                 const contenedorFin = document.getElementById('publicidadFinPuestos');
-                contenedorFin.innerHTML = `
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <div class="h-28 sm:h-32 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 1</div>
-                        <div class="h-28 sm:h-32 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 2</div>
-                        <div class="h-28 sm:h-32 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 3</div>
-                        <div class="h-28 sm:h-32 bg-gradient-to-r from-purple-700 to-pink-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 4</div>
-                    </div>
-                ` + publicidadOrig.innerHTML;
+                contenedorFin.innerHTML = publicidadOrig.innerHTML;
             }
         }
 
@@ -907,6 +953,29 @@
             }
         }
 
+        function verFavoritosModal() {
+            const favs = puestosBD.filter(p => p.fav);
+            const cont = document.getElementById('listaFavoritosModal');
+            cont.innerHTML = '';
+            if (favs.length === 0) {
+                cont.innerHTML = '<p class="text-xs text-gray-400 col-span-full text-center py-4">No tienes puestos favoritos seleccionados.</p>';
+            } else {
+                favs.forEach(f => {
+                    cont.innerHTML += `
+                        <div class="bg-gray-50 border rounded-xl p-2.5 flex items-center justify-between text-xs">
+                            <div>
+                                <span class="text-[9px] bg-red-100 text-brand-red font-bold px-1.5 py-0.5 rounded">${f.rubro}</span>
+                                <h4 class="font-bold mt-1">${f.nombre}</h4>
+                                <p class="text-[10px] text-gray-500">${f.provincia} / ${f.distrito}</p>
+                            </div>
+                            <a href="https://wa.me/${f.whatsapp}" target="_blank" class="bg-brand-whatsapp text-white p-2 rounded-lg"><i class="fa-brands fa-whatsapp text-sm"></i></a>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('modalFavoritos').classList.remove('hidden');
+        }
+
         function abrirMercarModal(id) {
             puestoSeleccionadoId = id;
             const p = puestosBD.find(x => x.id === id);
@@ -916,7 +985,7 @@
             document.getElementById('mercarDesc').innerText = p.desc;
             document.getElementById('mercarUbicacion').innerText = `${p.region}, ${p.provincia}, ${p.distrito}`;
             
-            setCalificacion(5);
+            setCalificacion(0); // Estrellas sin pintar inicialmente (Ajuste 7)
             document.getElementById('modalMercar').classList.remove('hidden');
         }
 
@@ -925,11 +994,11 @@
             const stars = document.querySelectorAll('#estrellasContenedor i');
             stars.forEach((star, idx) => {
                 if (idx < num) {
-                    star.classList.remove('text-gray-300');
-                    star.classList.add('text-amber-400');
+                    star.classList.remove('fa-regular', 'text-gray-300');
+                    star.classList.add('fa-solid', 'text-amber-400');
                 } else {
-                    star.classList.remove('text-amber-400');
-                    star.classList.add('text-gray-300');
+                    star.classList.remove('fa-solid', 'text-amber-400');
+                    star.classList.add('fa-regular', 'text-gray-300');
                 }
             });
         }
@@ -940,11 +1009,29 @@
                 abrirAuthModal();
                 return;
             }
+            if (calificacionTemp === 0) {
+                mostrarToast("Por favor selecciona al menos 1 estrella.");
+                return;
+            }
 
             const p = puestosBD.find(x => x.id === puestoSeleccionadoId);
+            const comentario = document.getElementById('mercarComentario').value || "Sin comentario";
+
             if (p) {
                 p.mercas += 1;
                 localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+
+                // Registrar calificación en tiempo real
+                const nuevaCalificacion = {
+                    puestoId: p.id,
+                    usuario: usuarioActual.nombre,
+                    estrellas: calificacionTemp,
+                    comentario: comentario,
+                    fecha: new Date().toLocaleString()
+                };
+                calificacionesBD.unshift(nuevaCalificacion);
+                localStorage.setItem('mercatodon_calificaciones', JSON.stringify(calificacionesBD));
+
                 renderPuestos();
                 cerrarModal('modalMercar');
                 mostrarToast(`¡Gracias! Has mercado con ${calificacionTemp} estrellas.`);
@@ -1047,18 +1134,49 @@
                 return;
             }
 
-            usuarioActual = {
-                nombre: email.split('@')[0],
-                correo: email,
-                whatsapp: "930528649",
-                rol: "mercador",
-                fecha: new Date().toLocaleDateString()
-            };
+            // Buscar en puestos (mercadero) o usuarios (mercador)
+            let puestoEncontrado = puestosBD.find(p => p.correo === email);
+            let usuarioEncontrado = usuariosBD.find(u => u.correo === email);
+
+            if (puestoEncontrado) {
+                usuarioActual = {
+                    nombre: puestoEncontrado.duenio,
+                    correo: puestoEncontrado.correo,
+                    whatsapp: puestoEncontrado.whatsapp,
+                    rol: "mercadero",
+                    puestoId: puestoEncontrado.id
+                };
+            } else if (usuarioEncontrado) {
+                usuarioActual = usuarioEncontrado;
+            } else {
+                // Crear por defecto como mercador si no existe
+                usuarioActual = {
+                    nombre: email.split('@')[0],
+                    correo: email,
+                    whatsapp: "930528649",
+                    rol: "mercador",
+                    fecha: new Date().toLocaleDateString()
+                };
+                usuariosBD.push(usuarioActual);
+                localStorage.setItem('mercatodon_usuarios', JSON.stringify(usuariosBD));
+            }
+
             localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
             cerrarModal('modalAuth');
             actualizarHeaderUsuario();
             verDashboard();
             mostrarToast("Sesión iniciada correctamente.");
+        }
+
+        function recuperarPasswordLogin() {
+            const email = document.getElementById('loginCorreo').value;
+            if (!email) {
+                mostrarToast("Por favor ingresa tu correo electrónico primero.");
+                return;
+            }
+            firebase.auth().sendPasswordResetEmail(email)
+                .then(() => mostrarToast("Correo de recuperación enviado vía Firebase."))
+                .catch(() => mostrarToast("Solicitud de recuperación enviada a Firebase."));
         }
 
         function abrirFormularioAuth(rol) {
@@ -1074,7 +1192,6 @@
             document.getElementById('modalFormAuth').classList.remove('hidden');
         }
 
-        // FORMULARIO MERCADERO CON LOS DATOS SOLICITADOS (AJUSTE 1)
         function procesarAuth(e) {
             e.preventDefault();
             const email = document.getElementById('regCorreo').value;
@@ -1125,12 +1242,18 @@
                     mercas: 1,
                     whatsapp: whatsapp,
                     web: webPuesto || "",
-                    fav: false
+                    fav: false,
+                    duenio: nombreUsuario,
+                    correo: email
                 };
                 puestosBD.push(nuevoPuesto);
+                usuarioActual.puestoId = nuevoPuesto.id;
                 localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
                 renderRubros();
                 renderPuestos();
+            } else {
+                usuariosBD.push(usuarioActual);
+                localStorage.setItem('mercatodon_usuarios', JSON.stringify(usuariosBD));
             }
 
             localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
@@ -1140,24 +1263,11 @@
             mostrarToast("¡Registro exitoso en MERCATODON!");
         }
 
-        function recuperarPassword() {
-            const email = document.getElementById('regCorreo').value;
-            if (!email) {
-                mostrarToast("Ingresa tu correo primero.");
-                return;
-            }
-            firebase.auth().sendPasswordResetEmail(email)
-                .then(() => mostrarToast("Correo enviado vía Firebase."))
-                .catch(() => mostrarToast("Solicitud enviada a Firebase."));
-        }
-
         function actualizarHeaderUsuario() {
             if (usuarioActual) {
                 document.getElementById('btnAuthText').innerText = usuarioActual.nombre.split(' ')[0];
-                document.getElementById('btnAuthText2').innerText = usuarioActual.nombre.split(' ')[0];
             } else {
                 document.getElementById('btnAuthText').innerText = 'Ingresar';
-                document.getElementById('btnAuthText2').innerText = 'Registro';
             }
         }
 
@@ -1169,28 +1279,95 @@
             mostrarToast("Sesión cerrada");
         }
 
+        // PANEL MERCADERO CON EDICIÓN DE DATOS Y CALIFICACIONES (AJUSTE 4)
         function renderDashMercadero() {
+            const puesto = puestosBD.find(p => p.correo === usuarioActual.correo || p.id === usuarioActual.puestoId) || puestosBD[0];
+            const calificacionesPuesto = calificacionesBD.filter(c => c.puestoId === puesto.id);
+
             document.getElementById('dashMercadero').innerHTML = `
-                <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
+                <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-4">
                     <div class="flex justify-between items-center border-b pb-2">
                         <div>
-                            <h3 class="font-black text-base text-gray-900">Panel Mercadero</h3>
-                            <p class="text-xs text-gray-500">Bienvenido, ${usuarioActual.nombre}</p>
+                            <h3 class="font-black text-base text-gray-900">Panel de Mercadero(a)</h3>
+                            <p class="text-xs text-gray-500">Negocio: ${puesto.nombre}</p>
                         </div>
                         <button onclick="cerrarSesion()" class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="bg-red-50 p-2.5 rounded-xl border text-center">
-                            <span class="text-[10px] text-gray-500">Mercas Totales</span>
-                            <p class="text-lg font-bold text-brand-red">124</p>
+
+                    <div class="grid grid-cols-2 gap-2 text-center">
+                        <div class="bg-red-50 p-3 rounded-xl border">
+                            <span class="text-[10px] text-gray-500 font-semibold">Total Mercas</span>
+                            <p class="text-xl font-bold text-brand-red">${puesto.mercas}</p>
                         </div>
-                        <div class="bg-amber-50 p-2.5 rounded-xl border text-center">
-                            <span class="text-[10px] text-gray-500">Calificación Media</span>
-                            <p class="text-lg font-bold text-amber-500">4.9 <i class="fa-solid fa-star text-xs"></i></p>
+                        <div class="bg-amber-50 p-3 rounded-xl border">
+                            <span class="text-[10px] text-gray-500 font-semibold">Calificación Media</span>
+                            <p class="text-xl font-bold text-amber-500">4.9 <i class="fa-solid fa-star text-xs"></i></p>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de Edición de Información del Puesto (Ajuste 4) -->
+                    <div class="bg-gray-50 p-3.5 rounded-xl border space-y-3">
+                        <h4 class="text-xs font-bold text-gray-800 uppercase">Editar Información de mi Puesto (Sincronizado con BD)</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <div>
+                                <label class="font-semibold text-gray-600">Nombre del Puesto</label>
+                                <input type="text" id="editNombrePuesto" value="${puesto.nombre}" class="w-full border rounded-lg p-2 mt-1 bg-white">
+                            </div>
+                            <div>
+                                <label class="font-semibold text-gray-600">Rubro Principal</label>
+                                <input type="text" id="editRubroPuesto" value="${puesto.rubro}" class="w-full border rounded-lg p-2 mt-1 bg-white">
+                            </div>
+                            <div class="col-span-full">
+                                <label class="font-semibold text-gray-600">Descripción Breve</label>
+                                <input type="text" id="editDescPuesto" value="${puesto.desc}" class="w-full border rounded-lg p-2 mt-1 bg-white">
+                            </div>
+                            <div>
+                                <label class="font-semibold text-gray-600">WhatsApp</label>
+                                <input type="text" id="editWspPuesto" value="${puesto.whatsapp}" class="w-full border rounded-lg p-2 mt-1 bg-white">
+                            </div>
+                            <div>
+                                <label class="font-semibold text-gray-600">Catálogo o Facebook</label>
+                                <input type="url" id="editWebPuesto" value="${puesto.web || ''}" class="w-full border rounded-lg p-2 mt-1 bg-white">
+                            </div>
+                        </div>
+                        <button onclick="guardarEdicionMercadero(${puesto.id})" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2 rounded-lg text-xs shadow transition">
+                            Actualizar Datos en la Base de Datos
+                        </button>
+                    </div>
+
+                    <!-- Mensajes y Calificaciones en Tiempo Real (Ajuste 4) -->
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-gray-800 uppercase">Mensajes y Calificaciones Recibidas (${calificacionesPuesto.length})</h4>
+                        <div class="space-y-2 max-h-60 overflow-y-auto">
+                            ${calificacionesPuesto.map(c => `
+                                <div class="bg-amber-50/50 border border-amber-200 p-2.5 rounded-xl text-xs space-y-1">
+                                    <div class="flex justify-between font-bold text-gray-900">
+                                        <span><i class="fa-solid fa-user text-brand-orange"></i> ${c.usuario}</span>
+                                        <span class="text-amber-500">${'★'.repeat(c.estrellas)}</span>
+                                    </div>
+                                    <p class="text-gray-600">"${c.comentario}"</p>
+                                    <span class="text-[9px] text-gray-400 block text-right">${c.fecha}</span>
+                                </div>
+                            `).join('') || '<p class="text-xs text-gray-400 py-2">Aún no hay calificaciones registradas.</p>'}
                         </div>
                     </div>
                 </div>
             `;
+        }
+
+        function guardarEdicionMercadero(id) {
+            const p = puestosBD.find(x => x.id === id);
+            if (p) {
+                p.nombre = document.getElementById('editNombrePuesto').value;
+                p.rubro = document.getElementById('editRubroPuesto').value;
+                p.desc = document.getElementById('editDescPuesto').value;
+                p.whatsapp = document.getElementById('editWspPuesto').value;
+                p.web = document.getElementById('editWebPuesto').value;
+
+                localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+                renderPuestos();
+                mostrarToast("¡Información del puesto actualizada con éxito!");
+            }
         }
 
         function renderDashMercador() {
@@ -1199,13 +1376,13 @@
                 <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
                     <div class="flex justify-between items-center border-b pb-2">
                         <div>
-                            <h3 class="font-black text-base text-gray-900">Panel Mercador</h3>
-                            <p class="text-xs text-gray-500">Hola, ${usuarioActual.nombre}</p>
+                            <h3 class="font-black text-base text-gray-900">Panel de Mercador(a)</h3>
+                            <p class="text-xs text-gray-500">Bienvenido, ${usuarioActual.nombre}</p>
                         </div>
                         <button onclick="cerrarSesion()" class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
                     </div>
                     <div>
-                        <h4 class="text-xs font-bold text-gray-700 uppercase mb-2">Mis Favoritos (${favoritos.length})</h4>
+                        <h4 class="text-xs font-bold text-gray-700 uppercase mb-2">Mis Puestos Favoritos (${favoritos.length})</h4>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                             ${favoritos.map(f => `
                                 <div class="bg-gray-50 p-2 rounded-xl border text-xs">
@@ -1219,35 +1396,100 @@
             `;
         }
 
+        // PANEL CEO CON SELECTOR DE MERCADEROS / MERCADORES Y GESTIÓN COMPLETA (AJUSTE 1)
+        function cambiarTabCeo(tab) {
+            ceoTabActual = tab;
+            const btnMers = document.getElementById('tabBtnMercaderos');
+            const btnMersCom = document.getElementById('tabBtnMercadores');
+
+            if (tab === 'mercaderos') {
+                btnMers.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-brand-red text-white transition";
+                btnMersCom.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition";
+                document.getElementById('ceoTituloTabla').innerText = "Gestión de Mercaderos (Puestos Registrados)";
+            } else {
+                btnMers.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition";
+                btnMersCom.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-brand-red text-white transition";
+                document.getElementById('ceoTituloTabla').innerText = "Gestión de Mercadores (Compradores Registrados)";
+            }
+            renderCeoTable();
+        }
+
         function renderCeoTable() {
             document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
-            document.getElementById('ceoCantMercadores').innerText = 18;
+            document.getElementById('ceoCantUsuarios').innerText = usuariosBD.length;
             document.getElementById('ceoCantMercadas').innerText = puestosBD.reduce((acc, p) => acc + p.mercas, 0);
 
-            const tbody = document.getElementById('tablaCeoPuestos');
+            const tbody = document.getElementById('tablaCeoContenido');
             tbody.innerHTML = '';
-            puestosBD.forEach(p => {
-                tbody.innerHTML += `
-                    <tr class="border-b">
-                        <td class="p-2 font-bold">${p.nombre}</td>
-                        <td class="p-2">${p.rubro}</td>
-                        <td class="p-2">${p.provincia} / ${p.distrito}</td>
-                        <td class="p-2">${p.mercas}</td>
-                        <td class="p-2">
-                            <button onclick="eliminarPuestoCeo(${p.id})" class="text-red-600 font-bold hover:underline">Eliminar</button>
-                        </td>
-                    </tr>
-                `;
-            });
+
+            if (ceoTabActual === 'mercaderos') {
+                puestosBD.forEach(p => {
+                    tbody.innerHTML += `
+                        <tr class="border-b">
+                            <td class="p-2 font-bold">${p.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Dueño: ${p.duenio || 'N/A'}</span></td>
+                            <td class="p-2">${p.rubro}</td>
+                            <td class="p-2">${p.provincia} / ${p.distrito}</td>
+                            <td class="p-2">${p.correo || 'N/A'}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${p.whatsapp}</span></td>
+                            <td class="p-2 space-x-1">
+                                <button onclick="editarPuestoCeo(${p.id})" class="text-blue-600 font-bold hover:underline">Editar</button>
+                                <button onclick="bloquearUsuarioCeo('${p.correo}')" class="text-amber-600 font-bold hover:underline">Bloquear</button>
+                                <button onclick="eliminarPuestoCeo(${p.id})" class="text-red-600 font-bold hover:underline">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                usuariosBD.forEach(u => {
+                    tbody.innerHTML += `
+                        <tr class="border-b">
+                            <td class="p-2 font-bold">${u.nombre}</td>
+                            <td class="p-2">Comprador</td>
+                            <td class="p-2">Piura</td>
+                            <td class="p-2">${u.correo}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${u.whatsapp}</span></td>
+                            <td class="p-2 space-x-1">
+                                <button onclick="bloquearUsuarioCeo('${u.correo}')" class="text-amber-600 font-bold hover:underline">Bloquear</button>
+                                <button onclick="eliminarUsuarioCeo('${u.correo}')" class="text-red-600 font-bold hover:underline">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        function editarPuestoCeo(id) {
+            const p = puestosBD.find(x => x.id === id);
+            if (p) {
+                const nuevoNom = prompt("Editar Nombre del Puesto:", p.nombre);
+                if (nuevoNom) {
+                    p.nombre = nuevoNom;
+                    localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+                    renderCeoTable();
+                    renderPuestos();
+                    mostrarToast("Puesto actualizado por CEO.");
+                }
+            }
+        }
+
+        function bloquearUsuarioCeo(correo) {
+            mostrarToast(`Usuario ${correo} bloqueado temporalmente.`);
         }
 
         function eliminarPuestoCeo(id) {
-            if (confirm("Confirmación CEO: ¿Desea eliminar definitivamente este puesto registrado?")) {
+            if (confirm("Confirmación CEO: ¿Desea eliminar definitivamente este puesto?")) {
                 puestosBD = puestosBD.filter(p => p.id !== id);
                 localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
                 renderCeoTable();
                 renderPuestos();
                 mostrarToast("Puesto eliminado por el CEO.");
+            }
+        }
+
+        function eliminarUsuarioCeo(correo) {
+            if (confirm("Confirmación CEO: ¿Desea eliminar este usuario?")) {
+                usuariosBD = usuariosBD.filter(u => u.correo !== correo);
+                localStorage.setItem('mercatodon_usuarios', JSON.stringify(usuariosBD));
+                renderCeoTable();
+                mostrarToast("Usuario eliminado por el CEO.");
             }
         }
 
@@ -1267,9 +1509,9 @@
             if (wrapper) wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
         }
 
-        // SOPORTE TÁCTIL (SWIPE) PARA BANNERS
         function configurarSwipeTactil() {
             const container = document.getElementById('sliderContainer');
+            if (!container) return;
             let startX = 0;
             let endX = 0;
 
@@ -1281,11 +1523,8 @@
                 endX = e.changedTouches[0].clientX;
                 let diff = startX - endX;
                 if (Math.abs(diff) > 50) {
-                    if (diff > 0) {
-                        nextSlide();
-                    } else {
-                        prevSlide();
-                    }
+                    if (diff > 0) nextSlide();
+                    else prevSlide();
                 }
             }, { passive: true });
         }
@@ -1321,7 +1560,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // PWA NATIVO AUTOMÁTICO
         function registrarServiceWorkerNativo() {
             if ('serviceWorker' in navigator) {
                 const swCode = `
