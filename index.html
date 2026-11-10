@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MERCATODON - Puestos en Acción</title>
     <!-- Favicon, Logo e Ícono PNG -->
-    <link rel="icon" type="image/png" href="https://placehold.co/32x32/E53935/ffffff?text=M">
-    <link rel="apple-touch-icon" href="https://placehold.co/180x180/E53935/ffffff?text=M">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/favicon.png" fallback="https://placehold.co/32x32/E53935/ffffff?text=M">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/logo.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts Inter / Plus Jakarta Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Firebase App & Auth SDK -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Firebase SDK (Compat v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <!-- PWA Manifest Data URI para instalación nativa -->
+    
+    <!-- Manifest PWA -->
     <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"MERCATODON","short_name":"MERCATODON","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#E53935","icons":[{"src":"https://placehold.co/192x192/E53935/ffffff?text=M","sizes":"192x192","type":"image/png"}]}'>
 
     <script>
@@ -60,7 +61,7 @@
     <div id="bannerInstalacionPWA" class="hidden bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white px-3 py-2 text-xs flex items-center justify-between border-b border-gray-700">
         <div class="flex items-center gap-2">
             <i class="fa-solid fa-mobile-screen-button text-brand-orange text-sm"></i>
-            <span>Instala la App nativa de <strong>MERCATODON</strong> en tu celular</span>
+            <span>Instala la App nativa de <strong>MERCATODON</strong> en tu celular o PC</span>
         </div>
         <div class="flex items-center gap-2">
             <button onclick="instalarAppNativa()" class="bg-brand-red hover:bg-brand-darkRed text-white font-bold py-1 px-3 rounded-full text-[11px] shadow transition">Instalar App</button>
@@ -73,7 +74,7 @@
         <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
                 <div class="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md flex-shrink-0">
-                    <img src="https://placehold.co/36x36/E53935/ffffff?text=M" alt="Logo" class="w-full h-full object-cover rounded-xl">
+                    <img src="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/logo.png" onerror="this.src='https://placehold.co/36x36/E53935/ffffff?text=M'" alt="Logo" class="w-full h-full object-cover rounded-xl">
                 </div>
                 <div class="leading-none">
                     <span class="text-sm sm:text-lg font-black text-brand-red tracking-tight block">MERCATODON</span>
@@ -108,7 +109,7 @@
             <!-- Slider Principal Dinámico desde Google Sheets -->
             <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
                 <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out">
-                    <!-- Se cargan por JS dinámicamente -->
+                    <!-- Cargados dinámicamente -->
                 </div>
                 <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition z-10"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                 <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition z-10"><i class="fa-solid fa-chevron-right text-xs"></i></button>
@@ -185,7 +186,7 @@
                     </div>
                 </div>
 
-                <!-- Bloques Promocionales Redes y Catálogo -->
+                <!-- Bloques Promocionales -->
                 <div id="bloquesPromocionalesInicio" class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
                     <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
                         <div>
@@ -468,6 +469,13 @@
                         <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos *</label>
                         <input type="text" id="regNombreCompleto" required placeholder="Nombres y Apellidos" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
+                    
+                    <!-- Campo WhatsApp para Mercador(a) (AJUSTE 2) -->
+                    <div id="campoWhatsappMercador">
+                        <label class="text-xs font-semibold text-gray-700">WhatsApp *</label>
+                        <input type="tel" id="regWhatsappMercador" placeholder="930528649" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+
                     <div id="camposExtraMercador" class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="text-xs font-semibold text-gray-700">Oficio / Profesión</label>
@@ -570,7 +578,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE LA APLICACIÓN -->
+    <!-- SCRIPT PRINCIPAL -->
     <script>
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzA8vHBao9cB34aRMgg29mMGGxx09Vyk9Zy_fEgXrqfN2wD6f3to-FEI_FU3_4dIRU2/exec";
 
@@ -640,6 +648,7 @@
         let ceoTabActual = 'mercaderos';
         let deferredPromptPWA = null;
         let busquedaExpandida = false;
+        let intervalosSecciones = {};
 
         window.onload = function() {
             inicializarUbicacionUI();
@@ -657,7 +666,6 @@
             }
         };
 
-        // PERSISTENCIA EN LA NUBE DE CALIFICACIONES Y FAVORITOS
         async function sincronizarDatosRemotos() {
             await Promise.all([
                 cargarHojaRemota('puestos', data => { puestosBD = data; localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD)); renderPuestos(); }),
@@ -695,7 +703,6 @@
             }
         }
 
-        // SINCRONIZACIÓN DE DELETES EN SHEETS DESDE PANEL CEO
         async function eliminarEnSheets(nombreHoja, valorBusqueda, colIdx = 0) {
             try {
                 await fetch(APPS_SCRIPT_URL, {
@@ -730,13 +737,25 @@
             }
         }
 
-        // DESPLAZAMIENTO SUAVE CON FLECHAS EN TODAS LAS SECCIONES
         function scrollSeccion(id, amount) {
             const el = document.getElementById(id);
             if (el) el.scrollBy({ left: amount, behavior: 'smooth' });
         }
 
-        // RENDERIZADO DINÁMICO DE BANNERS (INCLUYE SLIDER PRINCIPAL Y PANELES)
+        // AUXILIAR YOUTUBE EMBED (AJUSTE 3)
+        function obtenerEmbedYoutube(url) {
+            if (!url) return null;
+            let videoId = null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[2].length === 11) {
+                videoId = match[2];
+                return `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0`;
+            }
+            return null;
+        }
+
+        // BANNERS DINÁMICOS, FECHAS, ORDEN Y ROTACIÓN POR SEGUNDOS (AJUSTE 4 Y 5)
         function renderBannersDinamicos() {
             const seccionesMap = {
                 "A": "bannerSeccionA",
@@ -748,6 +767,7 @@
                 "G": "bannerSeccionG"
             };
 
+            // Limpiar contenedores
             Object.values(seccionesMap).forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.innerHTML = '';
@@ -765,66 +785,120 @@
             const pubFavs = document.getElementById('publicidadFinFavoritos');
             if (pubFavs) pubFavs.innerHTML = '';
 
-            if (!publicidadBD || publicidadBD.length === 0) {
-                if (sliderWrapper) {
-                    sliderWrapper.innerHTML = `
-                        <a href="https://wa.me/51930528649" target="_blank" class="w-full h-full flex-shrink-0 relative block">
-                            <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1400&q=80" class="w-full h-full object-cover">
-                        </a>
-                    `;
-                    totalSlidesCount = 1;
-                }
-                return;
-            }
+            // Limpiar intervalos antiguos
+            Object.keys(intervalosSecciones).forEach(k => clearInterval(intervalosSecciones[k]));
+
+            if (!publicidadBD || publicidadBD.length === 0) return;
+
+            const ahora = new Date();
+
+            // Filtrar banners por vigencia (Fecha_Inicio y Fecha_Fin)
+            const vigentes = publicidadBD.filter(b => {
+                const inicio = b.Fecha_Inicio || b.fecha_inicio;
+                const fin = b.Fecha_Fin || b.fecha_fin;
+                if (!inicio || !fin) return true; // Si no tiene fecha, mostrar
+                const dInicio = new Date(inicio);
+                const dFin = new Date(fin);
+                return ahora >= dInicio && ahora <= dFin;
+            });
+
+            // Ordenar por columna Orden (Columna E)
+            vigentes.sort((a, b) => {
+                const ordA = parseInt(a.Orden || a.orden || 999);
+                const ordB = parseInt(b.Orden || b.orden || 999);
+                return ordA - ordB;
+            });
 
             let slidesHtml = '';
             let mainCount = 0;
+            let mainSegundos = 5;
 
-            publicidadBD.forEach(b => {
+            vigentes.forEach(b => {
                 const secKey = String(b.Seccion || b.seccion || '').trim().toUpperCase();
-                const imgUrl = b.URL_Imagen || b.url_imagen || "https://images.unsplash.com/photo-1563542932420-dda7e6b6a2f3?auto=format&fit=crop&w=400&q=80";
+                const imgUrl = b.URL_Imagen || b.url_imagen || "";
                 const destinoUrl = b.URL_Destino || b.url_destino || "https://wa.me/51930528649";
+                const embedYoutube = obtenerEmbedYoutube(imgUrl) || obtenerEmbedYoutube(destinoUrl);
+                const segs = parseInt(b.Segundos_Pantalla || b.segundos_pantalla || 5);
 
                 if (secKey === "PRINCIPAL" || secKey === "MAIN") {
                     mainCount++;
-                    slidesHtml += `
-                        <a href="${destinoUrl}" target="_blank" class="w-full h-full flex-shrink-0 relative block">
-                            <img src="${imgUrl}" class="w-full h-full object-cover pointer-events-none" alt="${b.Nombre_Cliente || 'Banner'}">
-                        </a>
-                    `;
+                    mainSegundos = segs;
+                    if (embedYoutube) {
+                        slidesHtml += `
+                            <div class="w-full h-full flex-shrink-0 relative block">
+                                <iframe class="w-full h-full rounded-xl" src="${embedYoutube}" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        `;
+                    } else {
+                        slidesHtml += `
+                            <a href="${destinoUrl}" target="_blank" class="w-full h-full flex-shrink-0 relative block">
+                                <img src="${imgUrl}" class="w-full h-full object-cover pointer-events-none" alt="${b.Nombre_Cliente || 'Banner'}">
+                            </a>
+                        `;
+                    }
                 } else {
                     const contenedorId = seccionesMap[secKey];
-                    const bannerCardHtml = (secKey === "C") ? `
-                        <a href="${destinoUrl}" target="_blank" class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video flex items-center justify-center text-white block">
-                            <img src="${imgUrl}" class="w-full h-full object-cover absolute inset-0 opacity-70" alt="${b.Nombre_Cliente || 'Spot'}">
-                            <i class="fa-solid fa-circle-play text-3xl text-red-500 z-10"></i>
-                            <span class="absolute bottom-2 left-2 text-[10px] bg-black/60 px-2 py-0.5 rounded font-bold z-10">${b.Nombre_Cliente || 'Spot Comercial'}</span>
-                        </a>
-                    ` : `
-                        <a href="${destinoUrl}" target="_blank" class="min-w-[120px] max-w-[140px] sm:min-w-[150px] sm:max-w-[160px] bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 block hover:border-brand-red transition">
-                            <img src="${imgUrl}" class="w-full h-24 sm:h-28 object-cover rounded-xl" alt="${b.Nombre_Cliente || 'Publicidad'}">
-                        </a>
-                    `;
+                    let bannerCardHtml = "";
+
+                    if (embedYoutube) {
+                        bannerCardHtml = `
+                            <div class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video block">
+                                <iframe class="w-full h-full" src="${embedYoutube}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        `;
+                    } else if (secKey === "C") {
+                        bannerCardHtml = `
+                            <a href="${destinoUrl}" target="_blank" class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video flex items-center justify-center text-white block">
+                                <img src="${imgUrl}" class="w-full h-full object-cover absolute inset-0 opacity-70" alt="${b.Nombre_Cliente || 'Spot'}">
+                                <i class="fa-solid fa-circle-play text-3xl text-red-500 z-10"></i>
+                                <span class="absolute bottom-2 left-2 text-[10px] bg-black/60 px-2 py-0.5 rounded font-bold z-10">${b.Nombre_Cliente || 'Spot Comercial'}</span>
+                            </a>
+                        `;
+                    } else {
+                        bannerCardHtml = `
+                            <a href="${destinoUrl}" target="_blank" class="min-w-[120px] max-w-[140px] sm:min-w-[150px] sm:max-w-[160px] bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 block hover:border-brand-red transition">
+                                <img src="${imgUrl}" class="w-full h-24 sm:h-28 object-cover rounded-xl" alt="${b.Nombre_Cliente || 'Publicidad'}">
+                            </a>
+                        `;
+                    }
 
                     if (contenedorId) {
                         const cont = document.getElementById(contenedorId);
                         if (cont) cont.innerHTML += bannerCardHtml;
                     }
 
+                    // Replicación en otras secciones (Ajuste 5)
                     if (pubFinPuestos) pubFinPuestos.innerHTML += bannerCardHtml;
                     if (pubPaneles) pubPaneles.innerHTML += bannerCardHtml;
                     if (pubFavs) pubFavs.innerHTML += bannerCardHtml;
                 }
             });
 
+            // Slider Principal
             if (sliderWrapper && slidesHtml !== '') {
                 sliderWrapper.innerHTML = slidesHtml;
                 totalSlidesCount = mainCount;
-                iniciarSlider();
+                iniciarSlider(mainSegundos);
             }
 
+            // Carrusel Automático por Segundos en Secciones (Ajuste 4)
+            Object.entries(seccionesMap).forEach(([secCode, idContenedor]) => {
+                const cont = document.getElementById(idContenedor);
+                if (cont && cont.children.length > 1) {
+                    const primerBanner = vigentes.find(v => String(v.Seccion || v.seccion || '').trim().toUpperCase() === secCode);
+                    const segs = primerBanner ? parseInt(primerBanner.Segundos_Pantalla || 5) : 5;
+                    intervalosSecciones[secCode] = setInterval(() => {
+                        if (cont.scrollLeft + cont.clientWidth >= cont.scrollWidth - 10) {
+                            cont.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else {
+                            cont.scrollBy({ left: 200, behavior: 'smooth' });
+                        }
+                    }, segs * 1000);
+                }
+            });
+
             const ceoBanners = document.getElementById('ceoCantBanners');
-            if (ceoBanners) ceoBanners.innerText = publicidadBD.length;
+            if (ceoBanners) ceoBanners.innerText = vigentes.length;
         }
 
         // ==================== BÚSQUEDA Y NAVEGACIÓN ====================
@@ -993,7 +1067,6 @@
             renderPuestos();
         }
 
-        // PERSISTENCIA NUBE DE FAVORITOS
         function toggleFavorito(id) {
             if (!usuarioActual) { abrirAuthModal(); return; }
             const idx = favoritosBD.findIndex(f => (f.Usuario_Correo || f.correo) === usuarioActual.Correo && (f.Puesto_ID || f.puestoId) == id);
@@ -1052,7 +1125,7 @@
                 return;
             }
             if (usuarioActual.rol === 'mercadero') {
-                mostrarToast("Los dueños de puestos (mercaderos) no pueden votar ni calificar. Solo los mercadores (compradores).");
+                mostrarToast("Los dueños de puestos (mercaderos) no pueden votar ni calificar.");
                 return;
             }
 
@@ -1129,7 +1202,7 @@
             }
         }
 
-        // ==================== AUTENTICACIÓN & FIREBASE ====================
+        // ==================== AUTENTICACIÓN, CAMUFLAJE CEO & FIREBASE ====================
         function inicializarUbicacionUI() {
             const selProv = document.getElementById('selProvincia');
             if (!selProv) return;
@@ -1203,22 +1276,29 @@
             document.getElementById('modalAuth').classList.remove('hidden');
         }
 
-        // AUTENTICACIÓN SEGURA MEDIANTE FIREBASE
+        // LOGIN DIRECTO CON ACCESO CEO CAMUFLADO (AJUSTE 7 Y 8)
         async function loginDirecto(e) {
             e.preventDefault();
             const email = document.getElementById('loginCorreo').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
 
+            // ACCESO CAMUFLADO CEO (Ajuste 7)
+            if (email.toLowerCase() === "mercatodon@gmail.com" && pass === "20701") {
+                usuarioActual = {
+                    Nombre_Completo: "CEO Ejecutivos",
+                    Correo: email,
+                    rol: "ceo"
+                };
+                localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+                cerrarModal('modalAuth');
+                verCeoPanel();
+                mostrarToast("Acceso CEO concedido de manera segura.");
+                return;
+            }
+
             try {
+                // Autenticación oficial con Firebase Auth (Ajuste 6 y 8)
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
-                
-                // Validación de Administrador CEO
-                if (email === "multivercado@gmail.com") {
-                    cerrarModal('modalAuth');
-                    verCeoPanel();
-                    mostrarToast("Acceso CEO concedido vía Firebase Auth.");
-                    return;
-                }
 
                 let puestoEncontrado = puestosBD.find(p => (p.Correo_Acceso || p.correo) === email);
                 let usuarioEncontrado = usuariosBD.find(u => (u.Correo || u.correo) === email);
@@ -1258,10 +1338,11 @@
                 mostrarToast("Sesión iniciada correctamente.");
 
             } catch (error) {
-                mostrarToast("Error de autenticación: Contraseña incorrecta o usuario no registrado.");
+                mostrarToast("Error de acceso: Credenciales incorrectas o usuario no registrado.");
             }
         }
 
+        // RECUPERACIÓN DE CONTRASEÑA EN VENTANA (AJUSTE 6)
         async function recuperarPasswordLogin() {
             const email = document.getElementById('loginCorreo').value.trim();
             const container = document.getElementById('msgRecuperacionContainer');
@@ -1270,7 +1351,7 @@
             if (!email) {
                 container.classList.remove('hidden');
                 container.className = "p-2 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[11px] flex items-center gap-1.5";
-                texto.innerText = "Por favor ingresa tu correo electrónico primero.";
+                texto.innerText = "Ingresa tu correo en la casilla superior para enviarte el enlace.";
                 return;
             }
 
@@ -1278,11 +1359,11 @@
                 await firebase.auth().sendPasswordResetEmail(email);
                 container.classList.remove('hidden');
                 container.className = "p-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-800 text-[11px] flex items-center gap-1.5";
-                texto.innerText = `Correo enviado a ${email}. Revisa tu bandeja para actualizar tu contraseña.`;
+                texto.innerText = `Enlace enviado a ${email}. Revisa tu bandeja de entrada o spam.`;
             } catch (error) {
                 container.classList.remove('hidden');
                 container.className = "p-2 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[11px] flex items-center gap-1.5";
-                texto.innerText = "No se pudo enviar el correo de recuperación.";
+                texto.innerText = "Error: El correo no está registrado en Firebase.";
             }
         }
 
@@ -1291,17 +1372,21 @@
             document.getElementById('authRol').value = rol;
             document.getElementById('formAuthTitulo').innerText = rol === 'mercadero' ? 'Registro de Puesto (Mercadero)' : 'Registro Comprador (Mercador)';
             const camposExtra = document.getElementById('camposExtraMercador');
+            const campoWspMercador = document.getElementById('campoWhatsappMercador');
+
             if (rol === 'mercadero') {
                 document.getElementById('camposMercadero').classList.remove('hidden');
                 camposExtra.classList.add('hidden');
+                campoWspMercador.classList.add('hidden');
             } else {
                 document.getElementById('camposMercadero').classList.add('hidden');
                 camposExtra.classList.remove('hidden');
+                campoWspMercador.classList.remove('hidden');
             }
             document.getElementById('modalFormAuth').classList.remove('hidden');
         }
 
-        // CONTROL DE DUPLICIDAD DE CORREO Y WHATSAPP
+        // PROCESAR REGISTRO CON FIREBASE AUTH & GOOGLE SHEETS (AJUSTE 1 Y 6)
         async function procesarAuth(e) {
             e.preventDefault();
             const email = document.getElementById('regCorreo').value.trim();
@@ -1310,23 +1395,21 @@
             const nombreUsuario = document.getElementById('regNombreCompleto').value.trim();
 
             const wspPuesto = document.getElementById('regWhatsapp') ? document.getElementById('regWhatsapp').value.trim() : "";
-            
-            const correoExiste = puestosBD.some(p => (p.Correo_Acceso || p.correo) === email) || usuariosBD.some(u => (u.Correo || u.correo) === email);
-            const wspExiste = (wspPuesto !== "") && puestosBD.some(p => (p.WhatsApp || p.whatsapp) === wspPuesto);
+            const wspMercador = document.getElementById('regWhatsappMercador') ? document.getElementById('regWhatsappMercador').value.trim() : "";
+            const wspFinal = rol === 'mercadero' ? wspPuesto : (wspMercador || "930528649");
 
+            const correoExiste = puestosBD.some(p => (p.Correo_Acceso || p.correo) === email) || usuariosBD.some(u => (u.Correo || u.correo) === email);
             if (correoExiste) {
-                mostrarToast("⚠️ El correo ya está registrado. Para otro rol, usa un correo diferente.");
-                return;
-            }
-            if (wspExiste) {
-                mostrarToast("⚠️ El número de WhatsApp ya se encuentra asociado a otro negocio.");
+                mostrarToast("⚠️ El correo ya está registrado en el sistema.");
                 return;
             }
 
             try {
+                // Registro obligatorio en Firebase Auth para reflejarlo en la consola Firebase
                 await firebase.auth().createUserWithEmailAndPassword(email, pass);
             } catch (err) {
-                console.log("Firebase reg status:", err.message);
+                mostrarToast(`Firebase: ${err.message}`);
+                return;
             }
 
             if (rol === 'mercadero') {
@@ -1338,11 +1421,6 @@
                 const gpsPuesto = document.getElementById('regGps').value;
                 const webPuesto = document.getElementById('regPuestoWeb').value;
 
-                if (!nombrePuesto || !descPuesto || !wspPuesto) {
-                    mostrarToast("Por favor complete los datos obligatorios.");
-                    return;
-                }
-
                 const nuevoPuesto = {
                     ID: Date.now(),
                     Nombre_Puesto: nombrePuesto,
@@ -1353,7 +1431,7 @@
                     Distrito: distritoPuesto,
                     GPS: gpsPuesto,
                     Mercas: 0,
-                    WhatsApp: wspPuesto,
+                    WhatsApp: wspFinal,
                     Web_Catalogo: webPuesto || "",
                     Duenio_Nombre: nombreUsuario,
                     Correo_Acceso: email,
@@ -1362,12 +1440,28 @@
                 puestosBD.push(nuevoPuesto);
                 localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
                 
-                enviarASheets('puestos', [nuevoPuesto.ID, nuevoPuesto.Nombre_Puesto, nuevoPuesto.Rubro, nuevoPuesto.Descripcion, nuevoPuesto.Region, nuevoPuesto.Provincia, nuevoPuesto.Distrito, nuevoPuesto.GPS, nuevoPuesto.Mercas, nuevoPuesto.WhatsApp, nuevoPuesto.Web_Catalogo, nuevoPuesto.Duenio_Nombre, nuevoPuesto.Correo_Acceso, nuevoPuesto.Estado]);
+                // Mapeo exacto de 14 columnas según Hoja puestos (Ajuste 1)
+                enviarASheets('puestos', [
+                    nuevoPuesto.ID, 
+                    nuevoPuesto.Nombre_Puesto, 
+                    nuevoPuesto.Rubro, 
+                    nuevoPuesto.Descripcion, 
+                    nuevoPuesto.Region, 
+                    nuevoPuesto.Provincia, 
+                    nuevoPuesto.Distrito, 
+                    nuevoPuesto.GPS, 
+                    nuevoPuesto.Mercas, 
+                    nuevoPuesto.WhatsApp, 
+                    nuevoPuesto.Web_Catalogo, 
+                    nuevoPuesto.Duenio_Nombre, 
+                    nuevoPuesto.Correo_Acceso, 
+                    nuevoPuesto.Estado
+                ]);
 
                 usuarioActual = {
                     Nombre_Completo: nombreUsuario,
                     Correo: email,
-                    WhatsApp: wspPuesto,
+                    WhatsApp: wspFinal,
                     rol: rol,
                     puestoId: nuevoPuesto.ID
                 };
@@ -1375,15 +1469,15 @@
                 renderRubros();
                 renderPuestos();
             } else {
-                const oficio = document.getElementById('regOficio').value || "Comerciante";
+                const oficio = document.getElementById('regOficio').value || "mercador";
                 const cumpleanos = document.getElementById('regCumpleanos').value || "2000-01-01";
-                const fechaReg = new Date().toISOString().split('T')[0];
+                const fechaReg = new Date().toISOString().replace('T', ' ').substring(0, 19);
 
                 const nuevoUsuario = {
                     ID_Usuario: Date.now(),
                     Nombre_Completo: nombreUsuario,
                     Correo: email,
-                    WhatsApp: "930528649",
+                    WhatsApp: wspFinal,
                     Oficio: oficio,
                     Cumpleanos: cumpleanos,
                     Fecha_Registro: fechaReg,
@@ -1391,12 +1485,23 @@
                 };
                 usuariosBD.push(nuevoUsuario);
                 localStorage.setItem('mercatodon_usuarios', JSON.stringify(usuariosBD));
-                enviarASheets('usuarios', [nuevoUsuario.ID_Usuario, nuevoUsuario.Nombre_Completo, nuevoUsuario.Correo, nuevoUsuario.WhatsApp, nuevoUsuario.Oficio, nuevoUsuario.Cumpleanos, nuevoUsuario.Fecha_Registro, nuevoUsuario.Estado]);
+
+                // Mapeo exacto de 8 columnas según Hoja usuarios (Ajuste 1)
+                enviarASheets('usuarios', [
+                    nuevoUsuario.ID_Usuario, 
+                    nuevoUsuario.Nombre_Completo, 
+                    nuevoUsuario.Correo, 
+                    nuevoUsuario.WhatsApp, 
+                    nuevoUsuario.Oficio, 
+                    nuevoUsuario.Cumpleanos, 
+                    nuevoUsuario.Fecha_Registro, 
+                    nuevoUsuario.Estado
+                ]);
 
                 usuarioActual = {
                     Nombre_Completo: nombreUsuario,
                     Correo: email,
-                    WhatsApp: "930528649",
+                    WhatsApp: wspFinal,
                     rol: rol,
                     oficio: oficio,
                     cumpleanos: cumpleanos
@@ -1407,7 +1512,7 @@
             cerrarModal('modalFormAuth');
             actualizarHeaderUsuario();
             verDashboard();
-            mostrarToast("¡Registro exitoso y sincronizado en Sheets!");
+            mostrarToast("¡Registro guardado en Firebase Auth y Google Sheets!");
         }
 
         function actualizarHeaderUsuario() {
@@ -1513,7 +1618,8 @@
                         <button onclick="cerrarSesion()" class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
                     </div>
                     <div class="text-xs space-y-1 bg-gray-50 p-2.5 rounded-xl border">
-                        <p><strong>Oficio/Profesión:</strong> ${usuarioActual.oficio || 'Comerciante'}</p>
+                        <p><strong>WhatsApp:</strong> ${usuarioActual.WhatsApp || 'No asignado'}</p>
+                        <p><strong>Oficio/Profesión:</strong> ${usuarioActual.oficio || 'mercador'}</p>
                         <p><strong>Cumpleaños:</strong> ${usuarioActual.cumpleanos || 'No especificado'}</p>
                     </div>
                     <div>
@@ -1548,7 +1654,6 @@
             renderCeoTable();
         }
 
-        // DETALLES Y SINCRONIZACIÓN DE ELIMINACIÓN DE USUARIOS CON SHEETS
         function renderCeoTable() {
             document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
             document.getElementById('ceoCantUsuarios').innerText = usuariosBD.length;
@@ -1587,7 +1692,7 @@
                             <td class="p-2">${correo}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${u.WhatsApp || u.whatsapp}</span></td>
                             <td class="p-2 text-center">
                                 <div class="flex items-center justify-center gap-1.5">
-                                    <button onclick="verDetalleMercadorCeo('${correo}')" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition" title="Ver Calificaciones y Favoritos"><i class="fa-solid fa-eye text-xs"></i></button>
+                                    <button onclick="verDetalleMercadorCeo('${correo}')" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition" title="Ver Data"><i class="fa-solid fa-eye text-xs"></i></button>
                                     <button onclick="eliminarUsuarioCeo('${correo}')" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition" title="Eliminar"><i class="fa-solid fa-trash-can text-xs"></i></button>
                                 </div>
                             </td>
@@ -1597,7 +1702,6 @@
             }
         }
 
-        // VISUALIZACIÓN DETALLADA PARA EL CEO
         function verDetalleMercaderoCeo(id) {
             const p = puestosBD.find(x => (x.ID || x.id) == id);
             if (!p) return;
@@ -1629,7 +1733,8 @@
             document.getElementById('ceoDetalleTitulo').innerText = `Comprador: ${u.Nombre_Completo || u.nombre}`;
             document.getElementById('ceoDetalleContenido').innerHTML = `
                 <p><strong>Correo:</strong> ${correo}</p>
-                <p><strong>Oficio:</strong> ${u.Oficio || 'Comerciante'}</p>
+                <p><strong>WhatsApp:</strong> ${u.WhatsApp || 'N/A'}</p>
+                <p><strong>Oficio:</strong> ${u.Oficio || 'mercador'}</p>
                 <p><strong>Cumpleaños:</strong> ${u.Cumpleanos || 'N/A'}</p>
                 <div class="pt-2 border-t mt-2">
                     <strong class="block mb-1">Comentarios y Calificaciones realizadas (${calsObj.length}):</strong>
@@ -1643,7 +1748,6 @@
             document.getElementById('modalCeoDetalle').classList.remove('hidden');
         }
 
-        // ELIMINACIÓN DE PUESTOS Y USUARIOS DESDE PANEL Y HOJA DE SHEETS
         function eliminarPuestoCeo(id) {
             if (confirm("Confirmación CEO: ¿Desea eliminar definitivamente este puesto?")) {
                 puestosBD = puestosBD.filter(p => (p.ID || p.id) !== id);
@@ -1651,7 +1755,7 @@
                 eliminarEnSheets('puestos', id, 0);
                 renderCeoTable();
                 renderPuestos();
-                mostrarToast("Puesto eliminado del Panel y de Google Sheets.");
+                mostrarToast("Puesto eliminado de la nube.");
             }
         }
 
@@ -1661,7 +1765,7 @@
                 localStorage.setItem('mercatodon_usuarios', JSON.stringify(usuariosBD));
                 eliminarEnSheets('usuarios', correo, 2);
                 renderCeoTable();
-                mostrarToast("Usuario eliminado del Panel y de Google Sheets.");
+                mostrarToast("Usuario eliminado de la nube.");
             }
         }
 
@@ -1710,7 +1814,7 @@
                 deferredPromptPWA.prompt();
                 deferredPromptPWA.userChoice.then(() => { deferredPromptPWA = null; document.getElementById('bannerInstalacionPWA').classList.add('hidden'); });
             } else {
-                mostrarToast("Para instalar: Pulsa Opciones (...) y selecciona 'Agregar a Pantalla de Inicio'");
+                mostrarToast("En tu navegador: Pulsa Menú (...) y selecciona 'Agregar a Pantalla de Inicio' o 'Instalar App'.");
             }
         }
 
