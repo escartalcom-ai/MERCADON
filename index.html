@@ -82,7 +82,7 @@
                 </div>
             </div>
 
-            <!-- Acciones Derecha (AJUSTE 7: Botones Intercambiados en Header de Inicio) -->
+            <!-- Acciones Derecha -->
             <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
                 <button onclick="abrirModalUbicacion()" class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200">
                     <i class="fa-solid fa-location-dot text-brand-red text-sm"></i>
@@ -129,7 +129,7 @@
     <!-- CONTAINER PRINCIPAL -->
     <main class="flex-grow w-full m-0 p-0 space-y-3">
 
-        <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES CON SWIPE TÁCTIL (AJUSTE 3) ==================== -->
+        <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES CON SWIPE TÁCTIL ==================== -->
         <section id="secInicio" class="space-y-3">
             
             <!-- Banner Slider Principal con Soporte Táctil (Swipe) -->
@@ -147,89 +147,84 @@
                 </button>
             </div>
 
-            <!-- CONTENIDO CON MARGEN DELIMITADO Y ESTRUCTURA DE 1 A 30 BANNERS (AJUSTE 5) -->
+            <!-- CONTENIDO CON MARGEN DELIMITADO Y ESTRUCTURA DE BANNERS UNIFORMES (1 AL 30) -->
             <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3">
                 
-                <!-- BANNER 1 (Ancho Completo w-full) -->
-                <div class="w-full h-32 sm:h-40 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                    Banner 1 (728x90) - Conectado a Google Sheets
-                </div>
-
-                <!-- Bloques 1 a 4 de Publicidad Responsiva -->
+                <!-- BANNERS 1 A 4 -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-32 sm:h-40 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 2 (300x250)</div>
-                    <div class="h-32 sm:h-40 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 3 (GIF 1080x1080)</div>
-                    <div class="h-32 sm:h-40 bg-gradient-to-r from-purple-700 to-pink-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 4 (Video YouTube HD)</div>
-                    <div class="h-32 sm:h-40 bg-gradient-to-r from-amber-600 to-orange-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 5 (Promoción Local)</div>
+                    <div class="h-28 sm:h-32 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 1 (728x90)</div>
+                    <div class="h-28 sm:h-32 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 2 (300x250)</div>
+                    <div class="h-28 sm:h-32 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 3 (GIF 1080x1080)</div>
+                    <div class="h-28 sm:h-32 bg-gradient-to-r from-purple-700 to-pink-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 4 (Video HD)</div>
                 </div>
 
                 <!-- BANNER 5 (Ancho Completo w-full) -->
-                <div class="w-full h-32 sm:h-40 bg-gradient-to-r from-teal-600 to-blue-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
+                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-teal-600 to-blue-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                     Banner 5 Estático (Ancho Completo - Google Sheets ID: banner_05)
                 </div>
 
-                <!-- Bloques 6 a 9 de Publicidad -->
+                <!-- BANNERS 6 A 9 -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 6</div>
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 7</div>
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 8</div>
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 9</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 6</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 7</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 8</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 9</div>
                 </div>
 
                 <!-- BANNER 10 (Ancho Completo w-full) -->
-                <div class="w-full h-32 bg-gradient-to-r from-indigo-700 to-purple-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-indigo-700 to-purple-700 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                     Banner 10 Estático (Ancho Completo - Google Sheets ID: banner_10)
                 </div>
 
-                <!-- Bloques 11 a 14 de Publicidad -->
+                <!-- BANNERS 11 A 14 -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 11</div>
-                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 12</div>
-                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 13</div>
-                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 14</div>
+                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 11</div>
+                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 12</div>
+                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 13</div>
+                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 14</div>
                 </div>
 
                 <!-- BANNER 15 (Ancho Completo w-full) -->
-                <div class="w-full h-32 bg-gradient-to-r from-red-700 to-rose-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-red-700 to-rose-700 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                     Banner 15 Estático (Ancho Completo - Google Sheets ID: banner_15)
                 </div>
 
-                <!-- Bloques 16 a 19 de Publicidad -->
+                <!-- BANNERS 16 A 19 -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 16</div>
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 17</div>
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 18</div>
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 19</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 16</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 17</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 18</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 19</div>
                 </div>
 
                 <!-- BANNER 20 (Ancho Completo w-full) -->
-                <div class="w-full h-32 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                     Banner 20 Estático (Ancho Completo - Google Sheets ID: banner_20)
                 </div>
 
-                <!-- Bloques 21 a 24 de Publicidad -->
+                <!-- BANNERS 21 A 24 -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 21</div>
-                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 22</div>
-                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 23</div>
-                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 24</div>
+                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 21</div>
+                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 22</div>
+                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 23</div>
+                    <div class="h-28 sm:h-32 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 24</div>
                 </div>
 
                 <!-- BANNER 25 (Ancho Completo w-full) -->
-                <div class="w-full h-32 bg-gradient-to-r from-blue-800 to-cyan-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-blue-800 to-cyan-700 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                     Banner 25 Estático (Ancho Completo - Google Sheets ID: banner_25)
                 </div>
 
-                <!-- Bloques 26 a 29 de Publicidad -->
+                <!-- BANNERS 26 A 29 -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 26</div>
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 27</div>
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 28</div>
-                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 29</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 26</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 27</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 28</div>
+                    <div class="h-28 sm:h-32 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 29</div>
                 </div>
 
                 <!-- BANNER 30 (Ancho Completo w-full) -->
-                <div class="w-full h-32 bg-gradient-to-r from-purple-800 to-indigo-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                <div class="w-full h-28 sm:h-32 bg-gradient-to-r from-purple-800 to-indigo-800 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                     Banner 30 Estático (Ancho Completo - Google Sheets ID: banner_30)
                 </div>
 
@@ -269,13 +264,12 @@
                     </div>
                 </div>
 
-                <!-- (AJUSTE 6) Banner Oficial MERCATODON con Redes Sociales Oficiales -->
+                <!-- Banner Oficial MERCATODON con Redes Sociales Oficiales -->
                 <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-4 text-white text-center shadow-md space-y-2">
                     <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Publicidad Oficial MERCATODON</span>
                     <h3 class="text-sm sm:text-base font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
                     <p class="text-xs text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
                     
-                    <!-- Redes sociales oficiales para seguir a la plataforma -->
                     <div class="pt-2 flex justify-center gap-5 text-xl text-white">
                         <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
                         <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
@@ -305,10 +299,11 @@
                 <!-- Dinámico JS -->
             </div>
 
+            <!-- (AJUSTE 4) Todos los Banners Táctiles debajo del último puesto registrado -->
             <div class="pt-6 border-t-2 border-dashed border-gray-300 space-y-4">
                 <h3 class="text-xs font-black text-center text-gray-400 uppercase tracking-widest">Publicidad y Promociones Destacadas</h3>
                 <div id="publicidadFinPuestos" class="space-y-3">
-                    <!-- Clon dinámico -->
+                    <!-- Clon dinámico táctil -->
                 </div>
             </div>
         </section>
@@ -366,7 +361,7 @@
 
     </main>
 
-    <!-- ==================== PIE DE PÁGINA GLOBAL CON APOYO VOLUNTARIO SUTIL (AJUSTE 6) ==================== -->
+    <!-- ==================== PIE DE PÁGINA GLOBAL ==================== -->
     <footer class="bg-white border-t border-gray-200 py-3 mt-4">
         <div class="max-w-7xl mx-auto px-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs text-gray-600 font-medium">
             <div class="flex items-center gap-1.5">
@@ -375,7 +370,6 @@
                     COMAXION
                 </a>
             </div>
-            <!-- Botón de Apoyo Voluntario sutil en la parte inferior -->
             <button onclick="abrirModalDonacion()" class="bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold py-1 px-3 rounded-full border border-amber-200 flex items-center gap-1 transition shadow-sm">
                 <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i>
                 <span>Apoyo Voluntario</span>
@@ -472,23 +466,26 @@
         </div>
     </div>
 
-    <!-- MODAL 3: FORMULARIO REGISTRO 100% CORREGIDO (AJUSTE 1) -->
-    <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative my-8">
-            <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+    <!-- MODAL 3: FORMULARIO REGISTRO 100% CORREGIDO (AJUSTE 1: Sin barras de desplazamiento y con los 12 datos exactos) -->
+    <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto no-scrollbar">
+            <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <h3 id="formAuthTitulo" class="font-bold text-lg text-gray-900 border-b pb-2">Registro de Usuario</h3>
-            <form id="formAuth" onsubmit="procesarAuth(event)" class="space-y-3">
+            <h3 id="formAuthTitulo" class="font-bold text-base text-gray-900 border-b pb-2">Registro de Usuario</h3>
+            <form id="formAuth" onsubmit="procesarAuth(event)" class="space-y-2.5">
                 <input type="hidden" id="authRol">
-                <div id="camposMercadero" class="space-y-3 hidden">
+                
+                <!-- DATOS ESPECÍFICOS MERCADERO (GRATUITO) -->
+                <div id="camposMercadero" class="space-y-2.5 hidden bg-red-50/50 p-2.5 rounded-xl border border-red-100">
+                    <div class="text-[10px] font-black text-brand-red uppercase tracking-wide">Datos del Puesto (Gratis)</div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Nombre del Puesto *</label>
-                        <input type="text" id="regPuestoNombre" class="w-full border rounded-xl p-2 text-xs outline-none focus:ring-2 focus:ring-brand-red">
+                        <input type="text" id="regPuestoNombre" placeholder="Ej: Puesto Don José" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
                     </div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Rubro Principal *</label>
-                        <select id="regPuestoRubro" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        <select id="regPuestoRubro" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
                             <option value="Alimentos">Alimentos</option>
                             <option value="Bebidas">Bebidas</option>
                             <option value="Carnes">Carnes</option>
@@ -512,48 +509,79 @@
                         </select>
                     </div>
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">Descripción Breve del Puesto *</label>
-                        <input type="text" id="regPuestoDesc" placeholder="Ej: Los mejores abarrotes de Paita" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        <label class="text-xs font-semibold text-gray-700">Descripción (breve) *</label>
+                        <input type="text" id="regPuestoDesc" placeholder="Describe brevemente tu puesto o productos" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Región</label>
+                            <input type="text" id="regRegion" value="Piura" readonly class="w-full border rounded-xl p-2 text-xs outline-none bg-gray-100 text-gray-600 font-bold">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Provincia *</label>
+                            <select id="regProvinciaPuesto" onchange="cargarDistritosRegistro()" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Distrito *</label>
+                            <select id="regDistritoPuesto" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Ubicación GPS (Opcional)</label>
+                            <div class="flex gap-1">
+                                <input type="text" id="regGps" placeholder="Coordenadas GPS" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                                <button type="button" onclick="detectarGpsRegistro()" class="bg-white hover:bg-gray-100 border px-2.5 rounded-xl text-xs font-bold" title="Detectar GPS automático">
+                                    <i class="fa-solid fa-location-crosshairs text-brand-red"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">Catálogo / Facebook (Opcional)</label>
-                        <input type="url" id="regPuestoWeb" placeholder="https://..." class="w-full border rounded-xl p-2 text-xs outline-none">
+                        <label class="text-xs font-semibold text-gray-700">Catálogo Virtual o Facebook (Opcional)</label>
+                        <input type="url" id="regPuestoWeb" placeholder="https://facebook.com/..." class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
                     </div>
                 </div>
 
-                <div>
-                    <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos del Dueño / Usuario *</label>
-                    <input type="text" id="regNombreCompleto" required class="w-full border rounded-xl p-2 text-xs outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
+                <!-- DATOS GENERALES DUEÑO / USUARIO -->
+                <div class="space-y-2.5">
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">WhatsApp *</label>
-                        <input type="tel" id="regWhatsapp" required placeholder="930528649" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos del Dueño del Puesto *</label>
+                        <input type="text" id="regNombreCompleto" required placeholder="Nombres y Apellidos completos" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">WhatsApp del Puesto *</label>
+                            <input type="tel" id="regWhatsapp" required placeholder="930528649" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Cumpleaños</label>
+                            <input type="date" id="regCumple" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        </div>
                     </div>
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">Cumpleaños</label>
-                        <input type="date" id="regCumple" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        <label class="text-xs font-semibold text-gray-700">Correo Electrónico (Dashboard) *</label>
+                        <input type="email" id="regCorreo" required placeholder="tucorreo@gmail.com" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Contraseña (Dashboard) *</label>
+                        <input type="password" id="regPass" required placeholder="••••••••" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
                 </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-700">Correo Electrónico *</label>
-                    <input type="email" id="regCorreo" required class="w-full border rounded-xl p-2 text-xs outline-none">
-                </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-700">Contraseña *</label>
-                    <input type="password" id="regPass" required class="w-full border rounded-xl p-2 text-xs outline-none">
-                </div>
+
                 <div class="flex items-start gap-2 pt-1">
                     <input type="checkbox" id="regTerms" required class="mt-0.5">
                     <label for="regTerms" class="text-[10px] text-gray-500 leading-tight">
-                        Acepto Términos, Condiciones y Política de Datos (Ley N° 29733 Perú).
+                        Acepto Términos, Condiciones y Política de Datos (Ley N° 29733 Perú). Registro 100% Gratuito.
                     </label>
                 </div>
                 <button type="submit" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
                     Guardar Registro e Ingresar
                 </button>
             </form>
-            <div class="text-center pt-2 border-t">
+            <div class="text-center pt-1 border-t">
                 <button onclick="recuperarPassword()" class="text-xs text-gray-500 hover:text-brand-red underline">
                     ¿Olvidaste tu contraseña?
                 </button>
@@ -691,6 +719,7 @@
 
         window.onload = function() {
             inicializarUbicacionUI();
+            inicializarUbicacionRegistro();
             renderRubros();
             renderPuestos();
             clonarPublicidadPuestos();
@@ -834,7 +863,16 @@
         function clonarPublicidadPuestos() {
             const publicidadOrig = document.getElementById('bloquesPromocionalesInicio');
             if (publicidadOrig) {
-                document.getElementById('publicidadFinPuestos').innerHTML = publicidadOrig.innerHTML;
+                // Se clona todo el bloque publicitario de inicio y los banners en la sección de puestos
+                const contenedorFin = document.getElementById('publicidadFinPuestos');
+                contenedorFin.innerHTML = `
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <div class="h-28 sm:h-32 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 1</div>
+                        <div class="h-28 sm:h-32 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 2</div>
+                        <div class="h-28 sm:h-32 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 3</div>
+                        <div class="h-28 sm:h-32 bg-gradient-to-r from-purple-700 to-pink-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 4</div>
+                    </div>
+                ` + publicidadOrig.innerHTML;
             }
         }
 
@@ -935,6 +973,44 @@
             }
         }
 
+        function inicializarUbicacionRegistro() {
+            const selProvReg = document.getElementById('regProvinciaPuesto');
+            if (!selProvReg) return;
+            selProvReg.innerHTML = '';
+            Object.keys(ubigeoPiura["Piura"]).forEach(prov => {
+                selProvReg.innerHTML += `<option value="${prov}">${prov}</option>`;
+            });
+            selProvReg.value = "Paita";
+            cargarDistritosRegistro();
+        }
+
+        function cargarDistritosRegistro() {
+            const prov = document.getElementById('regProvinciaPuesto').value;
+            const selDisReg = document.getElementById('regDistritoPuesto');
+            selDisReg.innerHTML = '';
+
+            if (ubigeoPiura["Piura"][prov]) {
+                ubigeoPiura["Piura"][prov].forEach(dis => {
+                    selDisReg.innerHTML += `<option value="${dis}">${dis}</option>`;
+                });
+            }
+        }
+
+        function detectarGpsRegistro() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const lat = pos.coords.latitude.toFixed(6);
+                    const lon = pos.coords.longitude.toFixed(6);
+                    document.getElementById('regGps').value = `${lat}, ${lon}`;
+                    mostrarToast("¡Ubicación GPS detectada correctamente!");
+                }, () => {
+                    mostrarToast("No se pudo obtener la ubicación GPS.");
+                });
+            } else {
+                mostrarToast("Geolocalización no soportada.");
+            }
+        }
+
         function guardarUbicacion() {
             ubicacionActual = {
                 region: "Piura",
@@ -988,7 +1064,7 @@
         function abrirFormularioAuth(rol) {
             cerrarModal('modalAuth');
             document.getElementById('authRol').value = rol;
-            document.getElementById('formAuthTitulo').innerText = rol === 'mercadero' ? 'Registro Puesto (Mercadero)' : 'Registro Comprador (Mercador)';
+            document.getElementById('formAuthTitulo').innerText = rol === 'mercadero' ? 'Registro de Puesto - Gratuito (Mercadero)' : 'Registro Comprador (Mercador)';
 
             if (rol === 'mercadero') {
                 document.getElementById('camposMercadero').classList.remove('hidden');
@@ -998,7 +1074,7 @@
             document.getElementById('modalFormAuth').classList.remove('hidden');
         }
 
-        // FORMULARIO MERCADERO 100% CORREGIDO (AJUSTE 1)
+        // FORMULARIO MERCADERO CON LOS DATOS SOLICITADOS (AJUSTE 1)
         function procesarAuth(e) {
             e.preventDefault();
             const email = document.getElementById('regCorreo').value;
@@ -1027,6 +1103,9 @@
                 const nombrePuesto = document.getElementById('regPuestoNombre').value;
                 const rubroPuesto = document.getElementById('regPuestoRubro').value;
                 const descPuesto = document.getElementById('regPuestoDesc').value;
+                const provinciaPuesto = document.getElementById('regProvinciaPuesto').value;
+                const distritoPuesto = document.getElementById('regDistritoPuesto').value;
+                const gpsPuesto = document.getElementById('regGps').value;
                 const webPuesto = document.getElementById('regPuestoWeb').value;
 
                 if (!nombrePuesto || !descPuesto) {
@@ -1040,8 +1119,9 @@
                     rubro: rubroPuesto,
                     desc: descPuesto,
                     region: "Piura",
-                    provincia: ubicacionActual.provincia,
-                    distrito: ubicacionActual.distrito,
+                    provincia: provinciaPuesto,
+                    distrito: distritoPuesto,
+                    gps: gpsPuesto,
                     mercas: 1,
                     whatsapp: whatsapp,
                     web: webPuesto || "",
@@ -1187,7 +1267,7 @@
             if (wrapper) wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
         }
 
-        // SOPORTE TÁCTIL (SWIPE) PARA BANNERS (AJUSTE 3)
+        // SOPORTE TÁCTIL (SWIPE) PARA BANNERS
         function configurarSwipeTactil() {
             const container = document.getElementById('sliderContainer');
             let startX = 0;
@@ -1241,7 +1321,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // PWA NATIVO AUTOMÁTICO SIN BOTONES FLOTANTES (AJUSTE 2)
+        // PWA NATIVO AUTOMÁTICO
         function registrarServiceWorkerNativo() {
             if ('serviceWorker' in navigator) {
                 const swCode = `
