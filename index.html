@@ -68,7 +68,23 @@
         <span id="toastMsg">Mensaje del sistema</span>
     </div>
 
-    <!-- ==================== HEADER UNIFICADO (AJUSTE 3 & 4) ==================== -->
+    <!-- BANNER DE INSTALACIÓN NATIVA PWA (AJUSTE 6) -->
+    <div id="bannerInstalacionPWA" class="hidden bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white px-3 py-2 text-xs flex items-center justify-between border-b border-gray-700">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-mobile-screen-button text-brand-orange text-sm"></i>
+            <span>Instala la App nativa de <strong>MERCATODON</strong> en tu celular</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="instalarAppNativa()" class="bg-brand-red hover:bg-brand-darkRed text-white font-bold py-1 px-3 rounded-full text-[11px] shadow transition">
+                Instalar App
+            </button>
+            <button onclick="cerrarBannerPWA()" class="text-gray-400 hover:text-white px-1">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== HEADER UNIFICADO ==================== -->
     <header id="headerPrincipal" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
             <!-- Logo + Nombre MERCATODON + Eslogan -->
@@ -114,7 +130,7 @@
     <!-- CONTAINER PRINCIPAL -->
     <main class="flex-grow w-full m-0 p-0 space-y-4">
 
-        <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES Y SECCIONES A-H (AJUSTE 8) ==================== -->
+        <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES Y SECCIONES A-H ==================== -->
         <section id="secInicio" class="space-y-4">
             
             <!-- SECCIÓN A: Banner Principal (Carrusel Táctil) -->
@@ -134,49 +150,40 @@
 
             <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-4">
                 
-                <!-- SECCIÓN B: Ofertas y Promos (Tarjetas deslizables) -->
+                <!-- SECCIÓN B: Ofertas y Promociones (AJUSTE 1 & 2: Plateado, Mayúscula/Minúscula y solo imágenes compactas) -->
                 <div class="space-y-2">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
-                            <i class="fa-solid fa-tags text-brand-orange"></i> Ofertas y Promos
+                        <h3 class="text-xs sm:text-sm font-black text-slate-400 flex items-center gap-1.5 tracking-wide">
+                            <i class="fa-solid fa-tags text-slate-400"></i> Ofertas y Promociones
                         </h3>
                     </div>
-                    <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
-                        <div class="min-w-[160px] sm:min-w-[200px] bg-white border rounded-xl p-2.5 shadow-sm flex-shrink-0 space-y-1">
-                            <img src="https://images.unsplash.com/photo-1563542932420-dda7e6b6a2f3?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-lg" alt="Oferta">
-                            <span class="text-[9px] bg-orange-100 text-brand-orange font-bold px-1.5 py-0.5 rounded">Oferta B1</span>
-                            <h4 class="font-bold text-xs truncate">Tomate Extra</h4>
-                            <p class="text-[10px] text-gray-500">S/ 1.50 kg</p>
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                        <div class="min-w-[120px] max-w-[140px] sm:min-w-[150px] sm:max-w-[160px] bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0">
+                            <img src="https://images.unsplash.com/photo-1563542932420-dda7e6b6a2f3?auto=format&fit=crop&w=400&q=80" class="w-full h-24 sm:h-28 object-cover rounded-xl" alt="Oferta 1">
                         </div>
-                        <div class="min-w-[160px] sm:min-w-[200px] bg-white border rounded-xl p-2.5 shadow-sm flex-shrink-0 space-y-1">
-                            <img src="https://images.unsplash.com/photo-1534482492322-1e272e75e9fe?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-lg" alt="Oferta">
-                            <span class="text-[9px] bg-orange-100 text-brand-orange font-bold px-1.5 py-0.5 rounded">Oferta B2</span>
-                            <h4 class="font-bold text-xs truncate">Pescado Merluza</h4>
-                            <p class="text-[10px] text-gray-500">S/ 8.90 kg</p>
+                        <div class="min-w-[120px] max-w-[140px] sm:min-w-[150px] sm:max-w-[160px] bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0">
+                            <img src="https://images.unsplash.com/photo-1534482492322-1e272e75e9fe?auto=format&fit=crop&w=400&q=80" class="w-full h-24 sm:h-28 object-cover rounded-xl" alt="Oferta 2">
                         </div>
-                        <div class="min-w-[160px] sm:min-w-[200px] bg-white border rounded-xl p-2.5 shadow-sm flex-shrink-0 space-y-1">
-                            <img src="https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-lg" alt="Oferta">
-                            <span class="text-[9px] bg-orange-100 text-brand-orange font-bold px-1.5 py-0.5 rounded">Oferta B3</span>
-                            <h4 class="font-bold text-xs truncate">Limón Sutil</h4>
-                            <p class="text-[10px] text-gray-500">S/ 1.00 kg</p>
+                        <div class="min-w-[120px] max-w-[140px] sm:min-w-[150px] sm:max-w-[160px] bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0">
+                            <img src="https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=400&q=80" class="w-full h-24 sm:h-28 object-cover rounded-xl" alt="Oferta 3">
                         </div>
                     </div>
                 </div>
 
-                <!-- SECCIÓN C: Patrocinios -->
+                <!-- SECCIÓN C: Patrocinios (AJUSTE 1: Plateado y Mayúscula/Minúscula) -->
                 <div class="space-y-2">
-                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
-                        <i class="fa-solid fa-crown text-amber-500"></i> Patrocinios
+                    <h3 class="text-xs sm:text-sm font-black text-slate-400 flex items-center gap-1.5 tracking-wide">
+                        <i class="fa-solid fa-crown text-slate-400"></i> Patrocinios
                     </h3>
                     <div class="w-full h-20 sm:h-24 bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                         Banner Patrocinio C1 (728x90) - Marcas y Negocios Líderes
                     </div>
                 </div>
 
-                <!-- SECCIÓN D: Spots Comerciales (Videos / Multimedia) -->
+                <!-- SECCIÓN D: Spots Comerciales (AJUSTE 1: Plateado y Mayúscula/Minúscula) -->
                 <div class="space-y-2">
-                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
-                        <i class="fa-solid fa-video text-red-600"></i> Spots Comerciales
+                    <h3 class="text-xs sm:text-sm font-black text-slate-400 flex items-center gap-1.5 tracking-wide">
+                        <i class="fa-solid fa-video text-slate-400"></i> Spots Comerciales
                     </h3>
                     <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
                         <div class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video flex items-center justify-center text-white">
@@ -190,30 +197,30 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN E: Servicios y Proveedores -->
+                <!-- SECCIÓN E: Servicios y Proveedores (AJUSTE 1: Plateado y Mayúscula/Minúscula) -->
                 <div class="space-y-2">
-                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
-                        <i class="fa-solid fa-truck-fast text-blue-600"></i> Servicios y Proveedores
+                    <h3 class="text-xs sm:text-sm font-black text-slate-400 flex items-center gap-1.5 tracking-wide">
+                        <i class="fa-solid fa-truck-fast text-slate-400"></i> Servicios y Proveedores
                     </h3>
                     <div class="w-full h-24 sm:h-28 bg-gradient-to-r from-blue-700 to-indigo-800 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                         Banner Servicios E1 (1200x250) - Transporte, distribución y proveeduría
                     </div>
                 </div>
 
-                <!-- SECCIÓN F: Campañas Especiales -->
+                <!-- SECCIÓN F: Campañas Especiales (AJUSTE 1: Plateado y Mayúscula/Minúscula) -->
                 <div class="space-y-2">
-                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
-                        <i class="fa-solid fa-calendar-days text-rose-600"></i> Campañas Especiales
+                    <h3 class="text-xs sm:text-sm font-black text-slate-400 flex items-center gap-1.5 tracking-wide">
+                        <i class="fa-solid fa-calendar-days text-slate-400"></i> Campañas Especiales
                     </h3>
                     <div class="w-full h-24 sm:h-28 bg-gradient-to-r from-rose-600 to-pink-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
                         Banner Campaña F1 (1200x300) - Especial del Mes / Festividades
                     </div>
                 </div>
 
-                <!-- SECCIÓN G: Nuestros Aliados -->
+                <!-- SECCIÓN G: Nuestros Aliados (AJUSTE 1: Plateado y Mayúscula/Minúscula) -->
                 <div class="space-y-2">
-                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
-                        <i class="fa-solid fa-handshake text-emerald-600"></i> Nuestros Aliados
+                    <h3 class="text-xs sm:text-sm font-black text-slate-400 flex items-center gap-1.5 tracking-wide">
+                        <i class="fa-solid fa-handshake text-slate-400"></i> Nuestros Aliados
                     </h3>
                     <div class="grid grid-cols-3 gap-2">
                         <div class="bg-white border rounded-xl p-3 text-center text-xs font-bold text-gray-700 shadow-sm">AgroVida</div>
@@ -222,26 +229,31 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN H: Novedades -->
+                <!-- SECCIÓN H: Novedades (AJUSTE 1 & 8: Plateado, Mayúscula/Minúscula y anchura reducida) -->
                 <div class="space-y-2">
-                    <h3 class="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-1.5 uppercase tracking-wide">
-                        <i class="fa-solid fa-bell text-amber-600"></i> Novedades
+                    <h3 class="text-xs sm:text-sm font-black text-slate-400 flex items-center gap-1.5 tracking-wide">
+                        <i class="fa-solid fa-bell text-slate-400"></i> Novedades
                     </h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <div class="bg-white border rounded-xl p-2.5 shadow-sm text-xs space-y-1">
-                            <span class="text-[9px] bg-amber-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">Noticia H1</span>
-                            <h4 class="font-bold">Nuevas verduras frescas</h4>
-                            <p class="text-[10px] text-gray-500">Llegadas directas del campo regional piurano.</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <div class="bg-white border rounded-xl p-2 shadow-sm text-xs space-y-0.5">
+                            <span class="text-[8px] bg-amber-100 text-amber-700 font-bold px-1 py-0.2 rounded">H1</span>
+                            <h4 class="font-bold text-[11px] truncate">Verduras Frescas</h4>
+                            <p class="text-[9px] text-gray-500 line-clamp-1">Llegadas del campo piurano.</p>
                         </div>
-                        <div class="bg-white border rounded-xl p-2.5 shadow-sm text-xs space-y-1">
-                            <span class="text-[9px] bg-amber-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">Noticia H2</span>
-                            <h4 class="font-bold">Carnes de calidad</h4>
-                            <p class="text-[10px] text-gray-500">Nuevos cortes certificados para restaurantes.</p>
+                        <div class="bg-white border rounded-xl p-2 shadow-sm text-xs space-y-0.5">
+                            <span class="text-[8px] bg-amber-100 text-amber-700 font-bold px-1 py-0.2 rounded">H2</span>
+                            <h4 class="font-bold text-[11px] truncate">Carnes de Calidad</h4>
+                            <p class="text-[9px] text-gray-500 line-clamp-1">Cortes premium certificados.</p>
                         </div>
-                        <div class="bg-white border rounded-xl p-2.5 shadow-sm text-xs space-y-1">
-                            <span class="text-[9px] bg-amber-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">Noticia H3</span>
-                            <h4 class="font-bold">Frutas de temporada</h4>
-                            <p class="text-[10px] text-gray-500">Mango edén y uva criolla al mejor precio.</p>
+                        <div class="bg-white border rounded-xl p-2 shadow-sm text-xs space-y-0.5">
+                            <span class="text-[8px] bg-amber-100 text-amber-700 font-bold px-1 py-0.2 rounded">H3</span>
+                            <h4 class="font-bold text-[11px] truncate">Frutas Temporada</h4>
+                            <p class="text-[9px] text-gray-500 line-clamp-1">Mango edén y uva criolla.</p>
+                        </div>
+                        <div class="bg-white border rounded-xl p-2 shadow-sm text-xs space-y-0.5">
+                            <span class="text-[8px] bg-amber-100 text-amber-700 font-bold px-1 py-0.2 rounded">H4</span>
+                            <h4 class="font-bold text-[11px] truncate">Pescado del Día</h4>
+                            <p class="text-[9px] text-gray-500 line-clamp-1">Directo del puerto de Paita.</p>
                         </div>
                     </div>
                 </div>
@@ -283,7 +295,7 @@
                 </div>
 
                 <!-- Banner Oficial MERCATODON -->
-                <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-4 text-white text-center shadow-md space-y-2">
+                <div id="bannerOficialMercatodon" class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-4 text-white text-center shadow-md space-y-2">
                     <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Publicidad Oficial MERCATODON</span>
                     <h3 class="text-sm sm:text-base font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
                     <p class="text-xs text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
@@ -304,7 +316,7 @@
             </div>
         </section>
 
-        <!-- ==================== SECCIÓN 2: PUESTOS & RUBROS ==================== -->
+        <!-- ==================== SECCIÓN 2: PUESTOS & RUBROS (AJUSTE 7: Banners promocionales al final) ==================== -->
         <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3 hidden">
             <div class="sticky top-[53px] z-20 bg-gray-50/95 backdrop-blur-md py-2 border-b border-gray-200">
                 <div id="contenedorRubros" class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
@@ -312,34 +324,35 @@
                 </div>
             </div>
 
-            <!-- Grid de Puestos (Tarjetas con Contorno Dorado y 2 Columnas Móvil) -->
+            <!-- Grid de Puestos -->
             <div id="gridPuestos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
                 <!-- Dinámico JS -->
             </div>
 
+            <!-- Banners Promocionales al final del último Puesto (AJUSTE 7) -->
             <div class="pt-6 border-t-2 border-dashed border-gray-300 space-y-4">
-                <h3 class="text-xs font-black text-center text-gray-400 uppercase tracking-widest">Publicidad y Promociones Destacadas</h3>
+                <h3 class="text-xs font-black text-center text-slate-400 uppercase tracking-widest">Publicidad y Promociones Destacadas</h3>
                 <div id="publicidadFinPuestos" class="space-y-3">
-                    <!-- Clon dinámico -->
+                    <!-- Clon dinámico desde JS -->
                 </div>
             </div>
         </section>
 
-        <!-- ==================== SECCIÓN 3: DASHBOARDS (AJUSTE 4 & 5) ==================== -->
+        <!-- ==================== SECCIÓN 3: DASHBOARDS (AJUSTE 7: Publicidades integradas) ==================== -->
         <section id="secDashboard" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-4">
             <div id="dashMercadero" class="hidden space-y-4"></div>
             <div id="dashMercador" class="hidden space-y-4"></div>
             
-            <!-- Publicidades añadidas en los paneles (Ajuste 5) -->
+            <!-- Publicidades en los Paneles de Mercaderos y Mercadores (AJUSTE 7) -->
             <div class="pt-6 border-t border-gray-200 space-y-3">
-                <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest text-center">Publicidad Recomendada</h3>
-                <div class="w-full h-24 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow">
-                    Banner Promocional General - Panel de Usuario
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest text-center">Publicidad Recomendada para Usuarios</h3>
+                <div id="publicidadPanelesUsuarios" class="space-y-3">
+                    <!-- Clon dinámico desde JS -->
                 </div>
             </div>
         </section>
 
-        <!-- ==================== SECCIÓN 4: PANEL CEO CON SELECCIÓN MERCADEROS/MERCADORES (AJUSTE 1) ==================== -->
+        <!-- ==================== SECCIÓN 4: PANEL CEO CON SELECCIÓN MERCADEROS/MERCADORES ==================== -->
         <section id="secCeo" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-4 bg-white p-4 rounded-2xl border-2 border-red-500 shadow-xl">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="text-base font-black text-brand-red flex items-center gap-2">
@@ -367,7 +380,7 @@
                 </div>
             </div>
 
-            <!-- Selector de Visualización CEO (Ajuste 1) -->
+            <!-- Selector de Visualización CEO -->
             <div class="flex gap-2 border-b pb-2">
                 <button onclick="cambiarTabCeo('mercaderos')" id="tabBtnMercaderos" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-brand-red text-white transition">
                     Ver Mercaderos (Puestos)
@@ -386,7 +399,7 @@
                             <th class="p-2 border">Rubro</th>
                             <th class="p-2 border">Ubicación</th>
                             <th class="p-2 border">Contacto / Correo</th>
-                            <th class="p-2 border">Acciones</th>
+                            <th class="p-2 border text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tablaCeoContenido"></tbody>
@@ -455,7 +468,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: SELECCIÓN ROL REGISTRO / INGRESO CON "OLVIDÉ CONTRASEÑA" (AJUSTE 2) -->
+    <!-- MODAL 2: SELECCIÓN ROL REGISTRO / INGRESO (AJUSTE 3: Eye on/off para contraseñas) -->
     <div id="modalAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -473,10 +486,14 @@
                 </div>
                 <div>
                     <label class="text-[11px] font-bold text-gray-700">Contraseña</label>
-                    <input type="password" id="loginPass" required class="w-full border rounded-lg p-2 text-xs outline-none bg-white">
+                    <div class="relative">
+                        <input type="password" id="loginPass" required class="w-full border rounded-lg p-2 pr-8 text-xs outline-none bg-white">
+                        <button type="button" onclick="togglePasswordVisibility('loginPass', 'eyeLoginIcon')" class="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600">
+                            <i id="eyeLoginIcon" class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
                 </div>
                 
-                <!-- Botón Olvidé Contraseña conectado a Firebase (Ajuste 2) -->
                 <div class="text-right">
                     <button type="button" onclick="recuperarPasswordLogin()" class="text-[11px] text-brand-red hover:underline font-semibold">
                         Olvidé contraseña
@@ -509,7 +526,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: FORMULARIO REGISTRO (Sin texto de recuperar contraseña según Ajuste 2) -->
+    <!-- MODAL 3: FORMULARIO REGISTRO (AJUSTE 3: Eye on/off para contraseñas) -->
     <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto no-scrollbar">
             <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10">
@@ -608,7 +625,12 @@
                     </div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Contraseña (Acceso) *</label>
-                        <input type="password" id="regPass" required placeholder="••••••••" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        <div class="relative">
+                            <input type="password" id="regPass" required placeholder="••••••••" class="w-full border rounded-xl p-2 pr-8 text-xs outline-none">
+                            <button type="button" onclick="togglePasswordVisibility('regPass', 'eyeRegIcon')" class="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600">
+                                <i id="eyeRegIcon" class="fa-solid fa-eye text-xs"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -625,7 +647,7 @@
         </div>
     </div>
 
-    <!-- MODAL 4: VENTANA "MERCAR" (Estrellas sin pintar inicialmente - Ajuste 7) -->
+    <!-- MODAL 4: VENTANA "MERCAR" -->
     <div id="modalMercar" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalMercar')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -752,7 +774,7 @@
         ];
 
         let puestosBD = JSON.parse(localStorage.getItem('mercatodon_puestos')) || [
-            { id: 1, nombre: "Mini Market La Esquina", rubro: "Alimentos", desc: "Abarrotes y productos de primera necesidad en Paita.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 45, whatsapp: "51930528649", web: "https://facebook.com", fav: false, duenio: "Juan Pérez", correo: "juan@gmail.com" },
+            { id: 1, nombre: "Mini Market La Esquina", rubro: "Alimentos", desc: "Abarrotes y productos de primera necesidad en Paita.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 1, whatsapp: "51930528649", web: "https://facebook.com", fav: false, duenio: "Juan Pérez", correo: "juan@gmail.com" },
             { id: 2, nombre: "Cevichería El Puerto", rubro: "Gastronomía", desc: "Pescado fresco del día y ceviches piuranos.", region: "Piura", provincia: "Paita", distrito: "Paita", mercas: 89, whatsapp: "51930528649", web: "", fav: true, duenio: "Rosa Zapata", correo: "rosa@gmail.com" },
             { id: 3, nombre: "Carnicería Don Lucho", rubro: "Carnes", desc: "Cortes de res y pollo de calidad.", region: "Piura", provincia: "Sullana", distrito: "Sullana", mercas: 23, whatsapp: "51930528649", web: "", fav: false, duenio: "Luis Ramos", correo: "lucho@gmail.com" }
         ];
@@ -770,9 +792,10 @@
         let ubicacionActual = JSON.parse(localStorage.getItem('mercatodon_ubicacion')) || { region: "Piura", provincia: "Paita", distrito: "Paita" };
         let rubroSeleccionado = "Todos";
         let puestoSeleccionadoId = null;
-        let calificacionTemp = 0; // Inicialmente sin seleccionar
+        let calificacionTemp = 0;
         let slideIndex = 0;
         let ceoTabActual = 'mercaderos';
+        let deferredPromptPWA = null;
 
         window.onload = function() {
             inicializarUbicacionUI();
@@ -780,10 +803,12 @@
             renderRubros();
             renderPuestos();
             clonarPublicidadPuestos();
+            clonarPublicidadPaneles();
             actualizarHeaderUsuario();
             iniciarSlider();
             registrarServiceWorkerNativo();
             configurarSwipeTactil();
+            configurarInstalacionPWA();
         };
 
         function mostrarToast(mensaje) {
@@ -793,6 +818,21 @@
             setTimeout(() => {
                 t.classList.add('opacity-0', 'pointer-events-none');
             }, 3000);
+        }
+
+        // AJUSTE 3: Función alternar visibilidad de contraseña
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         }
 
         function verInicio() {
@@ -858,6 +898,7 @@
             });
         }
 
+        // AJUSTE 4: Detección gramatical de 1 merca vs 2+ mercas
         function renderPuestos(lista = puestosBD) {
             const grid = document.getElementById('gridPuestos');
             grid.innerHTML = '';
@@ -872,6 +913,8 @@
 
             filtrados.forEach(p => {
                 const corazonColor = p.fav ? 'text-red-500' : 'text-gray-300';
+                const textoMercas = p.mercas === 1 ? 'merca' : 'mercas';
+
                 grid.innerHTML += `
                     <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
                         <div>
@@ -889,7 +932,7 @@
                             <div class="flex items-center justify-between bg-gray-50 p-1 rounded-lg border border-gray-100">
                                 <div class="flex items-center gap-1 text-amber-500 font-extrabold text-[11px]">
                                     <i class="fa-solid fa-star text-[10px]"></i>
-                                    <span>${p.mercas} <span class="text-[9px] text-gray-400 font-normal">mercas</span></span>
+                                    <span>${p.mercas} <span class="text-[9px] text-gray-400 font-normal">${textoMercas}</span></span>
                                 </div>
                                 <button onclick="abrirMercarModal(${p.id})" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">
                                     Mercar
@@ -913,11 +956,31 @@
             });
         }
 
+        // AJUSTE 7: Clonar todas las publicidades de inicio en la sección Puestos
         function clonarPublicidadPuestos() {
             const publicidadOrig = document.getElementById('bloquesPromocionalesInicio');
-            if (publicidadOrig) {
-                const contenedorFin = document.getElementById('publicidadFinPuestos');
+            const bannerOficial = document.getElementById('bannerOficialMercatodon');
+            const contenedorFin = document.getElementById('publicidadFinPuestos');
+            
+            if (publicidadOrig && contenedorFin) {
                 contenedorFin.innerHTML = publicidadOrig.innerHTML;
+                if (bannerOficial) {
+                    contenedorFin.innerHTML += bannerOficial.outerHTML;
+                }
+            }
+        }
+
+        // AJUSTE 7: Clonar publicidades en los Paneles de Usuarios
+        function clonarPublicidadPaneles() {
+            const publicidadOrig = document.getElementById('bloquesPromocionalesInicio');
+            const bannerOficial = document.getElementById('bannerOficialMercatodon');
+            const contenedorPaneles = document.getElementById('publicidadPanelesUsuarios');
+            
+            if (publicidadOrig && contenedorPaneles) {
+                contenedorPaneles.innerHTML = publicidadOrig.innerHTML;
+                if (bannerOficial) {
+                    contenedorPaneles.innerHTML += bannerOficial.outerHTML;
+                }
             }
         }
 
@@ -984,7 +1047,7 @@
             document.getElementById('mercarDesc').innerText = p.desc;
             document.getElementById('mercarUbicacion').innerText = `${p.region}, ${p.provincia}, ${p.distrito}`;
             
-            setCalificacion(0); // Estrellas sin pintar inicialmente (Ajuste 7)
+            setCalificacion(0);
             document.getElementById('modalMercar').classList.remove('hidden');
         }
 
@@ -1020,7 +1083,6 @@
                 p.mercas += 1;
                 localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
 
-                // Registrar calificación en tiempo real
                 const nuevaCalificacion = {
                     puestoId: p.id,
                     usuario: usuarioActual.nombre,
@@ -1133,7 +1195,6 @@
                 return;
             }
 
-            // Buscar en puestos (mercadero) o usuarios (mercador)
             let puestoEncontrado = puestosBD.find(p => p.correo === email);
             let usuarioEncontrado = usuariosBD.find(u => u.correo === email);
 
@@ -1148,7 +1209,6 @@
             } else if (usuarioEncontrado) {
                 usuarioActual = usuarioEncontrado;
             } else {
-                // Crear por defecto como mercador si no existe
                 usuarioActual = {
                     nombre: email.split('@')[0],
                     correo: email,
@@ -1278,7 +1338,6 @@
             mostrarToast("Sesión cerrada");
         }
 
-        // PANEL MERCADERO CON EDICIÓN DE DATOS Y CALIFICACIONES (AJUSTE 4)
         function renderDashMercadero() {
             const puesto = puestosBD.find(p => p.correo === usuarioActual.correo || p.id === usuarioActual.puestoId) || puestosBD[0];
             const calificacionesPuesto = calificacionesBD.filter(c => c.puestoId === puesto.id);
@@ -1304,9 +1363,8 @@
                         </div>
                     </div>
 
-                    <!-- Formulario de Edición de Información del Puesto (Ajuste 4) -->
                     <div class="bg-gray-50 p-3.5 rounded-xl border space-y-3">
-                        <h4 class="text-xs font-bold text-gray-800 uppercase">Editar Información de mi Puesto (Sincronizado con BD)</h4>
+                        <h4 class="text-xs font-bold text-gray-800 uppercase">Editar Información de mi Puesto</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                             <div>
                                 <label class="font-semibold text-gray-600">Nombre del Puesto</label>
@@ -1334,7 +1392,6 @@
                         </button>
                     </div>
 
-                    <!-- Mensajes y Calificaciones en Tiempo Real (Ajuste 4) -->
                     <div class="space-y-2">
                         <h4 class="text-xs font-bold text-gray-800 uppercase">Mensajes y Calificaciones Recibidas (${calificacionesPuesto.length})</h4>
                         <div class="space-y-2 max-h-60 overflow-y-auto">
@@ -1395,7 +1452,6 @@
             `;
         }
 
-        // PANEL CEO CON SELECTOR DE MERCADEROS / MERCADORES Y GESTIÓN COMPLETA (AJUSTE 1)
         function cambiarTabCeo(tab) {
             ceoTabActual = tab;
             const btnMers = document.getElementById('tabBtnMercaderos');
@@ -1413,6 +1469,7 @@
             renderCeoTable();
         }
 
+        // AJUSTE 5: Íconos de Editar, Bloquear y Eliminar en Acciones CEO
         function renderCeoTable() {
             document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
             document.getElementById('ceoCantUsuarios').innerText = usuariosBD.length;
@@ -1424,15 +1481,23 @@
             if (ceoTabActual === 'mercaderos') {
                 puestosBD.forEach(p => {
                     tbody.innerHTML += `
-                        <tr class="border-b">
+                        <tr class="border-b hover:bg-gray-50">
                             <td class="p-2 font-bold">${p.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Dueño: ${p.duenio || 'N/A'}</span></td>
                             <td class="p-2">${p.rubro}</td>
                             <td class="p-2">${p.provincia} / ${p.distrito}</td>
                             <td class="p-2">${p.correo || 'N/A'}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${p.whatsapp}</span></td>
-                            <td class="p-2 space-x-1">
-                                <button onclick="editarPuestoCeo(${p.id})" class="text-blue-600 font-bold hover:underline">Editar</button>
-                                <button onclick="bloquearUsuarioCeo('${p.correo}')" class="text-amber-600 font-bold hover:underline">Bloquear</button>
-                                <button onclick="eliminarPuestoCeo(${p.id})" class="text-red-600 font-bold hover:underline">Eliminar</button>
+                            <td class="p-2 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button onclick="editarPuestoCeo(${p.id})" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition" title="Editar Puesto">
+                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                    </button>
+                                    <button onclick="bloquearUsuarioCeo('${p.correo}')" class="p-1.5 bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white rounded-lg transition" title="Bloquear Usuario">
+                                        <i class="fa-solid fa-ban text-xs"></i>
+                                    </button>
+                                    <button onclick="eliminarPuestoCeo(${p.id})" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition" title="Eliminar Puesto">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     `;
@@ -1440,14 +1505,20 @@
             } else {
                 usuariosBD.forEach(u => {
                     tbody.innerHTML += `
-                        <tr class="border-b">
+                        <tr class="border-b hover:bg-gray-50">
                             <td class="p-2 font-bold">${u.nombre}</td>
                             <td class="p-2">Comprador</td>
                             <td class="p-2">Piura</td>
                             <td class="p-2">${u.correo}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${u.whatsapp}</span></td>
-                            <td class="p-2 space-x-1">
-                                <button onclick="bloquearUsuarioCeo('${u.correo}')" class="text-amber-600 font-bold hover:underline">Bloquear</button>
-                                <button onclick="eliminarUsuarioCeo('${u.correo}')" class="text-red-600 font-bold hover:underline">Eliminar</button>
+                            <td class="p-2 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button onclick="bloquearUsuarioCeo('${u.correo}')" class="p-1.5 bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white rounded-lg transition" title="Bloquear Usuario">
+                                        <i class="fa-solid fa-ban text-xs"></i>
+                                    </button>
+                                    <button onclick="eliminarUsuarioCeo('${u.correo}')" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition" title="Eliminar Usuario">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     `;
@@ -1526,6 +1597,47 @@
                     else prevSlide();
                 }
             }, { passive: true });
+        }
+
+        // AJUSTE 6: Configurar e instalar App Nativa PWA + Detección si ya está instalada
+        function configurarInstalacionPWA() {
+            const esStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            if (esStandalone) {
+                // App ya instalada y abierta como PWA
+                document.getElementById('bannerInstalacionPWA').classList.add('hidden');
+                return;
+            }
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPromptPWA = e;
+                document.getElementById('bannerInstalacionPWA').classList.remove('hidden');
+            });
+
+            window.addEventListener('appinstalled', () => {
+                document.getElementById('bannerInstalacionPWA').classList.add('hidden');
+                deferredPromptPWA = null;
+                mostrarToast("¡MERCATODON instalada con éxito!");
+            });
+        }
+
+        function instalarAppNativa() {
+            if (deferredPromptPWA) {
+                deferredPromptPWA.prompt();
+                deferredPromptPWA.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        mostrarToast("Instalando MERCATODON...");
+                    }
+                    deferredPromptPWA = null;
+                    document.getElementById('bannerInstalacionPWA').classList.add('hidden');
+                });
+            } else {
+                mostrarToast("Para instalar: Pulsa Opciones de navegador (...) y selecciona 'Agregar a Pantalla de Inicio'");
+            }
+        }
+
+        function cerrarBannerPWA() {
+            document.getElementById('bannerInstalacionPWA').classList.add('hidden');
         }
 
         function abrirModalDonacion() {
