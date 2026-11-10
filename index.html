@@ -98,12 +98,7 @@
                 </div>
             </div>
 
-            <!-- Botón Lupa móvil para activar barra de búsqueda (Ajuste 1) -->
-            <button id="btnToggleBusquedaMovil" onclick="toggleBusquedaMovil()" class="p-2 text-gray-700 hover:text-brand-red hover:bg-gray-100 rounded-full transition hidden md:hidden" title="Buscar">
-                <i class="fa-solid fa-magnifying-glass text-base"></i>
-            </button>
-
-            <!-- Barra de Búsqueda Dinámica (Ajuste 1: Visible al hacer clic / en secciones Puestos o Usuario) -->
+            <!-- Barra de Búsqueda Dinámica (Ajuste 1: Solo visible en Puestos o Usuario/Dashboard) -->
             <div id="contenedorBarraBusquedaHeader" class="flex-1 max-w-md relative hidden">
                 <input type="text" id="inputBusqueda" onkeyup="filtrarPuestos()" placeholder="Buscar puesto, rubro o producto..." class="w-full bg-gray-100 border border-gray-200 rounded-full pl-8 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
@@ -133,10 +128,10 @@
     </header>
 
     <!-- CONTAINER PRINCIPAL -->
-    <main class="flex-grow w-full m-0 p-0 space-y-2">
+    <main class="flex-grow w-full m-0 p-0 space-y-2.5">
 
         <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES Y SECCIONES A-H ==================== -->
-        <section id="secInicio" class="space-y-2">
+        <section id="secInicio" class="space-y-2.5">
             
             <!-- SECCIÓN A: Banner Principal (Carrusel Táctil) -->
             <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
@@ -153,12 +148,12 @@
                 </button>
             </div>
 
-            <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-2">
+            <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-2.5">
                 
-                <!-- SECCIÓN B: Ofertas y Promociones (Ajuste 3, 4, 7, 8, 9) -->
-                <div class="space-y-1">
+                <!-- SECCIÓN B: Ofertas y Promociones -->
+                <div class="space-y-1.5">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                        <h3 class="text-xs sm:text-sm font-semibold text-slate-500 flex items-center gap-1.5 tracking-wide">
                             <i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones
                         </h3>
                     </div>
@@ -175,9 +170,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN C: Patrocinios (Ajuste 3, 4, 7, 8, 9) -->
-                <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                <!-- SECCIÓN C: Patrocinios (Ajuste 4: Medidas similares a Ofertas y Promociones) -->
+                <div class="space-y-1.5">
+                    <h3 class="text-xs sm:text-sm font-semibold text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-crown text-slate-400 text-xs"></i> Patrocinios
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -190,9 +185,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN D: Spots Comerciales (Ajuste 3) -->
-                <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                <!-- SECCIÓN D: Spots Comerciales -->
+                <div class="space-y-1.5">
+                    <h3 class="text-xs sm:text-sm font-semibold text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-video text-slate-400 text-xs"></i> Spots Comerciales
                     </h3>
                     <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
@@ -207,9 +202,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN E: Servicios y Proveedores (Ajuste 3, 4, 7, 8, 9) -->
-                <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                <!-- SECCIÓN E: Servicios y Proveedores (Ajuste 4) -->
+                <div class="space-y-1.5">
+                    <h3 class="text-xs sm:text-sm font-semibold text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-truck-fast text-slate-400 text-xs"></i> Servicios y Proveedores
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -222,9 +217,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN F: Campañas Especiales (Ajuste 3, 4, 7, 8, 9) -->
-                <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                <!-- SECCIÓN F: Campañas Especiales (Ajuste 4) -->
+                <div class="space-y-1.5">
+                    <h3 class="text-xs sm:text-sm font-semibold text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i> Campañas Especiales
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -237,9 +232,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN G: Nuestros Aliados (Ajuste 3, 4, 6, 7, 8, 9: Banners enlazados estilo Ofertas) -->
-                <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                <!-- SECCIÓN G: Nuestros Aliados (Ajuste 4 & 6: Banners enlazados estilo Ofertas) -->
+                <div class="space-y-1.5">
+                    <h3 class="text-xs sm:text-sm font-semibold text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-handshake text-slate-400 text-xs"></i> Nuestros Aliados
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -252,9 +247,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN H: Novedades (Ajuste 3, 4, 6, 7, 8, 9: Banners enlazados estilo Ofertas) -->
-                <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                <!-- SECCIÓN H: Novedades (Ajuste 4 & 6: Banners enlazados estilo Ofertas) -->
+                <div class="space-y-1.5">
+                    <h3 class="text-xs sm:text-sm font-semibold text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-bell text-slate-400 text-xs"></i> Novedades
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -535,7 +530,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: FORMULARIO REGISTRO (Ajuste 2: Oficio/Profesión opcional y Cumpleaños para Mercador) -->
+    <!-- MODAL 3: FORMULARIO REGISTRO (Ajuste 2: Oficio/Profesión y Cumpleaños para Mercador) -->
     <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto no-scrollbar">
             <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10">
@@ -623,14 +618,14 @@
                         <input type="text" id="regNombreCompleto" required placeholder="Nombres y Apellidos" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
                     
-                    <!-- Campos específicos de Mercador (Ajuste 2: Oficio opcional y Cumpleaños) -->
+                    <!-- Campos específicos de Mercador (Ajuste 2) -->
                     <div id="camposExtraMercador" class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="text-xs font-semibold text-gray-700">Oficio / Profesión (Opcional)</label>
                             <input type="text" id="regOficio" placeholder="Ej: Comerciante" class="w-full border rounded-xl p-2 text-xs outline-none">
                         </div>
                         <div>
-                            <label class="text-xs font-semibold text-gray-700">Cumpleaños (F. Nacimiento)</label>
+                            <label class="text-xs font-semibold text-gray-700">Cumpleaños (Nacimiento)</label>
                             <input type="date" id="regCumpleanos" class="w-full border rounded-xl p-2 text-xs outline-none">
                         </div>
                     </div>
@@ -857,27 +852,13 @@
             }
         }
 
-        // AJUSTE 1: Control de visibilidad de la barra de búsqueda en el Header y botón móvil
+        // AJUSTE 1: Control de visibilidad de la barra de búsqueda en el Header
         function gestionarBarraBusqueda(mostrar) {
             const barra = document.getElementById('contenedorBarraBusquedaHeader');
-            const btnMovil = document.getElementById('btnToggleBusquedaMovil');
             if (mostrar) {
-                btnMovil.classList.remove('hidden');
-                if (window.innerWidth >= 768) {
-                    barra.classList.remove('hidden');
-                }
+                barra.classList.remove('hidden');
             } else {
-                btnMovil.classList.add('hidden');
                 barra.classList.add('hidden');
-            }
-        }
-
-        // Alternar barra de búsqueda al hacer clic en la lupa en dispositivos móviles (Ajuste 1)
-        function toggleBusquedaMovil() {
-            const barra = document.getElementById('contenedorBarraBusquedaHeader');
-            barra.classList.toggle('hidden');
-            if (!barra.classList.contains('hidden')) {
-                document.getElementById('inputBusqueda').focus();
             }
         }
 
@@ -968,7 +949,7 @@
                     <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
                         <div>
                             <div class="flex items-center justify-between gap-1 mb-1">
-                                <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded truncate max-w-[75%}">${p.rubro}</span>
+                                <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded truncate max-w-[75%]">${p.rubro}</span>
                                 <button onclick="toggleFavorito(${p.id})" class="text-xs ${corazonColor} hover:scale-110 transition">
                                     <i class="fa-solid fa-heart"></i>
                                 </button>
@@ -988,16 +969,15 @@
                                 </button>
                             </div>
 
-                            <!-- AJUSTE 11: Tamaño de íconos aumentado en Web, GPS y WhatsApp -->
                             <div class="grid grid-cols-3 gap-1">
                                 <a href="${p.web || '#'}" target="_blank" class="h-8 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded transition" title="Web / Catálogo">
-                                    <i class="fa-solid fa-globe text-base"></i>
+                                    <i class="fa-solid fa-globe text-sm"></i>
                                 </a>
                                 <a href="https://maps.google.com/?q=${encodeURIComponent(p.nombre + ' ' + p.distrito + ' Piura')}" target="_blank" class="h-8 bg-black hover:bg-gray-800 text-white flex items-center justify-center rounded transition" title="GPS">
-                                    <i class="fa-solid fa-location-dot text-base"></i>
+                                    <i class="fa-solid fa-location-dot text-sm"></i>
                                 </a>
                                 <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20MERCATODON%20Piura" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp">
-                                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                                    <i class="fa-brands fa-whatsapp text-base"></i>
                                 </a>
                             </div>
                         </div>
