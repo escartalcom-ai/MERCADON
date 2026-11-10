@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MERCATODON - Puestos en Acción</title>
+    <link rel="icon" type="image/png" href="https://placehold.co/32x32/E53935/ffffff?text=M">
+    <link rel="apple-touch-icon" href="https://placehold.co/180x180/E53935/ffffff?text=M">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- SDK Firebase JS (v8 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"MERCATODON","short_name":"MERCATODON","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#E53935","icons":[{"src":"https://placehold.co/192x192/E53935/ffffff?text=M","sizes":"192x192","type":"image/png"}]}'>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#E53935',
+                            darkRed: '#C62828',
+                            orange: '#FF6F00',
+                            gold: '#FFD700',
+                            whatsapp: '#25D366'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .star-rating { cursor: pointer; transition: color 0.15s ease, transform 0.15s ease; }
+        .star-rating:hover { transform: scale(1.25); }
+        .card-puesto { border: 2px solid #FFD700 !important; box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2); }
+        #toast { transition: opacity 0.3s ease, transform 0.3s ease; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between select-none m-0 p-0 overflow-x-hidden">
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none flex items-center gap-2 border border-gray-700">
+        <i class="fa-solid fa-circle-check text-brand-orange"></i>
+        <span id="toastMsg">Mensaje del sistema</span>
+    </div>
+
+    <!-- BANNER PWA -->
+    <div id="bannerInstalacionPWA" class="hidden bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white px-3 py-2 text-xs flex items-center justify-between border-b border-gray-700">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-mobile-screen-button text-brand-orange text-sm"></i>
+            <span>Instala la App nativa de <strong>MERCATODON</strong></span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="instalarAppNativa()" class="bg-brand-red hover:bg-brand-darkRed text-white font-bold py-1 px-3 rounded-full text-[11px] shadow transition">Instalar</button>
+            <button onclick="cerrarBannerPWA()" class="text-gray-400 hover:text-white px-1"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header id="headerPrincipal" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
+                <div class="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md flex-shrink-0">
+                    <img src="https://placehold.co/36x36/E53935/ffffff?text=M" alt="Logo" class="w-full h-full object-cover rounded-xl">
+                </div>
+                <div class="leading-none">
+                    <span class="text-sm sm:text-lg font-black text-brand-red tracking-tight block">MERCATODON</span>
+                    <span class="text-[8px] text-gray-500 font-bold tracking-wider uppercase block mt-0.5">Puestos en Acción</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
+                <button onclick="abrirModalUbicacion()" class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200">
+                    <i class="fa-solid fa-location-dot text-brand-red text-sm"></i>
+                    <span id="labelUbicacionActual" class="hidden sm:inline truncate max-w-[100px]">Piura, Paita, Paita</span>
+                </button>
+                <button onclick="verFavoritosModal()" class="p-2 text-gray-700 hover:text-red-500 hover:bg-red-50 rounded-full transition relative"><i class="fa-solid fa-heart text-base"></i></button>
+                <button onclick="verPuestos()" class="p-2 text-gray-700 hover:text-brand-red hover:bg-gray-100 rounded-full transition"><i class="fa-solid fa-shop text-base"></i></button>
+                <button onclick="abrirAuthModal()" class="bg-gray-900 hover:bg-black text-white font-bold text-xs py-1.5 px-3 rounded-full shadow transition flex items-center gap-1">
+                    <i class="fa-solid fa-user text-xs"></i>
+                    <span class="hidden xs:inline" id="btnAuthText">Ingresar</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="flex-grow w-full m-0 p-0 space-y-1.5">
+
+        <!-- SECCIÓN 1: INICIO -->
+        <section id="secInicio" class="space-y-1.5">
+            <!-- SECCIÓN A: Banner Principal -->
+            <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
+                <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out">
+                    <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1400&q=80" class="w-full h-full object-cover flex-shrink-0 pointer-events-none">
+                </div>
+                <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-1.5">
+                <!-- SECCIÓN B: Ofertas y Promociones -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones</h3>
+                    <div id="secB_Promociones" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN C: Patrocinios -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-crown text-slate-400 text-xs"></i> Patrocinios</h3>
+                    <div id="secC_Patrocinios" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN D: Spots Comerciales -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-video text-slate-400 text-xs"></i> Spots Comerciales</h3>
+                    <div id="secD_Spots" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN E: Servicios y Proveedores -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-truck-fast text-slate-400 text-xs"></i> Servicios y Proveedores</h3>
+                    <div id="secE_Servicios" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN F: Campañas Especiales -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i> Campañas Especiales</h3>
+                    <div id="secF_Campanas" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN G: Nuestros Aliados -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-handshake text-slate-400 text-xs"></i> Nuestros Aliados</h3>
+                    <div id="secG_Aliados" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN H: Novedades -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-bell text-slate-400 text-xs"></i> Novedades</h3>
+                    <div id="secH_Novedades" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- Bloques Promocionales -->
+                <div id="bloquesPromocionalesInicio" class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5">
+                        <div>
+                            <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Piura</div>
+                            <h4 class="font-bold text-gray-900 text-xs">¡Promociona tu puesto GRATIS!</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu contenido y te publicamos en redes sin costo.</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t">
+                            <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS" target="_blank" class="bg-brand-red text-white text-[11px] font-bold py-1.5 px-3 rounded-lg">Publicar Gratis</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5">
+                        <div>
+                            <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual</div>
+                            <h4 class="font-bold text-gray-900 text-xs">Catálogo Virtual para tu Puesto</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Muestra tus productos con pedido directo a WhatsApp.</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t">
+                            <a href="https://wa.me/51930528649?text=Cotizar%20Catálogo" target="_blank" class="bg-brand-orange text-white text-[11px] font-bold py-1.5 px-3 rounded-lg">Cotizar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: PUESTOS -->
+        <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-2 hidden">
+            <div class="sticky top-[53px] z-20 bg-gray-50/95 backdrop-blur-md py-1.5 border-b">
+                <div id="contenedorRubros" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
+            </div>
+            <div id="gridPuestos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"></div>
+        </section>
+
+        <!-- SECCIÓN 3: DASHBOARD -->
+        <section id="secDashboard" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3">
+            <div id="dashMercadero" class="hidden space-y-3"></div>
+            <div id="dashMercador" class="hidden space-y-3"></div>
+        </section>
+
+        <!-- SECCIÓN 4: PANEL CEO -->
+        <section id="secCeo" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3 bg-white p-4 rounded-2xl border-2 border-red-500">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-base font-black text-brand-red"><i class="fa-solid fa-user-shield"></i> Panel Ejecutivo CEO</h2>
+                <button onclick="cerrarSesion()" class="text-xs bg-gray-200 font-bold py-1 px-3 rounded-lg">Cerrar Sesión CEO</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100"><th class="p-2 border">Puesto / Dueño</th><th class="p-2 border">Rubro</th><th class="p-2 border">Contacto</th><th class="p-2 border text-center">Acciones</th></tr>
+                    </thead>
+                    <tbody id="tablaCeoContenido"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t py-2.5 mt-3 text-center text-xs text-gray-600">
+        MERCATODON - Desarrollado por <a href="https://comaxion.vercel.app" target="_blank" class="text-brand-red font-bold">COMAXION</a>
+    </footer>
+
+    <!-- MODAL AUTH -->
+    <div id="modalAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 relative">
+            <button onclick="cerrarModal('modalAuth')" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-black text-xl text-center">Ingreso a MERCATODON</h3>
+            <form onsubmit="loginDirecto(event)" class="space-y-3">
+                <input type="email" id="loginCorreo" placeholder="Correo" required class="w-full border rounded-lg p-2 text-xs">
+                <input type="password" id="loginPass" placeholder="Contraseña" required class="w-full border rounded-lg p-2 text-xs">
+                <div class="text-right">
+                    <button type="button" onclick="recuperarPasswordLogin()" class="text-[11px] text-brand-red hover:underline font-semibold">Olvidé contraseña</button>
+                </div>
+                <button type="submit" class="w-full bg-gray-900 text-white font-bold py-2 rounded-lg text-xs">Iniciar Sesión</button>
+            </form>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button onclick="abrirFormularioAuth('mercadero')" class="border p-2 rounded-xl text-xs font-bold">Registro Mercadero</button>
+                <button onclick="abrirFormularioAuth('mercador')" class="border p-2 rounded-xl text-xs font-bold">Registro Mercador</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRO -->
+    <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="formAuthTitulo" class="font-bold text-base border-b pb-2">Registro</h3>
+            <form id="formAuth" onsubmit="procesarAuth(event)" class="space-y-2.5">
+                <input type="hidden" id="authRol">
+                <div id="camposMercadero" class="space-y-2 hidden">
+                    <input type="text" id="regPuestoNombre" placeholder="Nombre Puesto *" class="w-full border rounded-xl p-2 text-xs">
+                    <select id="regPuestoRubro" class="w-full border rounded-xl p-2 text-xs">
+                        <option value="Alimentos">Alimentos</option><option value="Gastronomía">Gastronomía</option><option value="Carnes">Carnes</option>
+                    </select>
+                    <input type="text" id="regPuestoDesc" placeholder="Descripción breve" class="w-full border rounded-xl p-2 text-xs">
+                    <input type="tel" id="regWhatsapp" placeholder="WhatsApp del Puesto" class="w-full border rounded-xl p-2 text-xs">
+                </div>
+                <input type="text" id="regNombreCompleto" required placeholder="Nombres Completos *" class="w-full border rounded-xl p-2 text-xs">
+                <input type="email" id="regCorreo" required placeholder="Correo *" class="w-full border rounded-xl p-2 text-xs">
+                <input type="password" id="regPass" required placeholder="Contraseña *" class="w-full border rounded-xl p-2 text-xs">
+                <button type="submit" class="w-full bg-brand-red text-white font-bold py-2.5 rounded-xl text-xs">Registrar Cuenta</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzA8vHBao9cB34aRMgg29mMGGxx09Vyk9Zy_fEgXrqfN2wD6f3to-FEI_FU3_4dIRU2/exec";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6nCurDvRAZRWR7yinzk7DwC2Be05ohEw",
+            authDomain: "mercatodon-peru.firebaseapp.com",
+            projectId: "mercatodon-peru",
+            storageBucket: "mercatodon-peru.firebasestorage.app",
+            messagingSenderId: "941481497625",
+            appId: "1:941481497625:web:bd873da529475d2ad44688",
+            measurementId: "G-6W4XMLL29T"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        let puestosBD = JSON.parse(localStorage.getItem('mercatodon_puestos')) || [];
+        let publicidadBD = [];
+        let usuarioActual = JSON.parse(localStorage.getItem('mercatodon_usuario')) || null;
+        let rubroSeleccionado = "Todos";
+        let slideIndex = 0;
+        let intervaloSlider = null;
+
+        window.onload = function() {
+            renderRubros();
+            sincronizarConSheetsRemoto();
+        };
+
+        async function sincronizarConSheetsRemoto() {
+            try {
+                // 1. Obtener Puestos
+                let resPuestos = await fetch(`${APPS_SCRIPT_URL}?sheet=puestos`);
+                let dataPuestos = await resPuestos.json();
+                if (Array.isArray(dataPuestos) && dataPuestos.length > 0) {
+                    puestosBD = dataPuestos.map(p => ({
+                        id: p.ID || Date.now(),
+                        nombre: p.Nombre_Puesto || "Puesto",
+                        rubro: p.Rubro || "Alimentos",
+                        desc: p.Descripcion || "",
+                        region: p.Region || "Piura",
+                        provincia: p.Provincia || "Paita",
+                        distrito: p.Distrito || "Paita",
+                        mercas: parseInt(p.Mercas) || 1,
+                        whatsapp: p.WhatsApp || "51930528649",
+                        web: p.Web_Catalogo || "",
+                        duenio: p.Duenio_Nombre || "",
+                        correo: p.Correo_Acceso || ""
+                    }));
+                    localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+                    renderPuestos();
+                }
+
+                // 2. Obtener Publicidad Dinámica
+                let resPub = await fetch(`${APPS_SCRIPT_URL}?sheet=publicidad`);
+                let dataPub = await resPub.json();
+                if (Array.isArray(dataPub) && dataPub.length > 0) {
+                    publicidadBD = dataPub;
+                    renderPublicidadDinamica();
+                }
+            } catch (e) {
+                console.log("Cargando en modo offline.");
+                renderPuestos();
+            }
+        }
+
+        function renderPublicidadDinamica() {
+            const hoy = new Date().toISOString().slice(0, 10);
+            const pubActiva = publicidadBD.filter(b => (!b.Fecha_Fin || b.Fecha_Fin >= hoy));
+
+            // Banner Principal (Sección A)
+            const secA = pubActiva.filter(b => b.Seccion === 'A');
+            if (secA.length > 0) {
+                const sliderWrapper = document.getElementById('sliderWrapper');
+                sliderWrapper.innerHTML = secA.map(b => `
+                    <a href="${b.URL_Destino || '#'}" target="_blank" class="w-full h-full flex-shrink-0">
+                        <img src="${b.URL_Imagen}" class="w-full h-full object-cover">
+                    </a>
+                `).join('');
+                let segs = parseInt(secA[0].Segundos_Pantalla) || 5;
+                iniciarSlider(segs);
+            }
+
+            // Mapeo dinámico para Secciones B-H
+            const secciones = ['B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            secciones.forEach(sec => {
+                const items = pubActiva.filter(b => b.Seccion === sec);
+                const el = document.getElementById(`sec${sec}_` + getNombreSeccion(sec));
+                if (el && items.length > 0) {
+                    el.innerHTML = items.map(b => `
+                        <a href="${b.URL_Destino || '#'}" target="_blank" class="min-w-[120px] max-w-[140px] sm:min-w-[150px] sm:max-w-[160px] bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 block">
+                            <img src="${b.URL_Imagen}" class="w-full h-24 sm:h-28 object-cover rounded-xl" alt="${b.Nombre_Cliente || ''}">
+                        </a>
+                    `).join('');
+                }
+            });
+        }
+
+        function getNombreSeccion(s) {
+            const m = { 'B': 'Promociones', 'C': 'Patrocinios', 'D': 'Spots', 'E': 'Servicios', 'F': 'Campanas', 'G': 'Aliados', 'H': 'Novedades' };
+            return m[s];
+        }
+
+        async function enviarASheets(nombreHoja, datosObjeto) {
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sheet: nombreHoja, row: datosObjeto })
+                });
+            } catch (e) {
+                console.error("Error al registrar en Sheets:", e);
+            }
+        }
+
+        function loginDirecto(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginCorreo').value;
+            const pass = document.getElementById('loginPass').value;
+
+            if (email === "multivercado@gmail.com" && pass === "20701") {
+                cerrarModal('modalAuth');
+                verCeoPanel();
+                mostrarToast("Acceso CEO Concedido");
+                return;
+            }
+
+            firebase.auth().signInWithEmailAndPassword(email, pass)
+                .then((userCredential) => {
+                    usuarioActual = { nombre: email.split('@')[0], correo: email, rol: "mercador" };
+                    localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+                    cerrarModal('modalAuth');
+                    mostrarToast("Sesión iniciada correctamente.");
+                })
+                .catch(() => {
+                    mostrarToast("Credenciales no encontradas en Firebase. Ingresando en modo directo...");
+                    usuarioActual = { nombre: email.split('@')[0], correo: email, rol: "mercador" };
+                    localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+                    cerrarModal('modalAuth');
+                });
+        }
+
+        function recuperarPasswordLogin() {
+            const email = document.getElementById('loginCorreo').value;
+            if (!email) {
+                mostrarToast("Ingresa tu correo en el campo correspondiente primero.");
+                return;
+            }
+            firebase.auth().sendPasswordResetEmail(email)
+                .then(() => mostrarToast("Se ha enviado un correo para restablecer tu contraseña."))
+                .catch((error) => mostrarToast("Error al enviar el correo: " + error.message));
+        }
+
+        function procesarAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('regCorreo').value;
+            const pass = document.getElementById('regPass').value;
+            const rol = document.getElementById('authRol').value;
+            const nombre = document.getElementById('regNombreCompleto').value;
+
+            firebase.auth().createUserWithEmailAndPassword(email, pass)
+                .then(() => {
+                    completarRegistroLocalYSheets(rol, nombre, email);
+                })
+                .catch(() => {
+                    completarRegistroLocalYSheets(rol, nombre, email);
+                });
+        }
+
+        function completarRegistroLocalYSheets(rol, nombre, email) {
+            if (rol === 'mercadero') {
+                const nuevoPuesto = {
+                    ID: Date.now(),
+                    Nombre_Puesto: document.getElementById('regPuestoNombre').value,
+                    Rubro: document.getElementById('regPuestoRubro').value,
+                    Descripcion: document.getElementById('regPuestoDesc').value,
+                    Region: "Piura",
+                    Provincia: "Paita",
+                    Distrito: "Paita",
+                    WhatsApp: document.getElementById('regWhatsapp').value,
+                    Duenio_Nombre: nombre,
+                    Correo_Acceso: email,
+                    Estado: "Activo"
+                };
+                puestosBD.push(nuevoPuesto);
+                enviarASheets('puestos', nuevoPuesto);
+            } else {
+                const nuevoUsuario = {
+                    ID_Usuario: Date.now(),
+                    Nombre_Completo: nombre,
+                    Correo: email,
+                    WhatsApp: "930528649",
+                    Oficio: "mercador",
+                    Estado: "Activo"
+                };
+                enviarASheets('usuarios', nuevoUsuario);
+            }
+
+            usuarioActual = { nombre: nombre, correo: email, rol: rol };
+            localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+            cerrarModal('modalFormAuth');
+            renderPuestos();
+            mostrarToast("¡Registro guardado con éxito!");
+        }
+
+        function renderRubros() {
+            const cont = document.getElementById('contenedorRubros');
+            cont.innerHTML = `
+                <button onclick="filtrarRubro('Todos')" class="px-3 py-1.5 rounded-xl text-xs bg-brand-red text-white font-bold">Todos</button>
+                <button onclick="filtrarRubro('Alimentos')" class="px-3 py-1.5 rounded-xl text-xs bg-white border font-bold">Alimentos</button>
+                <button onclick="filtrarRubro('Gastronomía')" class="px-3 py-1.5 rounded-xl text-xs bg-white border font-bold">Gastronomía</button>
+            `;
+        }
+
+        function renderPuestos() {
+            const grid = document.getElementById('gridPuestos');
+            grid.innerHTML = '';
+            let filtrados = puestosBD.filter(p => rubroSeleccionado === "Todos" || p.rubro === rubroSeleccionado);
+            if (filtrados.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-center text-xs py-4 text-gray-400">Sin puestos registrados.</p>`;
+                return;
+            }
+            filtrados.forEach(p => {
+                grid.innerHTML += `
+                    <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded">${p.rubro}</span>
+                            <h4 class="font-bold text-gray-900 text-xs mt-1">${p.nombre}</h4>
+                            <p class="text-[10px] text-gray-500 mt-0.5">${p.desc}</p>
+                        </div>
+                        <a href="https://wa.me/${p.whatsapp}" target="_blank" class="mt-2 bg-brand-whatsapp text-white text-center font-bold text-[10px] py-1 rounded">WhatsApp</a>
+                    </div>
+                `;
+            });
+        }
+
+        function filtrarRubro(r) { rubroSeleccionado = r; renderPuestos(); }
+        function verInicio() { toggleSec('secInicio'); }
+        function verPuestos() { toggleSec('secPuestos'); }
+        function verCeoPanel() { toggleSec('secCeo'); }
+        function toggleSec(id) {
+            ['secInicio', 'secPuestos', 'secDashboard', 'secCeo'].forEach(s => document.getElementById(s).classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function cerrarSesion() { usuarioActual = null; localStorage.removeItem('mercatodon_usuario'); verInicio(); mostrarToast("Sesión cerrada"); }
+        function abrirAuthModal() { document.getElementById('modalAuth').classList.remove('hidden'); }
+        function abrirFormularioAuth(rol) { document.getElementById('authRol').value = rol; cerrarModal('modalAuth'); document.getElementById('modalFormAuth').classList.remove('hidden'); }
+        function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function mostrarToast(m) { const t = document.getElementById('toast'); document.getElementById('toastMsg').innerText = m; t.classList.remove('opacity-0', 'pointer-events-none'); setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none'), 3000); }
+
+        function iniciarSlider(s = 5) {
+            if (intervaloSlider) clearInterval(intervaloSlider);
+            intervaloSlider = setInterval(nextSlide, s * 1000);
+        }
+        function nextSlide() {
+            const wrapper = document.getElementById('sliderWrapper');
+            if (!wrapper || wrapper.children.length <= 1) return;
+            slideIndex = (slideIndex + 1) % wrapper.children.length;
+            wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
+        }
+        function prevSlide() {
+            const wrapper = document.getElementById('sliderWrapper');
+            if (!wrapper || wrapper.children.length <= 1) return;
+            slideIndex = (slideIndex - 1 + wrapper.children.length) % wrapper.children.length;
+            wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
+        }
+    </script>
+</body>
+</html>
