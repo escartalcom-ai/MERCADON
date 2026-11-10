@@ -562,11 +562,11 @@
                         </div>
                     </div>
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">Correo Electrónico (Dashboard) *</label>
+                        <label class="text-xs font-semibold text-gray-700">Correo Electrónico (Acceso panel) *</label>
                         <input type="email" id="regCorreo" required placeholder="tucorreo@gmail.com" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">Contraseña (Dashboard) *</label>
+                        <label class="text-xs font-semibold text-gray-700">Contraseña (Acceso panel) *</label>
                         <input type="password" id="regPass" required placeholder="••••••••" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
                 </div>
@@ -1064,7 +1064,7 @@
         function abrirFormularioAuth(rol) {
             cerrarModal('modalAuth');
             document.getElementById('authRol').value = rol;
-            document.getElementById('formAuthTitulo').innerText = rol === 'mercadero' ? 'Registro de Puesto - Gratuito (Mercadero)' : 'Registro Comprador (Mercador)';
+            document.getElementById('formAuthTitulo').innerText = rol === 'mercadero' ? 'Registro de Puesto (Mercadero)' : 'Registro Comprador (Mercador)';
 
             if (rol === 'mercadero') {
                 document.getElementById('camposMercadero').classList.remove('hidden');
