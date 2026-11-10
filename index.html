@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MERCATODON - Puestos en Acción</title>
+    <!-- Favicon, Logo e Ícono PNG (Ajuste 14) -->
+    <link rel="icon" type="image/png" href="https://placehold.co/32x32/E53935/ffffff?text=M">
+    <link rel="apple-touch-icon" href="https://placehold.co/180x180/E53935/ffffff?text=M">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
+    <!-- Google Fonts Inter / Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Firebase App & Auth SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -90,7 +93,7 @@
             <!-- Logo + Nombre MERCATODON + Eslogan -->
             <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
                 <div class="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md flex-shrink-0">
-                    <i class="fa-solid fa-store"></i>
+                    <img src="https://placehold.co/36x36/E53935/ffffff?text=M" alt="Logo" class="w-full h-full object-cover rounded-xl">
                 </div>
                 <div class="leading-none">
                     <span class="text-sm sm:text-lg font-black text-brand-red tracking-tight block">MERCATODON</span>
@@ -98,22 +101,22 @@
                 </div>
             </div>
 
-            <!-- Botón Lupa móvil para activar barra de búsqueda (Ajuste 1) -->
-            <button id="btnToggleBusquedaMovil" onclick="toggleBusquedaMovil()" class="p-2 text-gray-700 hover:text-brand-red hover:bg-gray-100 rounded-full transition hidden md:hidden" title="Buscar">
-                <i class="fa-solid fa-magnifying-glass text-base"></i>
-            </button>
-
-            <!-- Barra de Búsqueda Dinámica (Ajuste 1: Visible al hacer clic / en secciones Puestos o Usuario) -->
-            <div id="contenedorBarraBusquedaHeader" class="flex-1 max-w-md relative hidden">
-                <input type="text" id="inputBusqueda" onkeyup="filtrarPuestos()" placeholder="Buscar puesto, rubro o producto..." class="w-full bg-gray-100 border border-gray-200 rounded-full pl-8 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
-            </div>
-
-            <!-- Acciones Derecha: Ubicación + Usuario + Corazón (Favoritos) + Puestos -->
+            <!-- Acciones Derecha (Incluye Barra de Búsqueda y Botón Lupa Responsive a la derecha junto a los otros botones - Ajuste 1) -->
             <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
+                <!-- Barra de Búsqueda Dinámica (Visible solo en Puestos o Usuario cuando se activa o en desktop) -->
+                <div id="contenedorBarraBusquedaHeader" class="max-w-[200px] sm:max-w-xs relative hidden">
+                    <input type="text" id="inputBusqueda" onkeyup="filtrarPuestos()" placeholder="Buscar puesto o rubro..." class="w-full bg-gray-100 border border-gray-200 rounded-full pl-8 pr-3 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-gray-400 text-xs"></i>
+                </div>
+
+                <!-- Botón Lupa móvil exclusivo para secciones Puestos y Usuario -->
+                <button id="btnToggleBusquedaMovil" onclick="toggleBusquedaMovil()" class="p-2 text-gray-700 hover:text-brand-red hover:bg-gray-100 rounded-full transition hidden" title="Buscar">
+                    <i class="fa-solid fa-magnifying-glass text-base"></i>
+                </button>
+
                 <button onclick="abrirModalUbicacion()" class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200">
                     <i class="fa-solid fa-location-dot text-brand-red text-sm"></i>
-                    <span id="labelUbicacionActual" class="hidden sm:inline truncate max-w-[110px]">Piura, Paita, Paita</span>
+                    <span id="labelUbicacionActual" class="hidden sm:inline truncate max-w-[100px]">Piura, Paita, Paita</span>
                 </button>
 
                 <button onclick="verFavoritosModal()" class="p-2 text-gray-700 hover:text-red-500 hover:bg-red-50 rounded-full transition relative" title="Favoritos">
@@ -132,13 +135,13 @@
         </div>
     </header>
 
-    <!-- CONTAINER PRINCIPAL -->
-    <main class="flex-grow w-full m-0 p-0 space-y-2">
+    <!-- CONTAINER PRINCIPAL (Ajuste 3: Espacios reducidos entre secciones) -->
+    <main class="flex-grow w-full m-0 p-0 space-y-1.5">
 
         <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES Y SECCIONES A-H ==================== -->
-        <section id="secInicio" class="space-y-2">
+        <section id="secInicio" class="space-y-1.5">
             
-            <!-- SECCIÓN A: Banner Principal (Carrusel Táctil) -->
+            <!-- SECCIÓN A: Banner Principal (Carrusel Táctil e Ilimitado - Ajuste 8) -->
             <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
                 <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out">
                     <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1400&q=80" alt="Mercados de Piura" class="w-full h-full object-cover flex-shrink-0 pointer-events-none">
@@ -153,12 +156,13 @@
                 </button>
             </div>
 
-            <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-2">
+            <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-1.5">
                 
-                <!-- SECCIÓN B: Ofertas y Promociones (Ajuste 3, 4, 7, 8, 9) -->
+                <!-- SECCIÓN B: Ofertas y Promociones (Ajuste 4, 7, 8, 9) -->
                 <div class="space-y-1">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                        <!-- Ajuste 5: Tipografía suave, amigable y menos robusta -->
+                        <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide">
                             <i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones
                         </h3>
                     </div>
@@ -175,9 +179,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN C: Patrocinios (Ajuste 3, 4, 7, 8, 9) -->
+                <!-- SECCIÓN C: Patrocinios (Ajuste 4, 7, 8, 9: Misma medida que Ofertas) -->
                 <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-crown text-slate-400 text-xs"></i> Patrocinios
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -190,9 +194,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN D: Spots Comerciales (Ajuste 3) -->
+                <!-- SECCIÓN D: Spots Comerciales (Ajuste 7, 8, 9) -->
                 <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-video text-slate-400 text-xs"></i> Spots Comerciales
                     </h3>
                     <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
@@ -207,9 +211,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN E: Servicios y Proveedores (Ajuste 3, 4, 7, 8, 9) -->
+                <!-- SECCIÓN E: Servicios y Proveedores (Ajuste 4, 7, 8, 9: Misma medida que Ofertas) -->
                 <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-truck-fast text-slate-400 text-xs"></i> Servicios y Proveedores
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -222,9 +226,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN F: Campañas Especiales (Ajuste 3, 4, 7, 8, 9) -->
+                <!-- SECCIÓN F: Campañas Especiales (Ajuste 4, 7, 8, 9: Misma medida que Ofertas) -->
                 <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i> Campañas Especiales
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -237,9 +241,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN G: Nuestros Aliados (Ajuste 3, 4, 6, 7, 8, 9: Banners enlazados estilo Ofertas) -->
+                <!-- SECCIÓN G: Nuestros Aliados (Ajuste 4, 6, 7, 8, 9: Banners de imagen puros con enlace web, misma medida que Ofertas) -->
                 <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-handshake text-slate-400 text-xs"></i> Nuestros Aliados
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -252,9 +256,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN H: Novedades (Ajuste 3, 4, 6, 7, 8, 9: Banners enlazados estilo Ofertas) -->
+                <!-- SECCIÓN H: Novedades (Ajuste 4, 6, 7, 8, 9: Banners de imagen puros con enlace web, misma medida que Ofertas) -->
                 <div class="space-y-1">
-                    <h3 class="text-xs sm:text-sm font-medium text-slate-600 flex items-center gap-1.5 tracking-tight">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide">
                         <i class="fa-solid fa-bell text-slate-400 text-xs"></i> Novedades
                     </h3>
                     <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -268,35 +272,35 @@
                 </div>
 
                 <!-- Bloques Promocionales Redes y Catálogo -->
-                <div id="bloquesPromocionalesInicio" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                    <div class="bg-white border border-gray-200 rounded-xl p-3.5 shadow-sm flex flex-col justify-between space-y-2 hover:border-brand-red transition">
+                <div id="bloquesPromocionalesInicio" class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
                         <div>
                             <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Piura</div>
-                            <h4 class="font-bold text-gray-900 text-sm leading-snug">¡Promociona tu puesto GRATIS en nuestras redes!</h4>
-                            <p class="text-gray-600 text-xs mt-0.5">Envíanos tu material visual y te publicitamos sin costo en el orden de llegada.</p>
+                            <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu puesto GRATIS en nuestras redes!</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual y te publicitamos sin costo en el orden de llegada.</p>
                         </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                            <div class="flex gap-2.5 text-base text-gray-700">
+                        <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                            <div class="flex gap-2.5 text-sm text-gray-700">
                                 <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
                                 <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
                                 <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
                                 <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
                             </div>
-                            <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS%20en%20Piura" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow transition">
+                            <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS%20en%20Piura" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">
                                 Publicar Gratis
                             </a>
                         </div>
                     </div>
 
-                    <div class="bg-white border border-gray-200 rounded-xl p-3.5 shadow-sm flex flex-col justify-between space-y-2 hover:border-brand-orange transition">
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
                         <div>
                             <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual</div>
-                            <h4 class="font-bold text-gray-900 text-sm leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
-                            <p class="text-gray-600 text-xs mt-0.5">Muestra productos con enlace directo a WhatsApp y código QR profesional.</p>
+                            <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con enlace directo a WhatsApp y código QR profesional.</p>
                         </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                            <span class="text-[11px] font-semibold text-gray-500">Planes únicos o mensuales</span>
-                            <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual%20en%20Piura" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow transition">
+                        <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                            <span class="text-[10px] font-semibold text-gray-500">Planes únicos o mensuales</span>
+                            <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual%20en%20Piura" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">
                                 Cotizar Catálogo
                             </a>
                         </div>
@@ -304,12 +308,12 @@
                 </div>
 
                 <!-- Banner Oficial MERCATODON -->
-                <div id="bannerOficialMercatodon" class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-4 text-white text-center shadow-md space-y-2">
-                    <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Publicidad Oficial MERCATODON</span>
-                    <h3 class="text-sm sm:text-base font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
-                    <p class="text-xs text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
+                <div id="bannerOficialMercatodon" class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                    <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Publicidad Oficial MERCATODON</span>
+                    <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
+                    <p class="text-[11px] text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
                     
-                    <div class="pt-2 flex justify-center gap-5 text-xl text-white">
+                    <div class="pt-1 flex justify-center gap-4 text-lg text-white">
                         <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
                         <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
                         <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
@@ -317,7 +321,7 @@
                     </div>
 
                     <div class="pt-1">
-                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON%20en%20Piura" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-xs py-2 px-5 rounded-full shadow transition">
+                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON%20en%20Piura" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
                             <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Publicidad por WhatsApp
                         </a>
                     </div>
@@ -326,8 +330,8 @@
         </section>
 
         <!-- ==================== SECCIÓN 2: PUESTOS & RUBROS (Ajuste 10: Banners al final) ==================== -->
-        <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3 hidden">
-            <div class="sticky top-[53px] z-20 bg-gray-50/95 backdrop-blur-md py-2 border-b border-gray-200">
+        <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-2 hidden">
+            <div class="sticky top-[53px] z-20 bg-gray-50/95 backdrop-blur-md py-1.5 border-b border-gray-200">
                 <div id="contenedorRubros" class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     <!-- Dinámico JS -->
                 </div>
@@ -339,30 +343,30 @@
             </div>
 
             <!-- Banners Promocionales al final del último Puesto (Ajuste 10) -->
-            <div class="pt-4 border-t-2 border-dashed border-gray-300 space-y-3">
-                <h3 class="text-xs font-semibold text-center text-slate-500 uppercase tracking-widest">Publicidad y Promociones Destacadas</h3>
-                <div id="publicidadFinPuestos" class="space-y-3">
+            <div class="pt-2 border-t-2 border-dashed border-gray-300 space-y-2">
+                <h3 class="text-xs font-normal text-center text-slate-500 uppercase tracking-widest">Publicidad y Promociones Destacadas</h3>
+                <div id="publicidadFinPuestos" class="space-y-2">
                     <!-- Clon dinámico desde JS -->
                 </div>
             </div>
         </section>
 
         <!-- ==================== SECCIÓN 3: DASHBOARDS (Ajuste 10: Publicidades integradas) ==================== -->
-        <section id="secDashboard" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-4">
-            <div id="dashMercadero" class="hidden space-y-4"></div>
-            <div id="dashMercador" class="hidden space-y-4"></div>
+        <section id="secDashboard" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3">
+            <div id="dashMercadero" class="hidden space-y-3"></div>
+            <div id="dashMercador" class="hidden space-y-3"></div>
             
             <!-- Publicidades en los Paneles de Mercaderos y Mercadores (Ajuste 10) -->
-            <div class="pt-4 border-t border-gray-200 space-y-3">
-                <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-widest text-center">Publicidad Recomendada para Usuarios</h3>
-                <div id="publicidadPanelesUsuarios" class="space-y-3">
+            <div class="pt-2 border-t border-gray-200 space-y-2">
+                <h3 class="text-xs font-normal text-slate-500 uppercase tracking-widest text-center">Publicidad Recomendada para Usuarios</h3>
+                <div id="publicidadPanelesUsuarios" class="space-y-2">
                     <!-- Clon dinámico desde JS -->
                 </div>
             </div>
         </section>
 
         <!-- ==================== SECCIÓN 4: PANEL CEO ==================== -->
-        <section id="secCeo" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-4 bg-white p-4 rounded-2xl border-2 border-red-500 shadow-xl">
+        <section id="secCeo" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3 bg-white p-4 rounded-2xl border-2 border-red-500 shadow-xl">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="text-base font-black text-brand-red flex items-center gap-2">
                     <i class="fa-solid fa-user-shield"></i> Panel Ejecutivo CEO MERCATODON
@@ -419,7 +423,7 @@
     </main>
 
     <!-- ==================== PIE DE PÁGINA GLOBAL ==================== -->
-    <footer class="bg-white border-t border-gray-200 py-3 mt-4">
+    <footer class="bg-white border-t border-gray-200 py-2.5 mt-3">
         <div class="max-w-7xl mx-auto px-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs text-gray-600 font-medium">
             <div class="flex items-center gap-1.5">
                 <span>MERCATODON - Desarrollado por</span>
@@ -535,7 +539,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: FORMULARIO REGISTRO (Ajuste 2: Oficio/Profesión opcional y Cumpleaños para Mercador) -->
+    <!-- MODAL 3: FORMULARIO REGISTRO (Ajuste 2: Oficio opcional y Cumpleaños para Mercador) -->
     <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto no-scrollbar">
             <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10">
@@ -857,7 +861,7 @@
             }
         }
 
-        // AJUSTE 1: Control de visibilidad de la barra de búsqueda en el Header y botón móvil
+        // AJUSTE 1: Control de visibilidad de la barra de búsqueda y botón lupa en derecha para celulares
         function gestionarBarraBusqueda(mostrar) {
             const barra = document.getElementById('contenedorBarraBusquedaHeader');
             const btnMovil = document.getElementById('btnToggleBusquedaMovil');
@@ -872,7 +876,6 @@
             }
         }
 
-        // Alternar barra de búsqueda al hacer clic en la lupa en dispositivos móviles (Ajuste 1)
         function toggleBusquedaMovil() {
             const barra = document.getElementById('contenedorBarraBusquedaHeader');
             barra.classList.toggle('hidden');
@@ -903,7 +906,7 @@
                 abrirAuthModal();
                 return;
             }
-            gestionarBarraBusqueda(true); // AJUSTE 1: Barra visible también en panel de usuario
+            gestionarBarraBusqueda(true);
             document.getElementById('secInicio').classList.add('hidden');
             document.getElementById('secPuestos').classList.add('hidden');
             document.getElementById('secDashboard').classList.remove('hidden');
@@ -968,7 +971,7 @@
                     <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
                         <div>
                             <div class="flex items-center justify-between gap-1 mb-1">
-                                <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded truncate max-w-[75%}">${p.rubro}</span>
+                                <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded truncate max-w-[75%]">${p.rubro}</span>
                                 <button onclick="toggleFavorito(${p.id})" class="text-xs ${corazonColor} hover:scale-110 transition">
                                     <i class="fa-solid fa-heart"></i>
                                 </button>
@@ -988,16 +991,16 @@
                                 </button>
                             </div>
 
-                            <!-- AJUSTE 11: Tamaño de íconos aumentado en Web, GPS y WhatsApp -->
+                            <!-- AJUSTE 11: Tamaño de íconos aumentado (text-lg) en Web, GPS y WhatsApp -->
                             <div class="grid grid-cols-3 gap-1">
                                 <a href="${p.web || '#'}" target="_blank" class="h-8 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded transition" title="Web / Catálogo">
-                                    <i class="fa-solid fa-globe text-base"></i>
+                                    <i class="fa-solid fa-globe text-lg"></i>
                                 </a>
                                 <a href="https://maps.google.com/?q=${encodeURIComponent(p.nombre + ' ' + p.distrito + ' Piura')}" target="_blank" class="h-8 bg-black hover:bg-gray-800 text-white flex items-center justify-center rounded transition" title="GPS">
-                                    <i class="fa-solid fa-location-dot text-base"></i>
+                                    <i class="fa-solid fa-location-dot text-lg"></i>
                                 </a>
                                 <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20MERCATODON%20Piura" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp">
-                                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                                    <i class="fa-brands fa-whatsapp text-xl"></i>
                                 </a>
                             </div>
                         </div>
@@ -1006,7 +1009,7 @@
             });
         }
 
-        // AJUSTE 10: Clonar publicidades en Puestos
+        // AJUSTE 10: Clonar publicidades al final de Puestos
         function clonarPublicidadPuestos() {
             const publicidadOrig = document.getElementById('bloquesPromocionalesInicio');
             const bannerOficial = document.getElementById('bannerOficialMercatodon');
@@ -1312,10 +1315,10 @@
             const camposExtra = document.getElementById('camposExtraMercador');
             if (rol === 'mercadero') {
                 document.getElementById('camposMercadero').classList.remove('hidden');
-                camposExtra.classList.add('hidden'); // Ocultar oficio/cumpleaños en mercadero
+                camposExtra.classList.add('hidden');
             } else {
                 document.getElementById('camposMercadero').classList.add('hidden');
-                camposExtra.classList.remove('hidden'); // Mostrar oficio/cumpleaños en mercador
+                camposExtra.classList.remove('hidden'); // Muestra Oficio opcional y Cumpleaños para Mercador (Ajuste 2)
             }
             document.getElementById('modalFormAuth').classList.remove('hidden');
         }
@@ -1424,7 +1427,7 @@
             const calificacionesPuesto = calificacionesBD.filter(c => c.puestoId === puesto.id);
 
             document.getElementById('dashMercadero').innerHTML = `
-                <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-4">
+                <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
                     <div class="flex justify-between items-center border-b pb-2">
                         <div>
                             <h3 class="font-black text-base text-gray-900">Panel de Mercadero(a)</h3>
@@ -1434,17 +1437,17 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 text-center">
-                        <div class="bg-red-50 p-3 rounded-xl border">
+                        <div class="bg-red-50 p-2.5 rounded-xl border">
                             <span class="text-[10px] text-gray-500 font-semibold">Total Mercas</span>
-                            <p class="text-xl font-bold text-brand-red">${puesto.mercas}</p>
+                            <p class="text-lg font-bold text-brand-red">${puesto.mercas}</p>
                         </div>
-                        <div class="bg-amber-50 p-3 rounded-xl border">
+                        <div class="bg-amber-50 p-2.5 rounded-xl border">
                             <span class="text-[10px] text-gray-500 font-semibold">Calificación Media</span>
-                            <p class="text-xl font-bold text-amber-500">4.9 <i class="fa-solid fa-star text-xs"></i></p>
+                            <p class="text-lg font-bold text-amber-500">4.9 <i class="fa-solid fa-star text-xs"></i></p>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 p-3.5 rounded-xl border space-y-3">
+                    <div class="bg-gray-50 p-3 rounded-xl border space-y-2.5">
                         <h4 class="text-xs font-bold text-gray-800 uppercase">Editar Información de mi Puesto</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                             <div>
@@ -1647,8 +1650,14 @@
             }
         }
 
-        function iniciarSlider() {
-            setInterval(() => { nextSlide(); }, 5000);
+        // AJUSTE 8 & 9: Carrusel Automático y Táctil con soporte de Segundos_Pantalla
+        let intervaloSlider = null;
+        function iniciarSlider(segundos = 5) {
+            if (intervaloSlider) clearInterval(intervaloSlider);
+            // Si Segundos_Pantalla está vacío o nulo (Ajuste 9), queda fijo y no se ejecuta el setInterval automático
+            if (!segundos || segundos === "" || isNaN(segundos)) return;
+            
+            intervaloSlider = setInterval(() => { nextSlide(); }, parseInt(segundos) * 1000);
         }
         function nextSlide() {
             slideIndex = (slideIndex + 1) % 3;
