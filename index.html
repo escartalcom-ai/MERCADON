@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mercatodon - Puestos en Acción</title>
+    <title>MERCATODON - Puestos en Acción</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -13,8 +13,8 @@
     <!-- Firebase App & Auth SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <!-- PWA Manifest Data URI para instalación inteligente -->
-    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"Mercatodon","short_name":"Mercatodon","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#E53935","icons":[{"src":"https://placehold.co/192x192/E53935/ffffff?text=M","sizes":"192x192","type":"image/png"}]}'>
+    <!-- PWA Manifest Data URI para instalación nativa -->
+    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"MERCATODON","short_name":"MERCATODON","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#E53935","icons":[{"src":"https://placehold.co/192x192/E53935/ffffff?text=M","sizes":"192x192","type":"image/png"}]}'>
 
     <script>
         tailwind.config = {
@@ -37,14 +37,6 @@
         }
     </script>
     <style>
-        @keyframes pulse-ring {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
-        }
-        .btn-pwa-pulse {
-            animation: pulse-ring 2s infinite;
-        }
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -59,7 +51,6 @@
         .star-rating:hover {
             transform: scale(1.25);
         }
-        /* Ajuste 8: Contorno Dorado en Tarjetas */
         .card-puesto {
             border: 2px solid #FFD700 !important;
             box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
@@ -77,28 +68,21 @@
         <span id="toastMsg">Mensaje del sistema</span>
     </div>
 
-    <!-- BOTÓN PWA (AJUSTE 3: Detección inteligente de instalación) -->
-    <div id="pwaBanner" class="fixed bottom-16 left-4 z-40 hidden">
-        <button onclick="installPWA()" class="btn-pwa-pulse bg-brand-red text-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center border-2 border-white text-lg transition hover:scale-110" title="Instalar Aplicación Mercatodon">
-            <i class="fa-solid fa-download text-yellow-300"></i>
-        </button>
-    </div>
-
     <!-- ==================== HEADER 1: INICIO ==================== -->
     <header id="headerInicio" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
-            <!-- (AJUSTE 1) Logo + Nombre "Mercatodon" en ROJO y Eslogan visible en Celular -->
+            <!-- Logo + Nombre MERCATODON en MAYÚSCULAS -->
             <div class="flex items-center gap-2 cursor-pointer" onclick="verInicio()">
                 <div class="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md flex-shrink-0">
                     <i class="fa-solid fa-store"></i>
                 </div>
                 <div class="leading-none">
-                    <span class="text-base sm:text-xl font-black text-brand-red tracking-tight block">Mercatodon</span>
+                    <span class="text-base sm:text-xl font-black text-brand-red tracking-tight block">MERCATODON</span>
                     <span class="text-[9px] text-gray-500 font-bold tracking-wider uppercase block mt-0.5">Puestos en Acción</span>
                 </div>
             </div>
 
-            <!-- Acciones Derecha -->
+            <!-- Acciones Derecha (AJUSTE 7: Botones Intercambiados en Header de Inicio) -->
             <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
                 <button onclick="abrirModalUbicacion()" class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200">
                     <i class="fa-solid fa-location-dot text-brand-red text-sm"></i>
@@ -106,13 +90,13 @@
                     <i class="fa-solid fa-chevron-down text-[9px] text-gray-400 hidden sm:inline"></i>
                 </button>
 
-                <button onclick="verPuestos()" class="bg-brand-red hover:bg-brand-darkRed text-white font-bold text-xs py-1.5 px-3 rounded-full shadow transition flex items-center gap-1">
-                    <i class="fa-solid fa-shop text-xs"></i>
-                    <span class="hidden xs:inline">Puestos</span>
-                </button>
                 <button onclick="abrirAuthModal()" class="bg-gray-900 hover:bg-black text-white font-bold text-xs py-1.5 px-3 rounded-full shadow transition flex items-center gap-1">
                     <i class="fa-solid fa-user text-xs"></i>
                     <span class="hidden xs:inline" id="btnAuthText">Ingresar</span>
+                </button>
+                <button onclick="verPuestos()" class="bg-brand-red hover:bg-brand-darkRed text-white font-bold text-xs py-1.5 px-3 rounded-full shadow transition flex items-center gap-1">
+                    <i class="fa-solid fa-shop text-xs"></i>
+                    <span class="hidden xs:inline">Puestos</span>
                 </button>
             </div>
         </div>
@@ -145,15 +129,15 @@
     <!-- CONTAINER PRINCIPAL -->
     <main class="flex-grow w-full m-0 p-0 space-y-3">
 
-        <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES ==================== -->
+        <!-- ==================== SECCIÓN 1: INICIO / PUBLICIDADES CON SWIPE TÁCTIL (AJUSTE 3) ==================== -->
         <section id="secInicio" class="space-y-3">
             
-            <!-- (AJUSTE 2) Banner Slider Principal A ANCHO COMPLETO (w-full 100% en todos los dispositivos) -->
-            <div class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0">
+            <!-- Banner Slider Principal con Soporte Táctil (Swipe) -->
+            <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
                 <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out">
-                    <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1400&q=80" alt="Mercados de Piura" class="w-full h-full object-cover flex-shrink-0">
-                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1400&q=80" alt="Productos Frescos Región Piura" class="w-full h-full object-cover flex-shrink-0">
-                    <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1400&q=80" alt="Comercio Local en Acción" class="w-full h-full object-cover flex-shrink-0">
+                    <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1400&q=80" alt="Mercados de Piura" class="w-full h-full object-cover flex-shrink-0 pointer-events-none">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1400&q=80" alt="Productos Frescos Región Piura" class="w-full h-full object-cover flex-shrink-0 pointer-events-none">
+                    <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1400&q=80" alt="Comercio Local en Acción" class="w-full h-full object-cover flex-shrink-0 pointer-events-none">
                 </div>
                 <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
@@ -163,25 +147,93 @@
                 </button>
             </div>
 
-            <!-- CONTENIDO CON MARGEN DELIMITADO -->
+            <!-- CONTENIDO CON MARGEN DELIMITADO Y ESTRUCTURA DE 1 A 30 BANNERS (AJUSTE 5) -->
             <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3">
-                <!-- Banners Secundarios -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div class="h-32 sm:h-40 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                        Banner 728x90 (Header Global Piura)
-                    </div>
-                    <div class="h-32 sm:h-40 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                        Banner 300x250 (Puestos Destacados)
-                    </div>
-                    <div class="h-32 sm:h-40 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                        GIF Promo Flash 1080x1080
-                    </div>
-                    <div class="h-32 sm:h-40 bg-gradient-to-r from-purple-700 to-pink-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
-                        Video YouTube HD Integrado
-                    </div>
+                
+                <!-- BANNER 1 (Ancho Completo w-full) -->
+                <div class="w-full h-32 sm:h-40 bg-gradient-to-r from-red-600 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
+                    Banner 1 (728x90) - Conectado a Google Sheets
                 </div>
 
-                <!-- Bloques Promocionales Responsivos -->
+                <!-- Bloques 1 a 4 de Publicidad Responsiva -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="h-32 sm:h-40 bg-gradient-to-r from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 2 (300x250)</div>
+                    <div class="h-32 sm:h-40 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 3 (GIF 1080x1080)</div>
+                    <div class="h-32 sm:h-40 bg-gradient-to-r from-purple-700 to-pink-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 4 (Video YouTube HD)</div>
+                    <div class="h-32 sm:h-40 bg-gradient-to-r from-amber-600 to-orange-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 5 (Promoción Local)</div>
+                </div>
+
+                <!-- BANNER 5 (Ancho Completo w-full) -->
+                <div class="w-full h-32 sm:h-40 bg-gradient-to-r from-teal-600 to-blue-600 rounded-xl flex items-center justify-center text-white text-xs sm:text-sm font-bold shadow p-3 text-center">
+                    Banner 5 Estático (Ancho Completo - Google Sheets ID: banner_05)
+                </div>
+
+                <!-- Bloques 6 a 9 de Publicidad -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 6</div>
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 7</div>
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 8</div>
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 9</div>
+                </div>
+
+                <!-- BANNER 10 (Ancho Completo w-full) -->
+                <div class="w-full h-32 bg-gradient-to-r from-indigo-700 to-purple-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                    Banner 10 Estático (Ancho Completo - Google Sheets ID: banner_10)
+                </div>
+
+                <!-- Bloques 11 a 14 de Publicidad -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 11</div>
+                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 12</div>
+                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 13</div>
+                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 14</div>
+                </div>
+
+                <!-- BANNER 15 (Ancho Completo w-full) -->
+                <div class="w-full h-32 bg-gradient-to-r from-red-700 to-rose-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                    Banner 15 Estático (Ancho Completo - Google Sheets ID: banner_15)
+                </div>
+
+                <!-- Bloques 16 a 19 de Publicidad -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 16</div>
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 17</div>
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 18</div>
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 19</div>
+                </div>
+
+                <!-- BANNER 20 (Ancho Completo w-full) -->
+                <div class="w-full h-32 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                    Banner 20 Estático (Ancho Completo - Google Sheets ID: banner_20)
+                </div>
+
+                <!-- Bloques 21 a 24 de Publicidad -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 21</div>
+                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 22</div>
+                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 23</div>
+                    <div class="h-28 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 24</div>
+                </div>
+
+                <!-- BANNER 25 (Ancho Completo w-full) -->
+                <div class="w-full h-32 bg-gradient-to-r from-blue-800 to-cyan-700 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                    Banner 25 Estático (Ancho Completo - Google Sheets ID: banner_25)
+                </div>
+
+                <!-- Bloques 26 a 29 de Publicidad -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 26</div>
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 27</div>
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 28</div>
+                    <div class="h-28 bg-gray-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-2 text-center">Banner 29</div>
+                </div>
+
+                <!-- BANNER 30 (Ancho Completo w-full) -->
+                <div class="w-full h-32 bg-gradient-to-r from-purple-800 to-indigo-800 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow p-3 text-center">
+                    Banner 30 Estático (Ancho Completo - Google Sheets ID: banner_30)
+                </div>
+
+                <!-- Bloques Promocionales Redes y Catálogo -->
                 <div id="bloquesPromocionalesInicio" class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div class="bg-white border border-gray-200 rounded-xl p-3.5 shadow-sm flex flex-col justify-between space-y-2 hover:border-brand-red transition">
                         <div>
@@ -217,13 +269,22 @@
                     </div>
                 </div>
 
-                <!-- Banner Inferior Publicitario -->
+                <!-- (AJUSTE 6) Banner Oficial MERCATODON con Redes Sociales Oficiales -->
                 <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-4 text-white text-center shadow-md space-y-2">
-                    <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Publicidad Oficial Mercatodon</span>
+                    <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Publicidad Oficial MERCATODON</span>
                     <h3 class="text-sm sm:text-base font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
                     <p class="text-xs text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
-                    <div>
-                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20Mercatodon%20en%20Piura" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-xs py-2 px-5 rounded-full shadow transition">
+                    
+                    <!-- Redes sociales oficiales para seguir a la plataforma -->
+                    <div class="pt-2 flex justify-center gap-5 text-xl text-white">
+                        <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+
+                    <div class="pt-1">
+                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON%20en%20Piura" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-xs py-2 px-5 rounded-full shadow transition">
                             <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Publicidad por WhatsApp
                         </a>
                     </div>
@@ -233,23 +294,21 @@
 
         <!-- ==================== SECCIÓN 2: PUESTOS & RUBROS ==================== -->
         <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3 hidden">
-            <!-- (AJUSTE 9) Fila Fija/Scroll de TODOS los Rubros Solicitados -->
             <div class="sticky top-[53px] z-20 bg-gray-50/95 backdrop-blur-md py-2 border-b border-gray-200">
                 <div id="contenedorRubros" class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     <!-- Dinámico JS -->
                 </div>
             </div>
 
-            <!-- Grid de Puestos (AJUSTE 8: Tarjetas con Contorno Dorado) -->
+            <!-- Grid de Puestos (Tarjetas con Contorno Dorado y 2 Columnas Móvil) -->
             <div id="gridPuestos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
                 <!-- Dinámico JS -->
             </div>
 
-            <!-- (AJUSTE 6) Bloque Completo de Publicidades al Finalizar los Puestos -->
             <div class="pt-6 border-t-2 border-dashed border-gray-300 space-y-4">
                 <h3 class="text-xs font-black text-center text-gray-400 uppercase tracking-widest">Publicidad y Promociones Destacadas</h3>
                 <div id="publicidadFinPuestos" class="space-y-3">
-                    <!-- Clon dinámico del bloque publicitario de inicio -->
+                    <!-- Clon dinámico -->
                 </div>
             </div>
         </section>
@@ -260,11 +319,11 @@
             <div id="dashMercador" class="hidden space-y-4"></div>
         </section>
 
-        <!-- ==================== SECCIÓN 4: PANEL CEO (OCULTO E INTERNO) ==================== -->
+        <!-- ==================== SECCIÓN 4: PANEL CEO (INTERNO) ==================== -->
         <section id="secCeo" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-4 bg-white p-4 rounded-2xl border-2 border-red-500 shadow-xl">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="text-base font-black text-brand-red flex items-center gap-2">
-                    <i class="fa-solid fa-user-shield"></i> Panel Ejecutivo CEO Mercatodon
+                    <i class="fa-solid fa-user-shield"></i> Panel Ejecutivo CEO MERCATODON
                 </h2>
                 <button onclick="cerrarSesion()" class="text-xs bg-gray-200 hover:bg-gray-300 font-bold py-1 px-3 rounded-lg">Cerrar Sesión CEO</button>
             </div>
@@ -284,7 +343,7 @@
                 </div>
                 <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
                     <span class="text-[10px] text-gray-500 font-semibold">Banners Activos</span>
-                    <p id="ceoCantBanners" class="text-lg font-bold text-blue-600">5</p>
+                    <p id="ceoCantBanners" class="text-lg font-bold text-blue-600">30</p>
                 </div>
             </div>
 
@@ -307,21 +366,22 @@
 
     </main>
 
-    <!-- ==================== (AJUSTE 5) PIE DE PÁGINA GLOBAL ULTRA COMPACTO ==================== -->
-    <footer class="bg-white border-t border-gray-200 py-2 mt-4">
-        <div class="max-w-7xl mx-auto px-2 flex items-center justify-center text-[11px] sm:text-xs text-gray-600 font-medium whitespace-nowrap overflow-x-auto no-scrollbar">
-            <span>Mercatodon | Desarrollado por</span>
-            <a href="https://comaxion.vercel.app" target="_blank" rel="noopener" class="text-brand-red font-bold hover:underline">
-                COMAXION
-            </a>
+    <!-- ==================== PIE DE PÁGINA GLOBAL CON APOYO VOLUNTARIO SUTIL (AJUSTE 6) ==================== -->
+    <footer class="bg-white border-t border-gray-200 py-3 mt-4">
+        <div class="max-w-7xl mx-auto px-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs text-gray-600 font-medium">
+            <div class="flex items-center gap-1.5">
+                <span>MERCATODON - Todos los derechos reservados. Desarrollado por</span>
+                <a href="https://comaxion.vercel.app" target="_blank" rel="noopener" class="text-brand-red font-bold hover:underline">
+                    COMAXION
+                </a>
+            </div>
+            <!-- Botón de Apoyo Voluntario sutil en la parte inferior -->
+            <button onclick="abrirModalDonacion()" class="bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold py-1 px-3 rounded-full border border-amber-200 flex items-center gap-1 transition shadow-sm">
+                <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i>
+                <span>Apoyo Voluntario</span>
+            </button>
         </div>
     </footer>
-
-    <!-- (AJUSTE 4) BOTÓN DE DONACIÓN VOLUNTARIA FIJO Y SUBTIL EN LA PARTE INFERIOR -->
-    <button onclick="abrirModalDonacion()" class="fixed bottom-4 left-4 z-40 bg-white hover:bg-amber-50 text-amber-600 font-bold text-[11px] py-1.5 px-3 rounded-full shadow-lg border border-amber-300 flex items-center gap-1.5 transition">
-        <i class="fa-solid fa-hand-holding-dollar text-amber-500 text-xs"></i>
-        <span>Apoyo Voluntario</span>
-    </button>
 
     <!-- BOTÓN SCROLL TOP -->
     <button id="btnScrollTop" onclick="scrollArriba()" class="fixed bottom-4 right-4 z-40 bg-white hover:bg-gray-100 text-gray-700 p-2.5 rounded-full shadow-lg border border-gray-200 transition opacity-0 pointer-events-none">
@@ -366,7 +426,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: SELECCIÓN ROL REGISTRO / INGRESO (AJUSTE 5: Manejo de sesión y CEO) -->
+    <!-- MODAL 2: SELECCIÓN ROL REGISTRO / INGRESO -->
     <div id="modalAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -377,7 +437,6 @@
                 <p class="text-xs text-gray-500 mt-1">Ingresa con tus credenciales o crea una cuenta gratis en Piura</p>
             </div>
 
-            <!-- Formulario Directo de Login (Permite login CEO interno sin revelar nada) -->
             <form onsubmit="loginDirecto(event)" class="space-y-3 bg-gray-50 p-3 rounded-xl border">
                 <div>
                     <label class="text-[11px] font-bold text-gray-700">Correo Electrónico</label>
@@ -413,7 +472,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: FORMULARIO REGISTRO -->
+    <!-- MODAL 3: FORMULARIO REGISTRO 100% CORREGIDO (AJUSTE 1) -->
     <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative my-8">
             <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -453,7 +512,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="text-xs font-semibold text-gray-700">Descripción Breve *</label>
+                        <label class="text-xs font-semibold text-gray-700">Descripción Breve del Puesto *</label>
                         <input type="text" id="regPuestoDesc" placeholder="Ej: Los mejores abarrotes de Paita" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
                     <div>
@@ -463,7 +522,7 @@
                 </div>
 
                 <div>
-                    <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos *</label>
+                    <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos del Dueño / Usuario *</label>
                     <input type="text" id="regNombreCompleto" required class="w-full border rounded-xl p-2 text-xs outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
@@ -487,11 +546,11 @@
                 <div class="flex items-start gap-2 pt-1">
                     <input type="checkbox" id="regTerms" required class="mt-0.5">
                     <label for="regTerms" class="text-[10px] text-gray-500 leading-tight">
-                        Acepto Términos y Política de Datos (Ley N° 29733 Perú).
+                        Acepto Términos, Condiciones y Política de Datos (Ley N° 29733 Perú).
                     </label>
                 </div>
                 <button type="submit" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
-                    Guardar e Ingresar
+                    Guardar Registro e Ingresar
                 </button>
             </form>
             <div class="text-center pt-2 border-t">
@@ -526,7 +585,6 @@
             </div>
             <textarea id="mercarComentario" placeholder="Comentario opcional..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-brand-red resize-none h-20"></textarea>
             
-            <!-- (AJUSTE 7) Botón "Mercar" AMARILLO con letras NEGRAS -->
             <button onclick="confirmarMercar()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-black py-2.5 rounded-xl text-xs shadow transition border border-yellow-500">
                 Mercar
             </button>
@@ -543,7 +601,7 @@
                 <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl mb-2">
                     <i class="fa-solid fa-heart"></i>
                 </div>
-                <h3 class="font-bold text-base text-gray-900">Apoyo Voluntario a Mercatodon</h3>
+                <h3 class="font-bold text-base text-gray-900">Apoyo Voluntario a MERCATODON</h3>
                 <p class="text-xs text-gray-500 mt-0.5">Tu contribución fortalece el comercio en Piura.</p>
             </div>
             <div class="space-y-2.5">
@@ -591,7 +649,6 @@
             }
         };
 
-        // (AJUSTE 9) LISTA COMPLETA DE RUBROS SOLICITADOS EN EXCLUSIVA
         const rubrosConfig = [
             { nombre: "Todos", icon: "fa-border-all" },
             { nombre: "Alimentos", icon: "fa-utensils" },
@@ -639,7 +696,8 @@
             clonarPublicidadPuestos();
             actualizarHeaderUsuario();
             iniciarSlider();
-            verificarInstalacionPWA();
+            registrarServiceWorkerNativo();
+            configurarSwipeTactil();
         };
 
         function mostrarToast(mensaje) {
@@ -699,7 +757,6 @@
             renderCeoTable();
         }
 
-        // (AJUSTE 9) RENDER RUBROS FIJOS SIN TEXTOS NI NÚMEROS SOBRANTES
         function renderRubros() {
             const cont = document.getElementById('contenedorRubros');
             cont.innerHTML = '';
@@ -719,7 +776,6 @@
             });
         }
 
-        // (AJUSTE 3 & 8) RENDER PUESTOS CON BOTONES MÁS ALTOS Y CONTORNO DORADO
         function renderPuestos(lista = puestosBD) {
             const grid = document.getElementById('gridPuestos');
             grid.innerHTML = '';
@@ -735,7 +791,6 @@
             filtrados.forEach(p => {
                 const corazonColor = p.fav ? 'text-red-500' : 'text-gray-300';
                 grid.innerHTML += `
-                    <!-- Tarjeta Puesto con Contorno Dorado y 2 Columnas Móvil -->
                     <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
                         <div>
                             <div class="flex items-center justify-between gap-1 mb-1">
@@ -754,13 +809,11 @@
                                     <i class="fa-solid fa-star text-[10px]"></i>
                                     <span>${p.mercas} <span class="text-[9px] text-gray-400 font-normal">mercas</span></span>
                                 </div>
-                                <!-- (AJUSTE 7) Botón "Mercar" AMARILLO y Texto NEGRO -->
                                 <button onclick="abrirMercarModal(${p.id})" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">
                                     Mercar
                                 </button>
                             </div>
 
-                            <!-- (AJUSTE 3) Botones de Acción con Altura Aumentada (h-8) e Íconos Mayores -->
                             <div class="grid grid-cols-3 gap-1">
                                 <a href="${p.web || '#'}" target="_blank" class="h-8 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded transition" title="Web / Catálogo">
                                     <i class="fa-solid fa-globe text-sm"></i>
@@ -768,7 +821,7 @@
                                 <a href="https://maps.google.com/?q=${encodeURIComponent(p.nombre + ' ' + p.distrito + ' Piura')}" target="_blank" class="h-8 bg-black hover:bg-gray-800 text-white flex items-center justify-center rounded transition" title="GPS">
                                     <i class="fa-solid fa-location-dot text-sm"></i>
                                 </a>
-                                <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20Mercatodon%20Piura" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp">
+                                <a href="https://wa.me/${p.whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20MERCATODON%20Piura" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp">
                                     <i class="fa-brands fa-whatsapp text-base"></i>
                                 </a>
                             </div>
@@ -778,7 +831,6 @@
             });
         }
 
-        // (AJUSTE 6) CLONAR PUBLICIDAD EN LA SECCIÓN PUESTOS
         function clonarPublicidadPuestos() {
             const publicidadOrig = document.getElementById('bloquesPromocionalesInicio');
             if (publicidadOrig) {
@@ -907,13 +959,11 @@
             document.getElementById('modalAuth').classList.remove('hidden');
         }
 
-        // (AJUSTE 5) LOGIN DIRECTO E INTERNO DE CEO O USUARIO REGISTRADO
         function loginDirecto(e) {
             e.preventDefault();
             const email = document.getElementById('loginCorreo').value;
             const pass = document.getElementById('loginPass').value;
 
-            // Clave e email CEO Interno
             if (email === "multivercado@gmail.com" && pass === "20701") {
                 cerrarModal('modalAuth');
                 verCeoPanel();
@@ -921,7 +971,6 @@
                 return;
             }
 
-            // Inicio de Sesión Estándar
             usuarioActual = {
                 nombre: email.split('@')[0],
                 correo: email,
@@ -949,6 +998,7 @@
             document.getElementById('modalFormAuth').classList.remove('hidden');
         }
 
+        // FORMULARIO MERCADERO 100% CORREGIDO (AJUSTE 1)
         function procesarAuth(e) {
             e.preventDefault();
             const email = document.getElementById('regCorreo').value;
@@ -962,26 +1012,39 @@
             }
 
             const rol = document.getElementById('authRol').value;
+            const nombreUsuario = document.getElementById('regNombreCompleto').value;
+            const whatsapp = document.getElementById('regWhatsapp').value;
+
             usuarioActual = {
-                nombre: document.getElementById('regNombreCompleto').value,
+                nombre: nombreUsuario,
                 correo: email,
-                whatsapp: document.getElementById('regWhatsapp').value,
+                whatsapp: whatsapp,
                 rol: rol,
                 fecha: new Date().toLocaleDateString()
             };
 
             if (rol === 'mercadero') {
+                const nombrePuesto = document.getElementById('regPuestoNombre').value;
+                const rubroPuesto = document.getElementById('regPuestoRubro').value;
+                const descPuesto = document.getElementById('regPuestoDesc').value;
+                const webPuesto = document.getElementById('regPuestoWeb').value;
+
+                if (!nombrePuesto || !descPuesto) {
+                    mostrarToast("Por favor complete los datos obligatorios del puesto.");
+                    return;
+                }
+
                 const nuevoPuesto = {
                     id: Date.now(),
-                    nombre: document.getElementById('regPuestoNombre').value,
-                    rubro: document.getElementById('regPuestoRubro').value,
-                    desc: document.getElementById('regPuestoDesc').value,
+                    nombre: nombrePuesto,
+                    rubro: rubroPuesto,
+                    desc: descPuesto,
                     region: "Piura",
                     provincia: ubicacionActual.provincia,
                     distrito: ubicacionActual.distrito,
                     mercas: 1,
-                    whatsapp: usuarioActual.whatsapp,
-                    web: document.getElementById('regPuestoWeb').value,
+                    whatsapp: whatsapp,
+                    web: webPuesto || "",
                     fav: false
                 };
                 puestosBD.push(nuevoPuesto);
@@ -994,7 +1057,7 @@
             cerrarModal('modalFormAuth');
             actualizarHeaderUsuario();
             verDashboard();
-            mostrarToast("¡Registro exitoso!");
+            mostrarToast("¡Registro exitoso en MERCATODON!");
         }
 
         function recuperarPassword() {
@@ -1124,6 +1187,29 @@
             if (wrapper) wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
         }
 
+        // SOPORTE TÁCTIL (SWIPE) PARA BANNERS (AJUSTE 3)
+        function configurarSwipeTactil() {
+            const container = document.getElementById('sliderContainer');
+            let startX = 0;
+            let endX = 0;
+
+            container.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+
+            container.addEventListener('touchend', (e) => {
+                endX = e.changedTouches[0].clientX;
+                let diff = startX - endX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        nextSlide();
+                    } else {
+                        prevSlide();
+                    }
+                }
+            }, { passive: true });
+        }
+
         function abrirModalDonacion() {
             document.getElementById('modalDonacion').classList.remove('hidden');
         }
@@ -1131,9 +1217,9 @@
             const nombre = document.getElementById('donanteNombre').value || "Anónimo";
             const metodo = document.getElementById('donanteMetodo').value;
             const monto = document.getElementById('donanteMonto').value || "10";
-            const nota = document.getElementById('donanteNota').value || "Apoyo a Mercatodon";
+            const nota = document.getElementById('donanteNota').value || "Apoyo a MERCATODON";
 
-            const msg = `Hola,%20deseo%20apoyar%20a%20Mercatodon:%0A- Nombre: ${encodeURIComponent(nombre)}%0A- Método: ${encodeURIComponent(metodo)}%0A- Monto: S/.${encodeURIComponent(monto)}%0A- Nota: ${encodeURIComponent(nota)}`;
+            const msg = `Hola,%20deseo%20apoyar%20a%20MERCATODON:%0A- Nombre: ${encodeURIComponent(nombre)}%0A- Método: ${encodeURIComponent(metodo)}%0A- Monto: S/.${encodeURIComponent(monto)}%0A- Nota: ${encodeURIComponent(nota)}`;
             window.open(`https://wa.me/51930528649?text=${msg}`, '_blank');
             cerrarModal('modalDonacion');
         }
@@ -1155,15 +1241,18 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function verificarInstalacionPWA() {
-            setTimeout(() => {
-                document.getElementById('pwaBanner').classList.remove('hidden');
-            }, 1500);
-        }
-
-        function installPWA() {
-            mostrarToast("Añade Mercatodon a la pantalla de inicio de tu dispositivo desde el menú de opciones.");
-            document.getElementById('pwaBanner').classList.add('hidden');
+        // PWA NATIVO AUTOMÁTICO SIN BOTONES FLOTANTES (AJUSTE 2)
+        function registrarServiceWorkerNativo() {
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', e => self.skipWaiting());
+                    self.addEventListener('activate', e => self.clients.claim());
+                    self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));
+                `;
+                const blob = new Blob([swCode], { type: 'text/javascript' });
+                const blobUrl = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(blobUrl).catch(() => {});
+            }
         }
     </script>
 </body>
