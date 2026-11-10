@@ -105,25 +105,66 @@
 
         <!-- SECCIÓN 1: INICIO -->
         <section id="secInicio" class="space-y-1.5">
+            <!-- Slider Principal con Enlaces Interactivos -->
             <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
                 <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out">
-                    <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1400&q=80" alt="Mercados de Piura" class="w-full h-full object-cover flex-shrink-0 pointer-events-none">
-                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1400&q=80" alt="Productos Frescos Región Piura" class="w-full h-full object-cover flex-shrink-0 pointer-events-none">
-                    <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1400&q=80" alt="Comercio Local en Acción" class="w-full h-full object-cover flex-shrink-0 pointer-events-none">
+                    <!-- Los slides se cargan dinámicamente o con enlaces interactivos -->
+                    <a href="https://wa.me/51930528649?text=Hola,%20me%20interesa%20el%20banner%20principal%201" target="_blank" class="w-full h-full flex-shrink-0 relative block">
+                        <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?auto=format&fit=crop&w=1400&q=80" alt="Mercados de Piura" class="w-full h-full object-cover pointer-events-none">
+                    </a>
+                    <a href="https://wa.me/51930528649?text=Hola,%20me%20interesa%20el%20banner%20principal%202" target="_blank" class="w-full h-full flex-shrink-0 relative block">
+                        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1400&q=80" alt="Productos Frescos Región Piura" class="w-full h-full object-cover pointer-events-none">
+                    </a>
+                    <a href="https://wa.me/51930528649?text=Hola,%20me%20interesa%20el%20banner%20principal%203" target="_blank" class="w-full h-full flex-shrink-0 relative block">
+                        <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1400&q=80" alt="Comercio Local en Acción" class="w-full h-full object-cover pointer-events-none">
+                    </a>
                 </div>
-                <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition z-10"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition z-10"><i class="fa-solid fa-chevron-right text-xs"></i></button>
             </div>
 
             <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-1.5">
-                <!-- Secciones de Banners Dinámicos (A - G) -->
-                <div class="space-y-1"><h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones</h3><div id="bannerSeccionA" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div></div>
-                <div class="space-y-1"><h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-crown text-slate-400 text-xs"></i> Patrocinios</h3><div id="bannerSeccionB" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div></div>
-                <div class="space-y-1"><h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-video text-slate-400 text-xs"></i> Spots Comerciales</h3><div id="bannerSeccionC" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1"></div></div>
-                <div class="space-y-1"><h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-truck-fast text-slate-400 text-xs"></i> Servicios y Proveedores</h3><div id="bannerSeccionD" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div></div>
-                <div class="space-y-1"><h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i> Campañas Especiales</h3><div id="bannerSeccionE" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div></div>
-                <div class="space-y-1"><h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-handshake text-slate-400 text-xs"></i> Nuestros Aliados</h3><div id="bannerSeccionF" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div></div>
-                <div class="space-y-1"><h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-bell text-slate-400 text-xs"></i> Novedades</h3><div id="bannerSeccionG" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div></div>
+                <!-- SECCIÓN A: Ofertas y Promociones -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones</h3>
+                    <div id="bannerSeccionA" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN B: Patrocinios -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-crown text-slate-400 text-xs"></i> Patrocinios</h3>
+                    <div id="bannerSeccionB" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN C: Spots Comerciales -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-video text-slate-400 text-xs"></i> Spots Comerciales</h3>
+                    <div id="bannerSeccionC" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN D: Servicios y Proveedores -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-truck-fast text-slate-400 text-xs"></i> Servicios y Proveedores</h3>
+                    <div id="bannerSeccionD" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN E: Campañas Especiales -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i> Campañas Especiales</h3>
+                    <div id="bannerSeccionE" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN F: Nuestros Aliados -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-handshake text-slate-400 text-xs"></i> Nuestros Aliados</h3>
+                    <div id="bannerSeccionF" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
+
+                <!-- SECCIÓN G: Novedades -->
+                <div class="space-y-1">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-bell text-slate-400 text-xs"></i> Novedades</h3>
+                    <div id="bannerSeccionG" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                </div>
 
                 <!-- Bloques Promocionales Redes y Catálogo -->
                 <div id="bloquesPromocionalesInicio" class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
@@ -230,7 +271,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <h3 id="ceoTituloTabla" class="text-xs font-bold text-gray-600 uppercase mb-2">Gestión de Mercaderos (Editar / Bloquear / Eliminar)</h3>
+                <h3 id="ceoTituloTabla" class="text-xs font-bold text-gray-600 uppercase mb-2">Gestión de Mercaderos (Editar / Eliminar)</h3>
                 <table class="w-full text-xs text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-100 text-gray-700" id="ceoTablaHeader">
@@ -292,7 +333,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: AUTH / LOGIN CON RECUPERACIÓN INTERNA -->
+    <!-- MODAL 2: AUTH / LOGIN -->
     <div id="modalAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -301,65 +342,51 @@
                 <p class="text-xs text-gray-500 mt-1">Ingresa con tus credenciales o crea una cuenta</p>
             </div>
 
-            <!-- VISTA LOGIN NORMAL -->
-            <div id="vistaLoginNormal" class="space-y-3">
-                <form onsubmit="loginDirecto(event)" class="space-y-3 bg-gray-50 p-3 rounded-xl border">
-                    <div>
-                        <label class="text-[11px] font-bold text-gray-700">Correo Electrónico</label>
-                        <input type="email" id="loginCorreo" required class="w-full border rounded-lg p-2 text-xs outline-none bg-white">
-                    </div>
-                    <div>
-                        <label class="text-[11px] font-bold text-gray-700">Contraseña</label>
-                        <div class="relative">
-                            <input type="password" id="loginPass" required class="w-full border rounded-lg p-2 pr-8 text-xs outline-none bg-white">
-                            <button type="button" onclick="togglePasswordVisibility('loginPass', 'eyeLoginIcon')" class="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600">
-                                <i id="eyeLoginIcon" class="fa-solid fa-eye text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <button type="button" onclick="mostrarVistaRecuperar()" class="text-[11px] text-brand-red hover:underline font-semibold">Olvidé contraseña</button>
-                    </div>
-                    <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-2 rounded-lg text-xs transition">Iniciar Sesión</button>
-                </form>
-
-                <div class="relative flex py-1 items-center">
-                    <div class="flex-grow border-t border-gray-200"></div>
-                    <span class="flex-shrink mx-2 text-[10px] text-gray-400 font-bold uppercase">¿No tienes cuenta? Registrate</span>
-                    <div class="flex-grow border-t border-gray-200"></div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div onclick="abrirFormularioAuth('mercadero')" class="border border-gray-200 hover:border-brand-red p-3 rounded-xl cursor-pointer text-center space-y-1 transition hover:shadow-md">
-                        <i class="fa-solid fa-store text-brand-red text-lg"></i>
-                        <h4 class="font-bold text-xs text-gray-900">Mercadero(a)</h4>
-                        <p class="text-[9px] text-gray-500 leading-tight">Vendedor / Puesto</p>
-                    </div>
-                    <div onclick="abrirFormularioAuth('mercador')" class="border border-gray-200 hover:border-brand-orange p-3 rounded-xl cursor-pointer text-center space-y-1 transition hover:shadow-md">
-                        <i class="fa-solid fa-basket-shopping text-brand-orange text-lg"></i>
-                        <h4 class="font-bold text-xs text-gray-900">Mercador(a)</h4>
-                        <p class="text-[9px] text-gray-500 leading-tight">Comprador</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VISTA RECUPERAR CONTRASEÑA INTERNA (DENTRO DEL MODAL) -->
-            <div id="vistaRecuperarPassword" class="space-y-3 hidden bg-gray-50 p-4 rounded-xl border">
-                <h4 class="font-bold text-xs text-gray-900 flex items-center gap-1.5">
-                    <i class="fa-solid fa-key text-brand-red"></i> Recuperar Contraseña por Firebase
-                </h4>
-                <p class="text-[11px] text-gray-600">Ingresa tu correo electrónico registrado. Te enviaremos un enlace de restablecimiento seguro directamente a tu bandeja.</p>
+            <form onsubmit="loginDirecto(event)" class="space-y-3 bg-gray-50 p-3 rounded-xl border">
                 <div>
                     <label class="text-[11px] font-bold text-gray-700">Correo Electrónico</label>
-                    <input type="email" id="recuperarCorreoInput" required placeholder="tu-correo@gmail.com" class="w-full border rounded-lg p-2 text-xs outline-none bg-white mt-1">
+                    <input type="email" id="loginCorreo" required class="w-full border rounded-lg p-2 text-xs outline-none bg-white">
                 </div>
-                <div id="recuperarMensajeEstado" class="text-[11px] font-semibold text-center hidden p-2 rounded-lg"></div>
-                <div class="flex gap-2 pt-1">
-                    <button type="button" onclick="enviarRecuperacionPasswordFirebase()" class="flex-1 bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2 rounded-lg text-xs transition">Enviar Enlace</button>
-                    <button type="button" onclick="ocultarVistaRecuperar()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-3 rounded-lg text-xs transition">Volver</button>
+                <div>
+                    <label class="text-[11px] font-bold text-gray-700">Contraseña</label>
+                    <div class="relative">
+                        <input type="password" id="loginPass" required class="w-full border rounded-lg p-2 pr-8 text-xs outline-none bg-white">
+                        <button type="button" onclick="togglePasswordVisibility('loginPass', 'eyeLoginIcon')" class="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600">
+                            <i id="eyeLoginIcon" class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
                 </div>
+                
+                <!-- Notificación interna en la misma ventana emergente para recuperación de contraseña -->
+                <div id="msgRecuperacionContainer" class="hidden p-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-800 text-[11px] flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span id="msgRecuperacionTexto">Enlace de recuperación enviado. Revisa tu correo.</span>
+                </div>
+
+                <div class="text-right flex justify-between items-center">
+                    <button type="button" onclick="recuperarPasswordLogin()" class="text-[11px] text-brand-red hover:underline font-semibold">Olvidé contraseña</button>
+                    <button type="submit" class="bg-gray-900 hover:bg-black text-white font-bold py-1.5 px-4 rounded-lg text-xs transition">Iniciar Sesión</button>
+                </div>
+            </form>
+
+            <div class="relative flex py-1 items-center">
+                <div class="flex-grow border-t border-gray-200"></div>
+                <span class="flex-shrink mx-2 text-[10px] text-gray-400 font-bold uppercase">¿No tienes cuenta? Registrate</span>
+                <div class="flex-grow border-t border-gray-200"></div>
             </div>
 
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="abrirFormularioAuth('mercadero')" class="border border-gray-200 hover:border-brand-red p-3 rounded-xl cursor-pointer text-center space-y-1 transition hover:shadow-md">
+                    <i class="fa-solid fa-store text-brand-red text-lg"></i>
+                    <h4 class="font-bold text-xs text-gray-900">Mercadero(a)</h4>
+                    <p class="text-[9px] text-gray-500 leading-tight">Vendedor / Puesto</p>
+                </div>
+                <div onclick="abrirFormularioAuth('mercador')" class="border border-gray-200 hover:border-brand-orange p-3 rounded-xl cursor-pointer text-center space-y-1 transition hover:shadow-md">
+                    <i class="fa-solid fa-basket-shopping text-brand-orange text-lg"></i>
+                    <h4 class="font-bold text-xs text-gray-900">Mercador(a)</h4>
+                    <p class="text-[9px] text-gray-500 leading-tight">Comprador</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -519,10 +546,8 @@
 
     <!-- SCRIPT DE LA APLICACIÓN -->
     <script>
-        // URL DE GOOGLE APPS SCRIPT
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzA8vHBao9cB34aRMgg29mMGGxx09Vyk9Zy_fEgXrqfN2wD6f3to-FEI_FU3_4dIRU2/exec";
 
-        // CONFIGURACIÓN FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyA6nCurDvRAZRWR7yinzk7DwC2Be05ohEw",
             authDomain: "mercatodon-peru.firebaseapp.com",
@@ -598,50 +623,14 @@
             registrarServiceWorkerNativo();
             configurarSwipeTactil();
             configurarInstalacionPWA();
-            configurarSesionPermanenteFirebase();
             sincronizarDatosRemotos();
+            
+            // Si ya hay sesión activa permanente, mantener actualizada la interfaz
+            if (usuarioActual) {
+                actualizarHeaderUsuario();
+            }
         };
 
-        // ==================== SESIÓN PERMANENTE FIREBASE ====================
-        function configurarSesionPermanenteFirebase() {
-            firebase.auth().onAuthStateChanged(async (user) => {
-                if (user) {
-                    let email = user.email;
-                    let puestoEncontrado = puestosBD.find(p => (p.Correo_Acceso || p.correo) === email);
-                    let usuarioEncontrado = usuariosBD.find(u => (u.Correo || u.correo) === email);
-
-                    if (puestoEncontrado) {
-                        usuarioActual = {
-                            Nombre_Completo: puestoEncontrado.Duenio_Nombre || puestoEncontrado.duenio,
-                            Correo: email,
-                            WhatsApp: puestoEncontrado.WhatsApp || puestoEncontrado.whatsapp,
-                            rol: "mercadero",
-                            puestoId: puestoEncontrado.ID || puestoEncontrado.id
-                        };
-                    } else if (usuarioEncontrado) {
-                        usuarioActual = {
-                            Nombre_Completo: usuarioEncontrado.Nombre_Completo || usuarioEncontrado.nombre,
-                            Correo: email,
-                            WhatsApp: usuarioEncontrado.WhatsApp || usuarioEncontrado.whatsapp,
-                            rol: usuarioEncontrado.Rol || usuarioEncontrado.rol || "mercador",
-                            oficio: usuarioEncontrado.Oficio || usuarioEncontrado.oficio,
-                            cumpleanos: usuarioEncontrado.Cumpleanos || usuarioEncontrado.cumpleanos
-                        };
-                    } else if (!usuarioActual) {
-                        usuarioActual = {
-                            Nombre_Completo: email.split('@')[0],
-                            Correo: email,
-                            WhatsApp: "930528649",
-                            rol: "mercador"
-                        };
-                    }
-                    localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
-                    actualizarHeaderUsuario();
-                }
-            });
-        }
-
-        // ==================== SINCRONIZACIÓN GOOGLE SHEETS ====================
         async function sincronizarDatosRemotos() {
             await Promise.all([
                 cargarHojaRemota('puestos', data => { puestosBD = data; localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD)); renderPuestos(); }),
@@ -699,7 +688,7 @@
             }
         }
 
-        // ==================== BANNERS DINÁMICOS ====================
+        // ==================== RENDERIZADO DINÁMICO DE BANNERS ====================
         function renderBannersDinamicos() {
             const seccionesMap = {
                 "A": "bannerSeccionA",
@@ -951,6 +940,17 @@
         }
 
         function abrirMercarModal(id) {
+            // RESTRICCIÓN DE SEGURIDAD: Solo usuarios con rol 'mercador' pueden calificar/votar
+            if (!usuarioActual) {
+                abrirAuthModal();
+                mostrarToast("Inicia sesión como Mercador para poder calificar puestos.");
+                return;
+            }
+            if (usuarioActual.rol === 'mercadero') {
+                mostrarToast("Los dueños de puestos (mercaderos) no pueden votar ni calificar. Solo los mercadores (compradores).");
+                return;
+            }
+
             puestoSeleccionadoId = id;
             const p = puestosBD.find(x => (x.ID || x.id) === id);
             if (!p) return;
@@ -978,21 +978,12 @@
             });
         }
 
-        // ==================== RESTRICCIÓN DE CALIFICACIÓN (SOLO MERCADORES) ====================
         function confirmarMercar() {
-            if (!usuarioActual) {
+            if (!usuarioActual || usuarioActual.rol === 'mercadero') {
                 cerrarModal('modalMercar');
-                abrirAuthModal();
+                mostrarToast("Acción no permitida para cuentas de mercaderos.");
                 return;
             }
-
-            // RESTRICCIÓN: Los mercaderos (vendedores) NO pueden calificar ningún puesto. Solo los mercadores (compradores).
-            if (usuarioActual.rol === 'mercadero') {
-                mostrarToast("Acceso denegado: Los mercaderos (vendedores) no pueden calificar puestos. Solo los mercadores (compradores) pueden hacerlo.");
-                cerrarModal('modalMercar');
-                return;
-            }
-
             if (calificacionTemp === 0) {
                 mostrarToast("Por favor selecciona al menos 1 estrella.");
                 return;
@@ -1000,6 +991,15 @@
 
             const p = puestosBD.find(x => (x.ID || x.id) === puestoSeleccionadoId);
             const comentario = document.getElementById('mercarComentario').value || "Sin comentario";
+            const nombreUsuario = usuarioActual.Nombre_Completo || usuarioActual.nombre;
+
+            // Validación: Un usuario solo puede votar una sola vez por puesto
+            const yaVoto = calificacionesBD.some(c => (c.Puesto_ID || c.puestoId) == puestoSeleccionadoId && (c.Usuario_Nombre || c.usuario) === nombreUsuario);
+            if (yaVoto) {
+                cerrarModal('modalMercar');
+                mostrarToast("⚠️ Ya has calificado este puesto anteriormente. Solo se permite un voto por usuario.");
+                return;
+            }
 
             if (p) {
                 p.Mercas = (parseInt(p.Mercas || p.mercas || 0)) + 1;
@@ -1009,7 +1009,7 @@
                 const nuevaCalificacion = {
                     ID_Calificacion: Date.now(),
                     Puesto_ID: p.ID || p.id,
-                    Usuario_Nombre: usuarioActual.Nombre_Completo || usuarioActual.nombre,
+                    Usuario_Nombre: nombreUsuario,
                     Estrellas: calificacionTemp,
                     Comentario: comentario,
                     Fecha_Hora: new Date().toLocaleString()
@@ -1025,7 +1025,7 @@
             }
         }
 
-        // ==================== AUTENTICACIÓN & RECUPERACIÓN INTERNA ====================
+        // ==================== AUTENTICACIÓN & FIREBASE ====================
         function inicializarUbicacionUI() {
             const selProv = document.getElementById('selProvincia');
             if (!selProv) return;
@@ -1094,52 +1094,12 @@
         }
 
         function abrirModalUbicacion() { document.getElementById('modalUbicacion').classList.remove('hidden'); }
-        
         function abrirAuthModal() {
             if (usuarioActual) { verDashboard(); return; }
-            ocultarVistaRecuperar();
             document.getElementById('modalAuth').classList.remove('hidden');
         }
 
-        function mostrarVistaRecuperar() {
-            document.getElementById('vistaLoginNormal').classList.add('hidden');
-            document.getElementById('vistaRecuperarPassword').classList.remove('hidden');
-            const correoActual = document.getElementById('loginCorreo').value;
-            if (correoActual) {
-                document.getElementById('recuperarCorreoInput').value = correoActual;
-            }
-            document.getElementById('recuperarMensajeEstado').classList.add('hidden');
-        }
-
-        function ocultarVistaRecuperar() {
-            document.getElementById('vistaRecuperarPassword').classList.add('hidden');
-            document.getElementById('vistaLoginNormal').classList.remove('hidden');
-            document.getElementById('recuperarMensajeEstado').classList.add('hidden');
-        }
-
-        // ENVÍO DE CORREO DE RECUPERACIÓN CON FEEDBACK DENTRO DEL MODAL
-        async function enviarRecuperacionPasswordFirebase() {
-            const email = document.getElementById('recuperarCorreoInput').value;
-            const estadoEl = document.getElementById('recuperarMensajeEstado');
-            if (!email) {
-                estadoEl.innerText = "Por favor ingresa tu correo electrónico.";
-                estadoEl.className = "text-[11px] font-semibold text-center text-red-600 bg-red-50 p-2 rounded-lg";
-                estadoEl.classList.remove('hidden');
-                return;
-            }
-
-            try {
-                await firebase.auth().sendPasswordResetEmail(email);
-                estadoEl.innerText = "¡Enlace de recuperación enviado! Revisa tu bandeja de entrada o spam.";
-                estadoEl.className = "text-[11px] font-semibold text-center text-emerald-600 bg-emerald-50 p-2 rounded-lg";
-                estadoEl.classList.remove('hidden');
-            } catch (error) {
-                estadoEl.innerText = "Error: " + error.message;
-                estadoEl.className = "text-[11px] font-semibold text-center text-red-600 bg-red-50 p-2 rounded-lg";
-                estadoEl.classList.remove('hidden');
-            }
-        }
-
+        // LOGIN DIRECTO CON FIREBASE AUTH Y SOPORTE CEO
         async function loginDirecto(e) {
             e.preventDefault();
             const email = document.getElementById('loginCorreo').value;
@@ -1161,7 +1121,7 @@
                 if (puestoEncontrado) {
                     usuarioActual = {
                         Nombre_Completo: puestoEncontrado.Duenio_Nombre || puestoEncontrado.duenio,
-                        Correo: email,
+                        Correo: puestoEncontrado.Correo_Acceso || puestoEncontrado.correo,
                         WhatsApp: puestoEncontrado.WhatsApp || puestoEncontrado.whatsapp,
                         rol: "mercadero",
                         puestoId: puestoEncontrado.ID || puestoEncontrado.id
@@ -1169,7 +1129,7 @@
                 } else if (usuarioEncontrado) {
                     usuarioActual = {
                         Nombre_Completo: usuarioEncontrado.Nombre_Completo || usuarioEncontrado.nombre,
-                        Correo: email,
+                        Correo: usuarioEncontrado.Correo || usuarioEncontrado.correo,
                         WhatsApp: usuarioEncontrado.WhatsApp || usuarioEncontrado.whatsapp,
                         rol: usuarioEncontrado.Rol || usuarioEncontrado.rol || "mercador",
                         oficio: usuarioEncontrado.Oficio || usuarioEncontrado.oficio,
@@ -1180,7 +1140,9 @@
                         Nombre_Completo: email.split('@')[0],
                         Correo: email,
                         WhatsApp: "930528649",
-                        rol: "mercador"
+                        rol: "mercador",
+                        oficio: "Comerciante",
+                        cumpleanos: "2000-01-01"
                     };
                 }
 
@@ -1211,10 +1173,35 @@
                     cerrarModal('modalAuth');
                     actualizarHeaderUsuario();
                     verDashboard();
-                    mostrarToast("Sesión iniciada correctamente.");
+                    mostrarToast("Sesión iniciada (Modo Local).");
                 } else {
-                    mostrarToast("Error de acceso: Credenciales incorrectas.");
+                    mostrarToast("Error de acceso: Credenciales incorrectas o cuenta no registrada.");
                 }
+            }
+        }
+
+        // RECUPERACIÓN DE CONTRASEÑA CON MENSAJE DENTRO DE LA MISMA VENTANA MODAL
+        async function recuperarPasswordLogin() {
+            const email = document.getElementById('loginCorreo').value;
+            const container = document.getElementById('msgRecuperacionContainer');
+            const texto = document.getElementById('msgRecuperacionTexto');
+
+            if (!email) {
+                container.classList.remove('hidden');
+                container.className = "p-2 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[11px] flex items-center gap-1.5";
+                texto.innerText = "Por favor ingresa tu correo electrónico en el campo superior primero.";
+                return;
+            }
+
+            try {
+                await firebase.auth().sendPasswordResetEmail(email);
+                container.classList.remove('hidden');
+                container.className = "p-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-800 text-[11px] flex items-center gap-1.5";
+                texto.innerText = `¡Correo enviado a ${email}! Revisa tu bandeja de entrada o spam para restablecer tu contraseña.`;
+            } catch (error) {
+                container.classList.remove('hidden');
+                container.className = "p-2 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[11px] flex items-center gap-1.5";
+                texto.innerText = "Error: No se pudo enviar el correo de recuperación. Verifica que el correo esté registrado.";
             }
         }
 
@@ -1270,7 +1257,7 @@
                     Provincia: provinciaPuesto,
                     Distrito: distritoPuesto,
                     GPS: gpsPuesto,
-                    Mercas: 0,
+                    Mercas: 0, // Cero al registrarse, sin votos falsos
                     WhatsApp: wspPuesto,
                     Web_Catalogo: webPuesto || "",
                     Duenio_Nombre: nombreUsuario,
