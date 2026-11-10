@@ -313,11 +313,11 @@
             </div>
         </section>
 
-        <!-- ==================== SECCIÓN 2: PUESTOS & RUBROS (AJUSTE 1: Búsqueda Inteligente Expandible al Inicio de Rubros) ==================== -->
+        <!-- ==================== SECCIÓN 2: PUESTOS & RUBROS ==================== -->
         <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-2 hidden">
             <div class="sticky top-[53px] z-20 bg-gray-50/95 backdrop-blur-md py-1.5 border-b border-gray-200">
                 <div id="contenedorRubros" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-                    <!-- Dinámico JS incluye la barra expandible al inicio -->
+                    <!-- Dinámico JS incluye la barra de búsqueda expandible al inicio -->
                 </div>
             </div>
 
@@ -727,14 +727,14 @@
         // URL DE GOOGLE APPS SCRIPT (Conectado con Google Sheets)
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzA8vHBao9cB34aRMgg29mMGGxx09Vyk9Zy_fEgXrqfN2wD6f3to-FEI_FU3_4dIRU2/exec";
 
-        // CONFIGURACIÓN FIREBASE AUTH
+        // CONFIGURACIÓN FIREBASE AUTH (CORREGIDO ERROR DE SINTAXIS / COMA FALTANTE)
         const firebaseConfig = {
             apiKey: "AIzaSyA6nCurDvRAZRWR7yinzk7DwC2Be05ohEw",
             authDomain: "mercatodon-peru.firebaseapp.com",
             projectId: "mercatodon-peru",
             storageBucket: "mercatodon-peru.firebasestorage.app",
             messagingSenderId: "941481497625",
-            appId: "1:941481497625:web:bd873da529475d2ad44688"
+            appId: "1:941481497625:web:bd873da529475d2ad44688",
             measurementId: "G-6W4XMLL29T"
         };
         if (!firebase.apps.length) {
@@ -816,7 +816,36 @@
             registrarServiceWorkerNativo();
             configurarSwipeTactil();
             configurarInstalacionPWA();
+            sincronizarConSheetsRemoto();
         };
+
+        // ==================== CONEXIÓN CON GOOGLE SHEETS / APPS SCRIPT ====================
+        async function sincronizarConSheetsRemoto() {
+            try {
+                let res = await fetch(`${APPS_SCRIPT_URL}?sheet=puestos`);
+                let data = await res.json();
+                if (data && data.length > 0) {
+                    puestosBD = data;
+                    localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+                    renderPuestos();
+                }
+            } catch (e) {
+                console.log("Modo offline o usando caché local de puestos.");
+            }
+        }
+
+        async function enviarASheets(nombreHoja, filaDatos) {
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sheet: nombreHoja, row: filaDatos })
+                });
+            } catch (e) {
+                console.error("Error al enviar a Google Sheets:", e);
+            }
+        }
 
         function mostrarToast(mensaje) {
             const t = document.getElementById('toast');
@@ -841,7 +870,7 @@
             }
         }
 
-        // ==================== AJUSTE 1: BÚSQUEDA INTELIGENTE EXPANDIBLE AL INICIO DE RUBROS ====================
+        // ==================== BÚSQUEDA INTELIGENTE EXPANDIBLE AL INICIO DE RUBROS ====================
         function toggleBusquedaExpandible() {
             const wrapper = document.getElementById('wrapperBusquedaExpandible');
             const input = document.getElementById('inputBusquedaRubros');
@@ -929,7 +958,6 @@
             const cont = document.getElementById('contenedorRubros');
             cont.innerHTML = '';
 
-            // Barra de búsqueda expandible sutil al inicio de la fila de rubros
             cont.innerHTML += `
                 <div id="wrapperBusquedaExpandible" class="flex items-center flex-shrink-0 transition-all duration-300 ease-in-out bg-white border border-gray-200 rounded-xl px-2 py-1.5 shadow-sm w-9 overflow-hidden">
                     <button onclick="toggleBusquedaExpandible()" class="text-gray-600 hover:text-brand-red p-0.5 flex items-center justify-center flex-shrink-0 transition" title="Buscar puesto, producto o lugar">
@@ -1147,6 +1175,8 @@
                 };
                 calificacionesBD.unshift(nuevaCalificacion);
                 localStorage.setItem('mercatodon_calificaciones', JSON.stringify(calificacionesBD));
+                
+                enviarASheets('calificaciones', [p.id, usuarioActual.nombre, calificacionTemp, comentario, nuevaCalificacion.fecha]);
 
                 renderPuestos();
                 cerrarModal('modalMercar');
@@ -1275,6 +1305,7 @@
                 };
                 usuariosBD.push(usuarioActual);
                 localStorage.setItem('mercatodon_usuarios', JSON.stringify(usuariosBD));
+                enviarASheets('usuarios', [usuarioActual.nombre, usuarioActual.correo, usuarioActual.whatsapp, usuarioActual.rol, usuarioActual.oficio, usuarioActual.cumpleanos, usuarioActual.fecha]);
             }
 
             localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
@@ -1368,6 +1399,9 @@
                 puestosBD.push(nuevoPuesto);
                 usuarioActual.puestoId = nuevoPuesto.id;
                 localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD));
+                
+                enviarASheets('puestos', [nuevoPuesto.id, nuevoPuesto.nombre, nuevoPuesto.rubro, nuevoPuesto.desc, nuevoPuesto.region, nuevoPuesto.provincia, nuevoPuesto.distrito, nuevoPuesto.mercas, nuevoPuesto.whatsapp, nuevoPuesto.web, nuevoPuesto.duenio, nuevoPuesto.correo]);
+
                 renderRubros();
                 renderPuestos();
             } else {
@@ -1385,6 +1419,7 @@
                 };
                 usuariosBD.push(usuarioActual);
                 localStorage.setItem('mercatodon_usuarios', JSON.stringify(usuariosBD));
+                enviarASheets('usuarios', [usuarioActual.nombre, usuarioActual.correo, usuarioActual.whatsapp, usuarioActual.rol, usuarioActual.oficio, usuarioActual.cumpleanos, usuarioActual.fecha]);
             }
 
             localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
