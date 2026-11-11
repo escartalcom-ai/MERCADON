@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Plus Jakarta Sans y Fredoka -->
    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Fredoka:wght@400;700&display=swap" rel="stylesheet"> 
+    <!-- Google Fonts: Fredoka -->
+   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <!-- Firebase SDK (Compat v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -100,11 +102,15 @@
     <div class="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md flex-shrink-0">
         <img src="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png" loading="lazy" onerror="this.src='https://placehold.co/36x36/E53935/ffffff?text=M'" alt="Logo" class="w-full h-full object-cover rounded-xl">
             </div>
+    <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
+    <!-- Logo con dimensiones optimizadas -->
+    <div class="w-10 h-10 bg-brand-red rounded-xl flex items-center justify-center text-white shadow-md flex-shrink-0 overflow-hidden">
+        <img src="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png" loading="lazy" onerror="this.src='https://placehold.co/40x40/E53935/ffffff?text=M'" alt="Logo" class="w-full h-full object-cover">
+    </div>
+    <!-- Tipografía aplicada de forma manual -->
     <div class="leading-none">
-        <!-- MERCATODON en Fredoka Bold -->
-        <span class="text-sm sm:text-lg font-bold font-fredoka text-brand-red tracking-tight block">MERCATODON</span>
-        <!-- Puestos en Acción en Fredoka Normal -->
-        <span class="text-[8px] text-gray-500 font-normal font-fredoka tracking-wider uppercase block mt-0.5">Puestos en Acción</span>
+        <span class="text-base sm:text-xl font-bold text-brand-red tracking-tight block" style="font-family: 'Fredoka', sans-serif; font-weight: 700;">MERCATODON</span>
+        <span class="text-[9px] text-gray-500 tracking-wider uppercase block mt-0.5" style="font-family: 'Fredoka', sans-serif; font-weight: 400;">Puestos en Acción</span>
     </div>
 </div>
 
