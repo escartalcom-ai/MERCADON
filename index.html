@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MERCATODON - Puestos en Acción</title>
     <!-- Favicon e Iconos (PNG) -->
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/favicon.png" 
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/favicon.png">
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Plus Jakarta Sans y Fredoka -->
-   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Fredoka:wght@400;700&display=swap" rel="stylesheet"> 
-    <!-- Google Fonts: Fredoka -->
-   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Fredoka:wght@400;700&display=swap" rel="stylesheet"> 
     <!-- Firebase SDK (Compat v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -24,24 +22,24 @@
 
     <script>
         tailwind.config = {
-    theme: {
-        extend: {
-            colors: {
-                brand: {
-                    red: '#E53935',
-                    darkRed: '#C62828',
-                    orange: '#FF6F00',
-                    gold: '#FFD700',
-                    whatsapp: '#25D366'
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#E53935',
+                            darkRed: '#C62828',
+                            orange: '#FF6F00',
+                            gold: '#FFD700',
+                            whatsapp: '#25D366'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        fredoka: ['Fredoka', 'sans-serif']
+                    }
                 }
-            },
-            fontFamily: {
-                sans: ['Plus Jakarta Sans', 'Segoe UI', 'Roboto', 'sans-serif'],
-                fredoka: ['Fredoka', 'sans-serif'] // <--- Añadido aquí
             }
         }
-    }
-}
     </script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -73,11 +71,24 @@
         .star-rating:hover { transform: scale(1.25); }
         .card-puesto { border: 2px solid #FFD700 !important; box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2); }
         #toast { transition: opacity 0.3s ease, transform 0.3s ease; z-index: 99999; }
+        input[type="date"] {
+            border-radius: 0.75rem;
+            border: 1px solid #d1d5db;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            background-color: #fff;
+            outline: none;
+            transition: ring 0.2s;
+        }
+        input[type="date"]:focus {
+            ring: 2px;
+            border-color: #E53935;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between select-none m-0 p-0 overflow-x-hidden">
 
-    <!-- TOAST NOTIFICATION (Al frente de todo) -->
+    <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[99999] bg-gray-900 text-white text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none flex items-center gap-2 border border-gray-700">
         <i class="fa-solid fa-circle-check text-brand-orange"></i>
         <span id="toastMsg">Mensaje del sistema</span>
@@ -95,11 +106,10 @@
         </div>
     </div>
 
-  <!-- HEADER -->
+    <!-- HEADER -->
     <header id="headerPrincipal" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
             
-            <!-- Logo y Texto envueltos en un solo contenedor interactivo alineado a la izquierda -->
             <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
                 <div class="w-10 h-10 bg-brand-red rounded-xl flex items-center justify-center text-white shadow-md flex-shrink-0 overflow-hidden">
                     <img src="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png" loading="lazy" onerror="this.src='https://placehold.co/40x40/E53935/ffffff?text=M'" alt="Logo" class="w-full h-full object-cover">
@@ -110,7 +120,6 @@
                 </div>
             </div>
 
-            <!-- Botones de la derecha: Ubicación + Favoritos + Puestos + Usuario -->
             <div class="flex items-center gap-1.5 sm:gap-2">
                 <button onclick="abrirModalUbicacion()" class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200">
                     <i class="fa-solid fa-location-dot text-brand-red text-sm"></i>
@@ -350,7 +359,6 @@
                 </div>
             </div>
 
-            <!-- Filtros y buscador inteligente en Panel CEO -->
             <div class="space-y-2 bg-gray-50 p-3 rounded-xl border">
                 <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
                     <div class="flex gap-2 w-full sm:w-auto">
@@ -373,9 +381,9 @@
                         <option value="personalizado">Rango Personalizado</option>
                     </select>
                     <div id="rangoPersonalizadoCeoContainer" class="hidden flex gap-1 items-center">
-                        <input type="date" id="ceoFechaInicio" onchange="renderCeoTable()" class="border rounded p-1 text-[11px]">
+                        <input type="date" id="ceoFechaInicio" onchange="renderCeoTable()">
                         <span>a</span>
-                        <input type="date" id="ceoFechaFin" onchange="renderCeoTable()" class="border rounded p-1 text-[11px]">
+                        <input type="date" id="ceoFechaFin" onchange="renderCeoTable()">
                     </div>
                 </div>
             </div>
@@ -979,7 +987,7 @@
                         if (timeoutPausasSliders[secCode]) clearTimeout(timeoutPausasSliders[secCode]);
                         timeoutPausasSliders[secCode] = setTimeout(() => {
                             iniciarIntervaloSeccion();
-                        }, 300000);
+                        }, 300000); // 5 minutos de inactividad antes de reanudar
                     };
 
                     cont.addEventListener('click', pausarSeccionHandler);
@@ -995,7 +1003,7 @@
                     if (timeoutPausasSliders['main']) clearTimeout(timeoutPausasSliders['main']);
                     timeoutPausasSliders['main'] = setTimeout(() => {
                         iniciarSlider(mainSegundosGlobal);
-                    }, 300000);
+                    }, 300000); // 5 minutos de inactividad
                 };
                 sliderContainerEl.addEventListener('click', pausarSliderHandler);
                 sliderContainerEl.addEventListener('touchstart', pausarSliderHandler, { passive: true });
@@ -1202,9 +1210,16 @@
                     );
                 }
 
-                const botonMercarHtml = (usuarioActual && usuarioActual.rol === 'mercador' && yaCalificoUsuario) 
-                    ? `<span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Ya Mercado</span>`
-                    : `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
+                let botonMercarHtml = '';
+                if (!usuarioActual || usuarioActual.rol !== 'mercadero') {
+                    if (usuarioActual && usuarioActual.rol === 'mercador' && yaCalificoUsuario) {
+                        botonMercarHtml = `<span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Ya Mercado</span>`;
+                    } else {
+                        botonMercarHtml = `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
+                    }
+                } else {
+                    botonMercarHtml = `<span class="text-[9px] font-bold text-gray-400 italic">Dueño de Puesto</span>`;
+                }
 
                 grid.innerHTML += `
                     <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
@@ -1275,7 +1290,6 @@
             }
         }
 
-        // Ajuste 1: En la sección "Mis Puestos Favoritos", si ya lo califiqué, ya no aparece el botón "Mercar"
         function verFavoritosModal() {
             if (!usuarioActual) { abrirAuthModal(); return; }
             const misFavsIds = favoritosBD.filter(f => 
@@ -1324,9 +1338,16 @@
                         );
                     }
 
-                    const botonMercarHtml = (usuarioActual && usuarioActual.rol === 'mercador' && yaCalificoUsuario) 
-                        ? `<span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Ya Mercado</span>`
-                        : `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
+                    let botonMercarHtml = '';
+                    if (!usuarioActual || usuarioActual.rol !== 'mercadero') {
+                        if (usuarioActual && usuarioActual.rol === 'mercador' && yaCalificoUsuario) {
+                            botonMercarHtml = `<span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Ya Mercado</span>`;
+                        } else {
+                            botonMercarHtml = `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
+                        }
+                    } else {
+                        botonMercarHtml = `<span class="text-[9px] font-bold text-gray-400 italic">Dueño de Puesto</span>`;
+                    }
 
                     cont.innerHTML += `
                         <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
@@ -1413,10 +1434,40 @@
             const nombreUsuario = usuarioActual.Nombre_Completo || usuarioActual.nombre;
             const userUid = usuarioActual.uid || "";
 
-            const yaVoto = calificacionesBD.some(c => String(c.Puesto_ID || c.puestoId) === String(puestoSeleccionadoId) && (String(c.Usuario_Nombre || c.usuario) === String(nombreUsuario) || (userUid && String(c.Usuario_UID) === String(userUid))));
-            if (yaVoto) {
+            // Verificar si ya existe calificación previa de este usuario para actualizarla o agregarla sincronizadamente
+            const indiceExistente = calificacionesBD.findIndex(c => 
+                String(c.Puesto_ID || c.puestoId) === String(puestoSeleccionadoId) && 
+                ((c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(nombreUsuario).toLowerCase()) ||
+                 (userUid && String(c.Usuario_UID) === String(userUid)) ||
+                 (c.Usuario_Correo && usuarioActual.Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase()))
+            );
+
+            if (indiceExistente >= 0) {
+                // Actualización síncrona
+                calificacionesBD[indiceExistente].Estrellas = calificacionTemp;
+                calificacionesBD[indiceExistente].Comentario = comentario;
+                calificacionesBD[indiceExistente].Fecha_Hora = new Date().toLocaleString('es-PE', { hour12: false });
+                
+                const calReg = calificacionesBD[indiceExistente];
+                await enviarASheets('calificaciones', [
+                    calReg.ID_Calificacion || calReg.id, 
+                    calReg.Puesto_ID || calReg.puestoId, 
+                    calReg.Usuario_Nombre || nombreUsuario, 
+                    calReg.Estrellas, 
+                    calReg.Comentario, 
+                    calReg.Fecha_Hora, 
+                    calReg.Usuario_UID || userUid
+                ], "update", 0, calReg.ID_Calificacion || calReg.id);
+
+                renderPuestos();
+                if(usuarioActual && usuarioActual.rol === 'mercador') {
+                    renderDashMercador();
+                }
+                if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
+                    verFavoritosModal();
+                }
                 cerrarModal('modalMercar');
-                mostrarToast("⚠️ Ya has calificado este puesto anteriormente.");
+                mostrarToast(`¡Calificación actualizada con ${calificacionTemp} estrellas!`);
                 return;
             }
 
@@ -1428,7 +1479,8 @@
                     Estrellas: calificacionTemp,
                     Comentario: comentario,
                     Fecha_Hora: new Date().toLocaleString('es-PE', { hour12: false }),
-                    Usuario_UID: userUid
+                    Usuario_UID: userUid,
+                    Usuario_Correo: usuarioActual.Correo || ''
                 };
                 calificacionesBD.unshift(nuevaCalificacion);
                 
@@ -1443,6 +1495,9 @@
                 ]);
 
                 renderPuestos();
+                if(usuarioActual && usuarioActual.rol === 'mercador') {
+                    renderDashMercador();
+                }
                 if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
                     verFavoritosModal();
                 }
@@ -1613,6 +1668,7 @@
                 localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
                 cerrarModal('modalAuth');
                 actualizarHeaderUsuario();
+                renderPuestos(); // Actualizar interfaz de puestos (ocultar botones mercar si es mercadero)
                 if(usuarioActual.rol === 'ceo') {
                     verCeoPanel();
                 } else {
@@ -1803,6 +1859,7 @@
                 localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
                 cerrarModal('modalFormAuth');
                 actualizarHeaderUsuario();
+                renderPuestos();
                 verDashboard();
                 mostrarToast("¡Registro creado y sincronizado exitosamente!");
 
@@ -1825,18 +1882,18 @@
             usuarioActual = null;
             localStorage.removeItem('mercatodon_usuario');
             actualizarHeaderUsuario();
+            renderPuestos();
             verInicio();
             mostrarToast("Sesión cerrada correctamente");
         }
 
-        // Ajuste 2 & Ajuste 3: Panel de Mercadero con visualización de calificaciones, estrellas, comentarios y bloques promocionales inferiores
         function renderDashMercadero() {
             const puesto = puestosBD.find(p => (p.Correo_Acceso || p.correo) === usuarioActual.Correo || String(p.ID || p.id) === String(usuarioActual.puestoId)) || puestosBD[0];
             if (!puesto) return;
             const puestoId = puesto.ID || puesto.id;
             
             let calificacionesPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(puestoId));
-            calificacionesPuesto.sort((a, b) => new Date(a.Fecha_Hora || a.fecha || 0) - new Date(b.Fecha_Hora || b.fecha || 0));
+            calificacionesPuesto.sort((a, b) => new Date(b.Fecha_Hora || b.fecha || 0) - new Date(a.Fecha_Hora || a.fecha || 0));
 
             const rubrosOpciones = ["Alimentos", "Bebidas", "Carnes", "Pescados", "Frutas", "Regionales", "Gastronomía", "Panadería", "Lácteos", "Salud", "Belleza", "Moda", "Tecnología", "Hogar", "Ferretería", "Limpieza", "Mascotas", "Librería", "Servicios", "Otros"];
             const rubroActual = puesto.Rubro || puesto.rubro || "Alimentos";
@@ -1864,7 +1921,6 @@
                         </div>
                     </div>
 
-                    <!-- Ajuste 2: Bloque detallado de calificaciones recibidas, estrellas y comentarios en el panel del Mercadero -->
                     <div class="space-y-2 pt-2 border-t">
                         <h4 class="text-xs font-bold text-gray-800 uppercase">Calificaciones Recibidas (${calificacionesPuesto.length})</h4>
                         <div class="space-y-2 max-h-64 overflow-y-auto">
@@ -1904,7 +1960,6 @@
                         <button onclick="guardarEdicionMercadero('${puestoId}')" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2 rounded-lg text-xs shadow transition">Actualizar Datos y GPS</button>
                     </div>
 
-                    <!-- Ajuste 3: Bloques Promocionales y Banner Oficial en la parte inferior del Panel Mercadero -->
                     <div class="pt-3 border-t border-gray-200 space-y-2">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                             <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
@@ -2002,7 +2057,6 @@
             }
         }
 
-        // Ajuste 3: Panel de Mercador con bloques promocionales inferiores incluidos
         function renderDashMercador() {
             const misCals = calificacionesBD.filter(c => 
                 (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
@@ -2010,7 +2064,7 @@
                 (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
             );
 
-            misCals.sort((a, b) => new Date(a.Fecha_Hora || a.fecha || 0) - new Date(b.Fecha_Hora || b.fecha || 0));
+            misCals.sort((a, b) => new Date(b.Fecha_Hora || b.fecha || 0) - new Date(a.Fecha_Hora || a.fecha || 0));
 
             const queryMercador = document.getElementById('buscadorMisCalificaciones')?.value.toLowerCase() || '';
             let filtradasCals = misCals;
@@ -2067,7 +2121,6 @@
                         </div>
                     </div>
 
-                    <!-- Ajuste 3: Bloques Promocionales y Banner Oficial en la parte inferior del Panel Mercador -->
                     <div class="pt-3 border-t border-gray-200 space-y-2">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                             <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
@@ -2422,7 +2475,7 @@
                 deferredPromptPWA.prompt();
                 deferredPromptPWA.userChoice.then(() => { deferredPromptPWA = null; document.getElementById('bannerInstalacionPWA').classList.add('hidden'); });
             } else {
-                mostrarToast("En tu navegador: Pulsa Menú (...) y selecciona 'Instalar App'.");
+                mostrarToast("Para instalar en tu dispositivo: Haz clic en el menú de tu navegador (...) y selecciona 'Instalar aplicación' o 'Agregar a la pantalla principal'.");
             }
         }
 
