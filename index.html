@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MERCATODON - Puestos en Acción</title>
-    <!-- Favicon e Iconos -->
+    <!-- Favicon e Iconos (PNG) -->
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/favicon.png" fallback="https://placehold.co/32x32/E53935/ffffff?text=M">
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/logo.png">
     <!-- Tailwind CSS CDN -->
@@ -69,13 +69,13 @@
         .star-rating { cursor: pointer; transition: color 0.15s ease, transform 0.15s ease; }
         .star-rating:hover { transform: scale(1.25); }
         .card-puesto { border: 2px solid #FFD700 !important; box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2); }
-        #toast { transition: opacity 0.3s ease, transform 0.3s ease; }
+        #toast { transition: opacity 0.3s ease, transform 0.3s ease; z-index: 99999; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between select-none m-0 p-0 overflow-x-hidden">
 
-    <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none flex items-center gap-2 border border-gray-700">
+    <!-- TOAST NOTIFICATION (Al frente de todo) -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[99999] bg-gray-900 text-white text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none flex items-center gap-2 border border-gray-700">
         <i class="fa-solid fa-circle-check text-brand-orange"></i>
         <span id="toastMsg">Mensaje del sistema</span>
     </div>
@@ -317,7 +317,7 @@
             <div id="dashMercador" class="hidden space-y-3"></div>
         </section>
 
-        <!-- SECCIÓN 4: PANEL CEO (Actualizado a Panel del CEO según Ajuste 8) -->
+        <!-- SECCIÓN 4: PANEL CEO -->
         <section id="secCeo" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3 bg-white p-4 rounded-2xl border-2 border-red-500 shadow-xl">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 id="tituloPanelCeoHeader" class="text-base font-black text-brand-red flex items-center gap-2"><i class="fa-solid fa-user-shield"></i> Panel del CEO</h2>
@@ -343,7 +343,7 @@
                 </div>
             </div>
 
-            <!-- Ajuste 5: Filtros y buscador inteligente en Panel CEO -->
+            <!-- Filtros y buscador inteligente en Panel CEO -->
             <div class="space-y-2 bg-gray-50 p-3 rounded-xl border">
                 <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
                     <div class="flex gap-2 w-full sm:w-auto">
@@ -412,7 +412,7 @@
 
     <!-- MODALES -->
 
-    <!-- MODAL UBICACIÓN (Ajuste 10) -->
+    <!-- MODAL UBICACIÓN (Ajuste 1: Todas las provincias) -->
     <div id="modalUbicacion" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalUbicacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -498,17 +498,11 @@
         </div>
     </div>
 
-    <!-- MODAL REGISTRO (Ajuste 9 & 11) -->
+    <!-- MODAL REGISTRO (Sin advertencia estática - Ajuste 3) -->
     <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto no-scrollbar">
             <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 id="formAuthTitulo" class="font-bold text-base text-gray-900 border-b pb-2">Registro de Usuario</h3>
-            
-            <!-- Aviso UX / Duplicidad (Ajuste 9) -->
-            <div class="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[11px] flex items-start gap-2">
-                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm flex-shrink-0 mt-0.5"></i>
-                <span><strong>Advertencia:</strong> Verifique que su correo y número de WhatsApp no estén duplicados. Si ya cuenta con un registro previo con el mismo correo, inicie sesión directamente o utilice la opción de recuperación de contraseña.</span>
-            </div>
 
             <form id="formAuth" onsubmit="procesarAuth(event)" class="space-y-2.5">
                 <input type="hidden" id="authRol">
@@ -580,7 +574,6 @@
                             <input type="date" id="regCumpleanos" class="w-full border rounded-xl p-2 text-xs outline-none">
                         </div>
                     </div>
-                    <!-- Ajuste 11: Residencia opcional (Columna J en Google Sheets) -->
                     <div id="campoResidenciaMercador">
                         <label class="text-xs font-semibold text-gray-700">Lugar de Residencia (Opcional)</label>
                         <input type="text" id="regResidencia" placeholder="Ej: Piura / Paita / Castilla" class="w-full border rounded-xl p-2 text-xs outline-none">
@@ -655,7 +648,7 @@
         </div>
     </div>
 
-    <!-- MODAL FAVORITOS (Ajuste 2: Barra de búsqueda dentro de favoritos) -->
+    <!-- MODAL FAVORITOS -->
     <div id="modalFavoritos" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-5 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
             <button onclick="cerrarModal('modalFavoritos')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -695,8 +688,10 @@
             firebase.initializeApp(firebaseConfig);
         }
 
+        // Ajuste 1: Se añade "Todas las provincias" dentro de la Región Piura
         const ubigeoPiura = {
             "Piura": {
+                "Todas las provincias": ["Todos los distritos"],
                 "Paita": ["Todos los distritos", "Paita", "Amotape", "Arenal", "Colán", "La Huaca", "Tamarindo", "Vichayal"],
                 "Piura": ["Todos los distritos", "Piura", "Castilla", "Catacaos", "Cura Mori", "El Tallán", "La Arena", "La Unión", "Las Lomas", "Tambo Grande", "Veintiséis de Octubre"],
                 "Sullana": ["Todos los distritos", "Sullana", "Ignacio Escudero", "Bellavista", "Marcavelica", "Salitral", "Querecotillo", "Lancones", "Miguel Checa"],
@@ -739,7 +734,7 @@
         let favoritosBD = [];
 
         let usuarioActual = JSON.parse(localStorage.getItem('mercatodon_usuario')) || null;
-        let ubicacionActual = JSON.parse(localStorage.getItem('mercatodon_ubicacion')) || { region: "Piura", provincia: "Paita", distrito: "Todos los distritos" };
+        let ubicacionActual = JSON.parse(localStorage.getItem('mercatodon_ubicacion')) || { region: "Piura", provincia: "Todas las provincias", distrito: "Todos los distritos" };
         let rubroSeleccionado = "Todos";
         let puestoSeleccionadoId = null;
         let calificacionTemp = 0;
@@ -771,6 +766,7 @@
             registrarServiceWorkerNativo();
             configurarSwipeTactil();
             configurarInstalacionPWA();
+            actualizarHeaderUsuario();
             
             firebase.auth().onAuthStateChanged(user => {
                 if (user) {
@@ -779,10 +775,13 @@
                             Correo: user.email,
                             Nombre_Completo: user.displayName || user.email.split('@')[0],
                             uid: user.uid,
-                            rol: 'mercador'
+                            rol: (user.email.toLowerCase() === "mercatodon@gmail.com") ? "ceo" : "mercador"
                         };
                     } else {
                         usuarioActual.uid = user.uid;
+                        if (user.email.toLowerCase() === "mercatodon@gmail.com") {
+                            usuarioActual.rol = "ceo";
+                        }
                     }
                     localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
                     actualizarHeaderUsuario();
@@ -1055,8 +1054,13 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Ajuste 2: Al hacer clic en usuario/dashboard, si es CEO se mantiene en el Panel del CEO
         function verDashboard() {
             if (!usuarioActual) { abrirAuthModal(); return; }
+            if (usuarioActual.rol === 'ceo') {
+                verCeoPanel();
+                return;
+            }
             document.getElementById('secInicio').classList.add('hidden');
             document.getElementById('secPuestos').classList.add('hidden');
             document.getElementById('secDashboard').classList.remove('hidden');
@@ -1081,12 +1085,10 @@
             renderCeoTable();
         }
 
-        // Ajuste 6: Ordenamiento inteligente de rubros según demanda y porcentaje de calificación
         function renderRubros() {
             const cont = document.getElementById('contenedorRubros');
             if (!cont) return;
 
-            // Calcular puntaje de demanda por rubro basado en calificaciones
             let puntajeRubros = {};
             rubrosConfig.forEach(r => {
                 if(r.nombre === "Todos") return;
@@ -1130,7 +1132,7 @@
             });
         }
 
-        // Ajuste 10: Filtrar puestos por la ubicación exacta seleccionada (Provincia y Distrito)
+        // Ajuste 1: Filtrado adaptado para "Todas las provincias"
         function renderPuestos(lista = puestosBD) {
             const grid = document.getElementById('gridPuestos');
             if (!grid) return;
@@ -1145,7 +1147,7 @@
                 const selProv = String(ubicacionActual.provincia || "").trim().toLowerCase();
                 const selDis = String(ubicacionActual.distrito || "").trim().toLowerCase();
 
-                const matchProvincia = (!selProv || provPuesto === selProv);
+                const matchProvincia = (!selProv || selProv.includes("todas") || provPuesto === selProv);
                 const matchDistrito = (!selDis || selDis.includes("todos") || disPuesto === selDis);
 
                 return matchRubro && matchProvincia && matchDistrito;
@@ -1158,7 +1160,7 @@
             });
 
             if (filtrados.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-8 text-gray-400 text-xs">No hay puestos registrados en ${ubicacionActual.distrito}, ${ubicacionActual.provincia} para este rubro.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-gray-400 text-xs">No hay puestos registrados en esta ubicación (${ubicacionActual.provincia}) para este rubro.</div>`;
                 return;
             }
 
@@ -1187,7 +1189,6 @@
                 const corazonColor = esFav ? 'text-red-500' : 'text-gray-300';
                 const textoCals = totalCals === 1 ? 'merca' : 'mercas';
 
-                // Ajuste 1: Si el usuario es Mercador y ya calificó, ocultar botón Mercar
                 let yaCalificoUsuario = false;
                 if (usuarioActual && usuarioActual.rol === 'mercador') {
                     yaCalificoUsuario = calsPuesto.some(c => 
@@ -1270,7 +1271,6 @@
             }
         }
 
-        // Ajuste 2: Barra de búsqueda dentro de "Mis Puestos Favoritos"
         function verFavoritosModal() {
             if (!usuarioActual) { abrirAuthModal(); return; }
             const misFavsIds = favoritosBD.filter(f => 
@@ -1398,7 +1398,7 @@
             const yaVoto = calificacionesBD.some(c => String(c.Puesto_ID || c.puestoId) === String(puestoSeleccionadoId) && (String(c.Usuario_Nombre || c.usuario) === String(nombreUsuario) || (userUid && String(c.Usuario_UID) === String(userUid))));
             if (yaVoto) {
                 cerrarModal('modalMercar');
-                mostrarToast("⚠️ Ya has calificado este puesto anteriormente. Puedes editarlo desde tu panel.");
+                mostrarToast("⚠️ Ya has calificado este puesto anteriormente.");
                 return;
             }
 
@@ -1430,6 +1430,7 @@
             }
         }
 
+        // Ajuste 1: Inicialización con "Todas las provincias"
         function inicializarUbicacionUI() {
             const selProv = document.getElementById('selProvincia');
             if (!selProv) return;
@@ -1437,7 +1438,7 @@
             Object.keys(ubigeoPiura["Piura"]).forEach(prov => {
                 selProv.innerHTML += `<option value="${prov}">${prov}</option>`;
             });
-            selProv.value = ubicacionActual.provincia || "Paita";
+            selProv.value = ubicacionActual.provincia || "Todas las provincias";
             cargarDistritos();
             document.getElementById('labelUbicacionActual').innerText = `Piura, ${ubicacionActual.provincia}, ${ubicacionActual.distrito || 'Todos los distritos'}`;
         }
@@ -1457,7 +1458,9 @@
             if (!selProvReg) return;
             selProvReg.innerHTML = '';
             Object.keys(ubigeoPiura["Piura"]).forEach(prov => {
-                selProvReg.innerHTML += `<option value="${prov}">${prov}</option>`;
+                if(prov !== "Todas las provincias") {
+                    selProvReg.innerHTML += `<option value="${prov}">${prov}</option>`;
+                }
             });
             selProvReg.value = "Paita";
             cargarDistritosRegistro();
@@ -1500,12 +1503,21 @@
             document.getElementById('labelUbicacionActual').innerText = `Piura, ${ubicacionActual.provincia}, ${ubicacionActual.distrito}`;
             cerrarModal('modalUbicacion');
             renderPuestos();
-            mostrarToast("Ubicación y filtro de puestos actualizado en Piura");
+            mostrarToast("Ubicación y filtro de puestos actualizado");
         }
 
         function abrirModalUbicacion() { document.getElementById('modalUbicacion').classList.remove('hidden'); }
+        
+        // Ajuste 2: Verificar si es CEO al hacer clic en el botón de usuario
         function abrirAuthModal() {
-            if (usuarioActual) { verDashboard(); return; }
+            if (usuarioActual) {
+                if (usuarioActual.rol === 'ceo') {
+                    verCeoPanel();
+                } else {
+                    verDashboard();
+                }
+                return;
+            }
             document.getElementById('modalAuth').classList.remove('hidden');
         }
 
@@ -1517,7 +1529,6 @@
             const errorTexto = document.getElementById('msgAuthErrorTexto');
             errorContainer.classList.add('hidden');
 
-            // Ajuste 8: El CEO accede con esta credencial y se le asigna el "Panel CEO" / Interfaz completa
             if (email.toLowerCase() === "mercatodon@gmail.com" && pass === "20701") {
                 usuarioActual = {
                     Nombre_Completo: "CEO de MERCATODON",
@@ -1527,6 +1538,7 @@
                 };
                 localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
                 cerrarModal('modalAuth');
+                actualizarHeaderUsuario();
                 verCeoPanel();
                 mostrarToast("Acceso concedido al Panel del CEO.");
                 return;
@@ -1539,7 +1551,14 @@
                 let puestoEncontrado = puestosBD.find(p => (p.Correo_Acceso || p.correo) === email || (p.UID && p.UID === uid));
                 let usuarioEncontrado = usuariosBD.find(u => (u.Correo || u.correo) === email || (u.UID && u.UID === uid));
 
-                if (puestoEncontrado) {
+                if (email.toLowerCase() === "mercatodon@gmail.com") {
+                    usuarioActual = {
+                        Nombre_Completo: "CEO de MERCATODON",
+                        Correo: email,
+                        rol: "ceo",
+                        uid: uid
+                    };
+                } else if (puestoEncontrado) {
                     usuarioActual = {
                         Nombre_Completo: puestoEncontrado.Duenio_Nombre || puestoEncontrado.duenio,
                         Correo: puestoEncontrado.Correo_Acceso || puestoEncontrado.correo,
@@ -1575,7 +1594,11 @@
                 localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
                 cerrarModal('modalAuth');
                 actualizarHeaderUsuario();
-                verDashboard();
+                if(usuarioActual.rol === 'ceo') {
+                    verCeoPanel();
+                } else {
+                    verDashboard();
+                }
                 mostrarToast("Sesión iniciada correctamente.");
 
             } catch (error) {
@@ -1627,9 +1650,10 @@
             document.getElementById('modalFormAuth').classList.remove('hidden');
         }
 
+        // Ajuste 4: Prevención estricta de duplicados en registros
         async function procesarAuth(e) {
             e.preventDefault();
-            const email = document.getElementById('regCorreo').value.trim();
+            const email = document.getElementById('regCorreo').value.trim().toLowerCase();
             const pass = document.getElementById('regPass').value.trim();
             const rol = document.getElementById('authRol').value;
             const nombreUsuario = document.getElementById('regNombreCompleto').value.trim();
@@ -1638,6 +1662,21 @@
             const wspMercador = document.getElementById('regWhatsappMercador') ? document.getElementById('regWhatsappMercador').value.trim() : "";
             const wspFinal = rol === 'mercadero' ? wspPuesto : (wspMercador || "930528649");
             const residencia = document.getElementById('regResidencia') ? document.getElementById('regResidencia').value.trim() : "";
+
+            // Validación anticipada de duplicados (Ajuste 4)
+            const correoDuplicadoPuesto = puestosBD.some(p => String(p.Correo_Acceso || p.correo || '').toLowerCase() === email);
+            const wspDuplicadoPuesto = puestosBD.some(p => String(p.WhatsApp || p.whatsapp || '').trim() === wspFinal);
+            const correoDuplicadoUsuario = usuariosBD.some(u => String(u.Correo || u.correo || '').toLowerCase() === email);
+            const wspDuplicadoUsuario = usuariosBD.some(u => String(u.WhatsApp || u.whatsapp || '').trim() === wspFinal);
+
+            if (correoDuplicadoPuesto || correoDuplicadoUsuario) {
+                mostrarToast("⚠️ El correo electrónico ya está registrado. Inicie sesión.");
+                return;
+            }
+            if (wspDuplicadoPuesto || wspDuplicadoUsuario) {
+                mostrarToast("⚠️ El número de WhatsApp ya se encuentra registrado.");
+                return;
+            }
 
             try {
                 const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
@@ -1715,7 +1754,7 @@
                         Fecha_Registro: fechaReg,
                         Estado: "Activo",
                         UID: uid,
-                        Residencia: residencia // Ajuste 11: Columna J en Google Sheets
+                        Residencia: residencia
                     };
                     usuariosBD.push(nuevoUsuario);
 
@@ -1729,7 +1768,7 @@
                         nuevoUsuario.Fecha_Registro, 
                         nuevoUsuario.Estado,
                         nuevoUsuario.UID,
-                        nuevoUsuario.Residencia // Columna J
+                        nuevoUsuario.Residencia
                     ]);
 
                     usuarioActual = {
@@ -1773,15 +1812,12 @@
             mostrarToast("Sesión cerrada correctamente");
         }
 
-        // Ajuste 4: Panel Mercadero (Hora en 24h, edición GPS, calificaciones ordenadas ascendente, buscador y filtros)
         function renderDashMercadero() {
             const puesto = puestosBD.find(p => (p.Correo_Acceso || p.correo) === usuarioActual.Correo || String(p.ID || p.id) === String(usuarioActual.puestoId)) || puestosBD[0];
             if (!puesto) return;
             const puestoId = puesto.ID || puesto.id;
             
             let calificacionesPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(puestoId));
-            
-            // Ordenar calificaciones del más antiguo (inferior) al más reciente (superior) -> Orden cronológico ascendente (o invertido si se prefiere, el usuario pidió: "Enumera el orden de las calificaciones desde el más antiguo (inferior) al más reciente (superior)")
             calificacionesPuesto.sort((a, b) => new Date(a.Fecha_Hora || a.fecha || 0) - new Date(b.Fecha_Hora || b.fecha || 0));
 
             const rubrosOpciones = ["Alimentos", "Bebidas", "Carnes", "Pescados", "Frutas", "Regionales", "Gastronomía", "Panadería", "Lácteos", "Salud", "Belleza", "Moda", "Tecnología", "Hogar", "Ferretería", "Limpieza", "Mascotas", "Librería", "Servicios", "Otros"];
@@ -1828,26 +1864,6 @@
                             <div class="col-span-full"><label class="font-semibold text-gray-600">Catálogo o Facebook</label><input type="url" id="editWebPuesto" value="${puesto.Web_Catalogo || puesto.web || ''}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
                         </div>
                         <button onclick="guardarEdicionMercadero('${puestoId}')" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2 rounded-lg text-xs shadow transition">Actualizar Datos y GPS</button>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
-                            <h4 class="text-xs font-bold text-gray-800 uppercase">Calificaciones Recibidas</h4>
-                            <div class="w-full sm:w-48">
-                                <input type="text" id="buscadorMercaderoCals" onkeyup="renderDashMercadero()" placeholder="Buscar en calificaciones..." class="w-full border rounded-lg p-1.5 text-xs bg-gray-50 outline-none">
-                            </div>
-                        </div>
-                        <div class="space-y-2 max-h-60 overflow-y-auto" id="listaCalsMercaderoContainer">
-                            ${calificacionesPuesto.map((c, idx) => `
-                                <div class="bg-amber-50/50 border border-amber-200 p-2.5 rounded-xl text-xs space-y-1">
-                                    <div class="flex justify-between font-bold text-gray-900">
-                                        <span><i class="fa-solid fa-user text-brand-orange"></i> #${idx + 1} - ${c.Usuario_Nombre || c.usuario}</span>
-                                        <span class="text-amber-500">${'★'.repeat(c.Estrellas || c.estrellas || 5)}</span>
-                                    </div>
-                                    <p class="text-gray-600">"${c.Comentario || c.comentario}"</p>
-                                    <span class="text-[9px] text-gray-400 block text-right">${c.Fecha_Hora || c.fecha}</span>
-                                </div>
-                            `).join('') || '<p class="text-xs text-gray-400 py-2">Aún no hay calificaciones registradas.</p>'}
-                        </div>
                     </div>
                 </div>
             `;
@@ -1897,7 +1913,6 @@
             }
         }
 
-        // Ajuste 3: Panel del Mercador(a) con "Puestos Calificados", historial enumerado del más antiguo al más reciente, fecha, hora, opción de editar estrellas y mensaje, buscador y filtros
         function renderDashMercador() {
             const misCals = calificacionesBD.filter(c => 
                 (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
@@ -1905,7 +1920,6 @@
                 (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
             );
 
-            // Ordenar del más antiguo (inferior) al más reciente (superior) cronológicamente ascendente
             misCals.sort((a, b) => new Date(a.Fecha_Hora || a.fecha || 0) - new Date(b.Fecha_Hora || b.fecha || 0));
 
             const queryMercador = document.getElementById('buscadorMisCalificaciones')?.value.toLowerCase() || '';
@@ -1934,7 +1948,6 @@
                         <p><strong>Residencia:</strong> ${usuarioActual.residencia || 'No especificada'}</p>
                     </div>
 
-                    <!-- Ajuste 3: Puestos Calificados con historial enumerado, fecha, hora, edición y búsqueda inteligente -->
                     <div class="space-y-2 pt-2 border-t">
                         <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
                             <h4 class="text-xs font-bold text-gray-800 uppercase">Puestos Calificados (${misCals.length})</h4>
@@ -1999,7 +2012,6 @@
             renderCeoTable();
         }
 
-        // Ajuste 5: Panel CEO con detalles completos, fecha/hora de registro, calificaciones, barra de búsqueda inteligente y filtros por periodo (día, semana, mes, año, historial o rango personalizado)
         function renderCeoTable() {
             document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
             document.getElementById('ceoCantUsuarios').innerText = usuariosBD.length;
