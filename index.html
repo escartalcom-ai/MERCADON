@@ -18,7 +18,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     
     <!-- Manifest PWA -->
-    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"MERCATODON","short_name":"MERCATODON","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#E53935","icons":[{"src":"https://placehold.co/192x192/E53935/ffffff?text=M","sizes":"192x192","type":"image/png"}]}'>
+    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"MERCATODON","short_name":"MERCATODON","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#E53935","icons":[{"src":"https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/logo.png","sizes":"192x192","type":"image/png"}]}'>
 
     <script>
         tailwind.config = {
@@ -43,6 +43,30 @@
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Barra deslizable visible en PC para los banners (Ajuste 2) */
+        @media (min-width: 768px) {
+            .banner-scroll-container::-webkit-scrollbar {
+                height: 6px;
+                display: block;
+            }
+            .banner-scroll-container::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 4px;
+            }
+            .banner-scroll-container::-webkit-scrollbar-thumb {
+                background: #c5c5c5;
+                border-radius: 4px;
+            }
+            .banner-scroll-container::-webkit-scrollbar-thumb:hover {
+                background: #999;
+            }
+            .banner-scroll-container {
+                scrollbar-width: thin;
+                scrollbar-color: #c5c5c5 #f1f1f1;
+            }
+        }
+
         .star-rating { cursor: pointer; transition: color 0.15s ease, transform 0.15s ease; }
         .star-rating:hover { transform: scale(1.25); }
         .card-puesto { border: 2px solid #FFD700 !important; box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2); }
@@ -118,7 +142,7 @@
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones</h3>
                     <div class="relative flex items-center">
                         <button onclick="scrollSeccion('bannerSeccionA', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionA" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <div id="bannerSeccionA" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
                         <button onclick="scrollSeccion('bannerSeccionA', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
@@ -127,7 +151,7 @@
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-crown text-slate-400 text-xs"></i> Patrocinios</h3>
                     <div class="relative flex items-center">
                         <button onclick="scrollSeccion('bannerSeccionB', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionB" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <div id="bannerSeccionB" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
                         <button onclick="scrollSeccion('bannerSeccionB', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
@@ -136,7 +160,7 @@
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-video text-slate-400 text-xs"></i> Spots Comerciales</h3>
                     <div class="relative flex items-center">
                         <button onclick="scrollSeccion('bannerSeccionC', -300)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionC" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <div id="bannerSeccionC" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
                         <button onclick="scrollSeccion('bannerSeccionC', 300)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
@@ -145,7 +169,7 @@
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-truck-fast text-slate-400 text-xs"></i> Servicios y Proveedores</h3>
                     <div class="relative flex items-center">
                         <button onclick="scrollSeccion('bannerSeccionD', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionD" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <div id="bannerSeccionD" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
                         <button onclick="scrollSeccion('bannerSeccionD', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
@@ -154,7 +178,7 @@
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i> Campañas Especiales</h3>
                     <div class="relative flex items-center">
                         <button onclick="scrollSeccion('bannerSeccionE', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionE" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <div id="bannerSeccionE" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
                         <button onclick="scrollSeccion('bannerSeccionE', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
@@ -163,7 +187,7 @@
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-handshake text-slate-400 text-xs"></i> Nuestros Aliados</h3>
                     <div class="relative flex items-center">
                         <button onclick="scrollSeccion('bannerSeccionF', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionF" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <div id="bannerSeccionF" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
                         <button onclick="scrollSeccion('bannerSeccionF', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
@@ -172,7 +196,7 @@
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-bell text-slate-400 text-xs"></i> Novedades</h3>
                     <div class="relative flex items-center">
                         <button onclick="scrollSeccion('bannerSeccionG', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionG" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <div id="bannerSeccionG" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
                         <button onclick="scrollSeccion('bannerSeccionG', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
@@ -229,7 +253,7 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 2: PUESTOS & RUBROS (AJUSTE 1 Y 2) -->
+        <!-- SECCIÓN 2: PUESTOS & RUBROS -->
         <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3 hidden">
             <div class="sticky top-[53px] z-20 bg-gray-50/95 backdrop-blur-md py-1.5 border-b border-gray-200">
                 <div id="contenedorRubros" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
@@ -237,7 +261,7 @@
             
             <div id="gridPuestos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"></div>
             
-            <!-- BLOQUES PROMOCIONALES + BANNER OFICIAL EN PARTE INFERIOR DE PUESTOS (AJUSTE 2) -->
+            <!-- BLOQUES PROMOCIONALES + BANNER OFICIAL EN PARTE INFERIOR DE PUESTOS -->
             <div class="pt-3 border-t border-gray-200 space-y-2">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
@@ -289,7 +313,7 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 3: DASHBOARDS (AJUSTE 1, 4 Y 5) -->
+        <!-- SECCIÓN 3: DASHBOARDS -->
         <section id="secDashboard" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3">
             <div id="dashMercadero" class="hidden space-y-3"></div>
             <div id="dashMercador" class="hidden space-y-3"></div>
@@ -595,7 +619,7 @@
         </div>
     </div>
 
-    <!-- MODAL FAVORITOS (AJUSTE 1: SIN PUBLICIDAD) -->
+    <!-- MODAL FAVORITOS -->
     <div id="modalFavoritos" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-5 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
             <button onclick="cerrarModal('modalFavoritos')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -684,6 +708,20 @@
         let deferredPromptPWA = null;
         let busquedaExpandida = false;
         let intervalosSecciones = {};
+        
+        // Variables globales para pausa y reanudación de banners (Ajuste 2)
+        let intervaloSlider = null;
+        let mainSegundosGlobal = 5;
+        let timeoutPausasSliders = {};
+        const seccionesMapGlobal = {
+            "A": "bannerSeccionA",
+            "B": "bannerSeccionB",
+            "C": "bannerSeccionC",
+            "D": "bannerSeccionD",
+            "E": "bannerSeccionE",
+            "F": "bannerSeccionF",
+            "G": "bannerSeccionG"
+        };
 
         window.onload = function() {
             inicializarUbicacionUI();
@@ -803,19 +841,9 @@
             return null;
         }
 
-        // BANNERS DINÁMICOS ÚNICAMENTE EN PÁGINA DE INICIO (AJUSTE 1)
+        // BANNERS DINÁMICOS CON PAUSA INTELIGENTE (AJUSTE 2)
         function renderBannersDinamicos() {
-            const seccionesMap = {
-                "A": "bannerSeccionA",
-                "B": "bannerSeccionB",
-                "C": "bannerSeccionC",
-                "D": "bannerSeccionD",
-                "E": "bannerSeccionE",
-                "F": "bannerSeccionF",
-                "G": "bannerSeccionG"
-            };
-
-            Object.values(seccionesMap).forEach(id => {
+            Object.values(seccionesMapGlobal).forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.innerHTML = '';
             });
@@ -824,6 +852,8 @@
             if (sliderWrapper) sliderWrapper.innerHTML = '';
 
             Object.keys(intervalosSecciones).forEach(k => clearInterval(intervalosSecciones[k]));
+            if (intervaloSlider) clearInterval(intervaloSlider);
+            Object.values(timeoutPausasSliders).forEach(t => clearTimeout(t));
 
             if (!publicidadBD || publicidadBD.length === 0) return;
 
@@ -839,7 +869,7 @@
 
             let slidesHtml = '';
             let mainCount = 0;
-            let mainSegundos = 5;
+            mainSegundosGlobal = 5;
 
             vigentes.forEach(b => {
                 const secKey = String(b.Seccion || b.seccion || '').trim().toUpperCase();
@@ -850,14 +880,14 @@
 
                 if (secKey === "PRINCIPAL" || secKey === "MAIN") {
                     mainCount++;
-                    mainSegundos = segs;
+                    mainSegundosGlobal = segs;
                     if (embedYoutube) {
                         slidesHtml += `<div class="w-full h-full flex-shrink-0 relative block"><iframe class="w-full h-full rounded-xl" src="${embedYoutube}" frameborder="0" allowfullscreen loading="lazy"></iframe></div>`;
                     } else {
                         slidesHtml += `<a href="${destinoUrl}" target="_blank" class="w-full h-full flex-shrink-0 relative block"><img src="${imgUrl}" loading="lazy" class="w-full h-full object-cover pointer-events-none" alt="${b.Nombre_Cliente || 'Banner'}"></a>`;
                     }
                 } else {
-                    const contenedorId = seccionesMap[secKey];
+                    const contenedorId = seccionesMapGlobal[secKey];
                     let bannerCardHtml = "";
 
                     if (embedYoutube) {
@@ -878,23 +908,57 @@
             if (sliderWrapper && slidesHtml !== '') {
                 sliderWrapper.innerHTML = slidesHtml;
                 totalSlidesCount = mainCount;
-                iniciarSlider(mainSegundos);
+                iniciarSlider(mainSegundosGlobal);
             }
 
-            Object.entries(seccionesMap).forEach(([secCode, idContenedor]) => {
+            // Configurar intervalos y eventos de pausa (Ajuste 2)
+            Object.entries(seccionesMapGlobal).forEach(([secCode, idContenedor]) => {
                 const cont = document.getElementById(idContenedor);
                 if (cont && cont.children.length > 1) {
                     const primerBanner = vigentes.find(v => String(v.Seccion || v.seccion || '').trim().toUpperCase() === secCode);
                     const segs = primerBanner ? parseInt(primerBanner.Segundos_Pantalla || 5) : 5;
-                    intervalosSecciones[secCode] = setInterval(() => {
-                        if (cont.scrollLeft + cont.clientWidth >= cont.scrollWidth - 10) {
-                            cont.scrollTo({ left: 0, behavior: 'smooth' });
-                        } else {
-                            cont.scrollBy({ left: 200, behavior: 'smooth' });
-                        }
-                    }, segs * 1000);
+                    
+                    function iniciarIntervaloSeccion() {
+                        if (intervalosSecciones[secCode]) clearInterval(intervalosSecciones[secCode]);
+                        intervalosSecciones[secCode] = setInterval(() => {
+                            if (cont.scrollLeft + cont.clientWidth >= cont.scrollWidth - 10) {
+                                cont.scrollTo({ left: 0, behavior: 'smooth' });
+                            } else {
+                                cont.scrollBy({ left: 200, behavior: 'smooth' });
+                            }
+                        }, segs * 1000);
+                    }
+
+                    iniciarIntervaloSeccion();
+
+                    // Eventos de pausa al hacer clic (PC) o tocar (Táctil) por 5 minutos (300000 ms)
+                    const pausarSeccionHandler = () => {
+                        if (intervalosSecciones[secCode]) clearInterval(intervalosSecciones[secCode]);
+                        if (timeoutPausasSliders[secCode]) clearTimeout(timeoutPausasSliders[secCode]);
+                        timeoutPausasSliders[secCode] = setTimeout(() => {
+                            iniciarIntervaloSeccion();
+                        }, 300000);
+                    };
+
+                    cont.addEventListener('click', pausarSeccionHandler);
+                    cont.addEventListener('touchstart', pausarSeccionHandler, { passive: true });
+                    cont.addEventListener('mousedown', pausarSeccionHandler);
                 }
             });
+
+            const sliderContainerEl = document.getElementById('sliderContainer');
+            if (sliderContainerEl) {
+                const pausarSliderHandler = () => {
+                    if (intervaloSlider) clearInterval(intervaloSlider);
+                    if (timeoutPausasSliders['main']) clearTimeout(timeoutPausasSliders['main']);
+                    timeoutPausasSliders['main'] = setTimeout(() => {
+                        iniciarSlider(mainSegundosGlobal);
+                    }, 300000);
+                };
+                sliderContainerEl.addEventListener('click', pausarSliderHandler);
+                sliderContainerEl.addEventListener('touchstart', pausarSliderHandler, { passive: true });
+                sliderContainerEl.addEventListener('mousedown', pausarSliderHandler);
+            }
 
             const ceoBanners = document.getElementById('ceoCantBanners');
             if (ceoBanners) ceoBanners.innerText = vigentes.length;
@@ -1004,7 +1068,6 @@
             });
         }
 
-        // CORAZÓN MANTENIDO ROJO SEGÚN FAVORITOS EN BASE DE DATOS (AJUSTE 3)
         function renderPuestos(lista = puestosBD) {
             const grid = document.getElementById('gridPuestos');
             if (!grid) return;
@@ -1039,7 +1102,6 @@
                     avgStars = (suma / totalCals).toFixed(1);
                 }
 
-                // VERIFICAR FAVORITO POR CORREO O UID DE SESIÓN
                 const esFav = usuarioActual ? favoritosBD.some(f => 
                     (String(f.Usuario_Correo || f.correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase() || 
                     (f.Usuario_UID && usuarioActual.uid && String(f.Usuario_UID) === String(usuarioActual.uid))) && 
@@ -1084,7 +1146,6 @@
             renderPuestos();
         }
 
-        // GUARDADO PERMANENTE EN GOOGLE SHEETS DE FAVORITOS (AJUSTE 3)
         async function toggleFavorito(id) {
             if (!usuarioActual) { abrirAuthModal(); return; }
             const userCorreo = usuarioActual.Correo;
@@ -1596,7 +1657,6 @@
             mostrarToast("Sesión cerrada correctamente");
         }
 
-        // PANEL MERCADERO(A) CON BLOQUES PROMOCIONALES AL FINAL (AJUSTE 5)
         function renderDashMercadero() {
             const puesto = puestosBD.find(p => (p.Correo_Acceso || p.correo) === usuarioActual.Correo || String(p.ID || p.id) === String(usuarioActual.puestoId)) || puestosBD[0];
             if (!puesto) return;
@@ -1659,7 +1719,7 @@
                         </div>
                     </div>
 
-                    <!-- BLOQUES PROMOCIONALES Y BANNER OFICIAL (AJUSTE 5) -->
+                    <!-- BLOQUES PROMOCIONALES Y BANNER OFICIAL -->
                     <div class="pt-3 border-t border-gray-200 space-y-2">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                             <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
@@ -1745,7 +1805,7 @@
             }
         }
 
-        // PANEL MERCADOR(A) SIN SECCIÓN DE FAVORITOS (AJUSTE 4)
+        // PANEL MERCADOR(A) CON LOS BLOQUES SOLICITADOS EN EL AJUSTE 1
         function renderDashMercador() {
             document.getElementById('dashMercador').innerHTML = `
                 <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
@@ -1761,6 +1821,57 @@
                         <p><strong>WhatsApp:</strong> ${usuarioActual.WhatsApp || 'No asignado'}</p>
                         <p><strong>Oficio/Profesión:</strong> ${usuarioActual.oficio || 'Comerciante'}</p>
                         <p><strong>Cumpleaños:</strong> ${usuarioActual.cumpleanos || 'No especificado'}</p>
+                    </div>
+
+                    <!-- BLOQUES PROMOCIONALES Y BANNER OFICIAL AÑADIDOS AL PANEL MERCADOR (AJUSTE 1) -->
+                    <div class="pt-3 border-t border-gray-200 space-y-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
+                                <div>
+                                    <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Piura</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu puesto GRATIS en nuestras redes!</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual y te publicitamos sin costo en el orden de llegada.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <div class="flex gap-2.5 text-sm text-gray-700">
+                                        <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                                        <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
+                                    </div>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS%20en%20Piura" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
+                                <div>
+                                    <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con enlace directo a WhatsApp y código QR profesional.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <span class="text-[10px] font-semibold text-gray-500">Planes únicos o mensuales</span>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual%20en%20Piura" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Cotizar Catálogo</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                            <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
+                            <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
+                            <p class="text-[11px] text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
+                            <div class="pt-1 flex justify-center gap-4 text-lg text-white">
+                                <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
+                            </div>
+                            <div class="pt-1">
+                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON%20en%20Piura" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                                    <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Publicidad por WhatsApp
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1896,7 +2007,6 @@
             }
         }
 
-        let intervaloSlider = null;
         function iniciarSlider(segundos = 5) {
             if (intervaloSlider) clearInterval(intervaloSlider);
             intervaloSlider = setInterval(() => { nextSlide(); }, parseInt(segundos) * 1000);
