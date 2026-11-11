@@ -113,7 +113,7 @@
             </div>
 
             <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-1.5">
-                <!-- SECCIONES DE BANNERS (A, B, C, D, E, F, G) -->
+                <!-- SECCIONES DE BANNERS (A, B, C, D, E, F, G) DE LA PÁGINA DE INICIO -->
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones</h3>
                     <div class="relative flex items-center">
@@ -198,7 +198,7 @@
 
                     <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
                         <div>
-                            <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual</div>
+                            <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
                             <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
                             <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con enlace directo a WhatsApp y código QR profesional.</p>
                         </div>
@@ -211,7 +211,7 @@
 
                 <!-- Banner Oficial -->
                 <div id="bannerOficialMercatodon" class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
-                    <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Publicidad Oficial MERCATODON</span>
+                    <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
                     <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
                     <p class="text-[11px] text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
                     <div class="pt-1 flex justify-center gap-4 text-lg text-white">
@@ -229,26 +229,70 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 2: PUESTOS & RUBROS -->
-        <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-2 hidden">
+        <!-- SECCIÓN 2: PUESTOS & RUBROS (AJUSTE 1 Y 2) -->
+        <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3 hidden">
             <div class="sticky top-[53px] z-20 bg-gray-50/95 backdrop-blur-md py-1.5 border-b border-gray-200">
                 <div id="contenedorRubros" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
             </div>
+            
             <div id="gridPuestos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"></div>
-            <div class="pt-2 border-t-2 border-dashed border-gray-300 space-y-2">
-                <h3 class="text-xs font-normal text-center text-slate-500 uppercase tracking-widest">Publicidad y Promociones Destacadas</h3>
-                <div id="publicidadFinPuestos" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1"></div>
+            
+            <!-- BLOQUES PROMOCIONALES + BANNER OFICIAL EN PARTE INFERIOR DE PUESTOS (AJUSTE 2) -->
+            <div class="pt-3 border-t border-gray-200 space-y-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
+                        <div>
+                            <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Piura</div>
+                            <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu puesto GRATIS en nuestras redes!</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual y te publicitamos sin costo en el orden de llegada.</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                            <div class="flex gap-2.5 text-sm text-gray-700">
+                                <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                                <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                                <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                                <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
+                            </div>
+                            <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS%20en%20Piura" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
+                        <div>
+                            <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
+                            <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con enlace directo a WhatsApp y código QR profesional.</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                            <span class="text-[10px] font-semibold text-gray-500">Planes únicos o mensuales</span>
+                            <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual%20en%20Piura" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Cotizar Catálogo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                    <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
+                    <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
+                    <p class="text-[11px] text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
+                    <div class="pt-1 flex justify-center gap-4 text-lg text-white">
+                        <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                    <div class="pt-1">
+                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON%20en%20Piura" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                            <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Publicidad por WhatsApp
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- SECCIÓN 3: DASHBOARDS -->
+        <!-- SECCIÓN 3: DASHBOARDS (AJUSTE 1, 4 Y 5) -->
         <section id="secDashboard" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3">
             <div id="dashMercadero" class="hidden space-y-3"></div>
             <div id="dashMercador" class="hidden space-y-3"></div>
-            <div class="pt-2 border-t border-gray-200 space-y-2">
-                <h3 class="text-xs font-normal text-slate-500 uppercase tracking-widest text-center">Publicidad Recomendada para Usuarios</h3>
-                <div id="publicidadPanelesUsuarios" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1"></div>
-            </div>
         </section>
 
         <!-- SECCIÓN 4: PANEL CEO -->
@@ -367,7 +411,6 @@
                     </div>
                 </div>
                 
-                <!-- Contenedor de Error Profesional (Ajuste 6) -->
                 <div id="msgAuthErrorContainer" class="hidden p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[11px] flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation text-brand-red text-sm flex-shrink-0"></i>
                     <span id="msgAuthErrorTexto">Credenciales incorrectas o usuario no registrado.</span>
@@ -552,16 +595,12 @@
         </div>
     </div>
 
-    <!-- MODAL FAVORITOS (AJUSTE 3 Y 2) -->
+    <!-- MODAL FAVORITOS (AJUSTE 1: SIN PUBLICIDAD) -->
     <div id="modalFavoritos" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-5 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
             <button onclick="cerrarModal('modalFavoritos')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-bold text-base text-gray-900 flex items-center gap-2"><i class="fa-solid fa-heart text-red-500"></i> Mis Puestos Favoritos</h3>
             <div id="listaFavoritosModal" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
-            <div class="pt-4 border-t border-gray-200 space-y-3">
-                <h4 class="text-xs font-semibold text-slate-500 text-center uppercase tracking-widest">Publicidad y Promociones</h4>
-                <div id="publicidadFinFavoritos" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1"></div>
-            </div>
         </div>
     </div>
 
@@ -655,14 +694,20 @@
             configurarSwipeTactil();
             configurarInstalacionPWA();
             
-            // Escuchar cambios de estado Firebase Auth
             firebase.auth().onAuthStateChanged(user => {
                 if (user) {
-                    // Mantener sincronizado usuarioActual con UID real
-                    if (usuarioActual && !usuarioActual.uid) {
+                    if (!usuarioActual) {
+                        usuarioActual = {
+                            Correo: user.email,
+                            Nombre_Completo: user.displayName || user.email.split('@')[0],
+                            uid: user.uid,
+                            rol: 'mercador'
+                        };
+                    } else {
                         usuarioActual.uid = user.uid;
-                        localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
                     }
+                    localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+                    actualizarHeaderUsuario();
                 }
             });
         };
@@ -758,7 +803,7 @@
             return null;
         }
 
-        // BANNERS DINÁMICOS Y FILAS HORIZONTALES (AJUSTE 2)
+        // BANNERS DINÁMICOS ÚNICAMENTE EN PÁGINA DE INICIO (AJUSTE 1)
         function renderBannersDinamicos() {
             const seccionesMap = {
                 "A": "bannerSeccionA",
@@ -777,12 +822,6 @@
 
             const sliderWrapper = document.getElementById('sliderWrapper');
             if (sliderWrapper) sliderWrapper.innerHTML = '';
-
-            const pubFinPuestos = document.getElementById('publicidadFinPuestos');
-            if (pubFinPuestos) pubFinPuestos.innerHTML = '';
-
-            const pubFavs = document.getElementById('publicidadFinFavoritos');
-            if (pubFavs) pubFavs.innerHTML = '';
 
             Object.keys(intervalosSecciones).forEach(k => clearInterval(intervalosSecciones[k]));
 
@@ -833,8 +872,6 @@
                         const cont = document.getElementById(contenedorId);
                         if (cont) cont.innerHTML += bannerCardHtml;
                     }
-                    if (pubFinPuestos) pubFinPuestos.innerHTML += bannerCardHtml;
-                    if (pubFavs) pubFavs.innerHTML += bannerCardHtml;
                 }
             });
 
@@ -967,7 +1004,7 @@
             });
         }
 
-        // MERCAS PÚBLICAS Y PROMEDIO REAL (AJUSTE 8)
+        // CORAZÓN MANTENIDO ROJO SEGÚN FAVORITOS EN BASE DE DATOS (AJUSTE 3)
         function renderPuestos(lista = puestosBD) {
             const grid = document.getElementById('gridPuestos');
             if (!grid) return;
@@ -975,7 +1012,6 @@
 
             let filtrados = lista.filter(p => rubroSeleccionado === "Todos" || (p.Rubro || p.rubro) === rubroSeleccionado);
             
-            // Ordenar por promedio de estrellas o mercas reales
             filtrados.sort((a, b) => {
                 const calsA = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(a.ID || a.id));
                 const calsB = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(b.ID || b.id));
@@ -995,7 +1031,6 @@
                 const whatsapp = p.WhatsApp || p.whatsapp;
                 const web = p.Web_Catalogo || p.web || "";
 
-                // Calcular promedio real y total de calificaciones
                 const calsPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(id));
                 const totalCals = calsPuesto.length;
                 let avgStars = 0;
@@ -1004,7 +1039,13 @@
                     avgStars = (suma / totalCals).toFixed(1);
                 }
 
-                const esFav = usuarioActual ? favoritosBD.some(f => (f.Usuario_Correo || f.correo) === usuarioActual.Correo && String(f.Puesto_ID || f.puestoId) === String(id)) : false;
+                // VERIFICAR FAVORITO POR CORREO O UID DE SESIÓN
+                const esFav = usuarioActual ? favoritosBD.some(f => 
+                    (String(f.Usuario_Correo || f.correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase() || 
+                    (f.Usuario_UID && usuarioActual.uid && String(f.Usuario_UID) === String(usuarioActual.uid))) && 
+                    String(f.Puesto_ID || f.puestoId) === String(id)
+                ) : false;
+
                 const corazonColor = esFav ? 'text-red-500' : 'text-gray-300';
                 const textoCals = totalCals === 1 ? 'merca' : 'mercas';
 
@@ -1043,18 +1084,23 @@
             renderPuestos();
         }
 
+        // GUARDADO PERMANENTE EN GOOGLE SHEETS DE FAVORITOS (AJUSTE 3)
         async function toggleFavorito(id) {
             if (!usuarioActual) { abrirAuthModal(); return; }
             const userCorreo = usuarioActual.Correo;
             const userUid = usuarioActual.uid || "";
 
-            const idx = favoritosBD.findIndex(f => (f.Usuario_Correo || f.correo) === userCorreo && String(f.Puesto_ID || f.puestoId) === String(id));
+            const idx = favoritosBD.findIndex(f => 
+                (String(f.Usuario_Correo || f.correo).toLowerCase() === String(userCorreo).toLowerCase() || 
+                (f.Usuario_UID && userUid && String(f.Usuario_UID) === String(userUid))) && 
+                String(f.Puesto_ID || f.puestoId) === String(id)
+            );
             
             if (idx >= 0) {
                 const favEliminado = favoritosBD[idx];
                 favoritosBD.splice(idx, 1);
                 await eliminarEnSheets('favoritos', favEliminado.ID_Favorito || favEliminado.id, 0);
-                mostrarToast("Eliminado de favoritos.");
+                mostrarToast("Eliminado de mis favoritos.");
             } else {
                 const nuevoFav = {
                     ID_Favorito: Date.now(),
@@ -1065,7 +1111,7 @@
                 };
                 favoritosBD.push(nuevoFav);
                 await enviarASheets('favoritos', [nuevoFav.ID_Favorito, nuevoFav.Usuario_Correo, nuevoFav.Puesto_ID, nuevoFav.Fecha, nuevoFav.Usuario_UID]);
-                mostrarToast("Agregado a favoritos en la nube.");
+                mostrarToast("Guardado en mis favoritos.");
             }
             renderPuestos();
             if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
@@ -1073,10 +1119,13 @@
             }
         }
 
-        // PUESTOS FAVORITOS COMPACTOS Y CUADRADOS (AJUSTE 3)
         function verFavoritosModal() {
             if (!usuarioActual) { abrirAuthModal(); return; }
-            const misFavsIds = favoritosBD.filter(f => (f.Usuario_Correo || f.correo) === usuarioActual.Correo).map(f => String(f.Puesto_ID || f.puestoId));
+            const misFavsIds = favoritosBD.filter(f => 
+                String(f.Usuario_Correo || f.correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase() || 
+                (f.Usuario_UID && usuarioActual.uid && String(f.Usuario_UID) === String(usuarioActual.uid))
+            ).map(f => String(f.Puesto_ID || f.puestoId));
+
             const favs = puestosBD.filter(p => misFavsIds.includes(String(p.ID || p.id)));
             
             const cont = document.getElementById('listaFavoritosModal');
@@ -1169,7 +1218,6 @@
             });
         }
 
-        // PERSISTENCIA DE CALIFICACIONES EN GOOGLE SHEETS + FIREBASE UID (AJUSTE 4)
         async function confirmarMercar() {
             if (!usuarioActual || usuarioActual.rol === 'mercadero') {
                 cerrarModal('modalMercar');
@@ -1294,7 +1342,6 @@
             document.getElementById('modalAuth').classList.remove('hidden');
         }
 
-        // LOGIN CON ERRORES PROFESIONALES Y FIREBASE AUTH (AJUSTE 6 Y 7)
         async function loginDirecto(e) {
             e.preventDefault();
             const email = document.getElementById('loginCorreo').value.trim();
@@ -1407,7 +1454,6 @@
             document.getElementById('modalFormAuth').classList.remove('hidden');
         }
 
-        // PROCESAR REGISTRO CON UID REAL Y 0 ESTRELLAS/CALIFICACIONES (AJUSTE 6 Y 7)
         async function procesarAuth(e) {
             e.preventDefault();
             const email = document.getElementById('regCorreo').value.trim();
@@ -1441,7 +1487,7 @@
                         Provincia: provinciaPuesto,
                         Distrito: distritoPuesto,
                         GPS: gpsPuesto,
-                        Mercas: 0, // Inicia estrictamente con 0 estrellas/calificaciones
+                        Mercas: 0,
                         WhatsApp: wspFinal,
                         Web_Catalogo: webPuesto || "",
                         Duenio_Nombre: nombreUsuario,
@@ -1550,7 +1596,7 @@
             mostrarToast("Sesión cerrada correctamente");
         }
 
-        // PANEL MERCADERO CON SELECTOR DE RUBROS DE 20 OPCIONES (AJUSTE 5)
+        // PANEL MERCADERO(A) CON BLOQUES PROMOCIONALES AL FINAL (AJUSTE 5)
         function renderDashMercadero() {
             const puesto = puestosBD.find(p => (p.Correo_Acceso || p.correo) === usuarioActual.Correo || String(p.ID || p.id) === String(usuarioActual.puestoId)) || puestosBD[0];
             if (!puesto) return;
@@ -1586,7 +1632,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                             <div><label class="font-semibold text-gray-600">Nombre del Puesto</label><input type="text" id="editNombrePuesto" value="${puesto.Nombre_Puesto || puesto.nombre}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
                             <div>
-                                <label class="font-semibold text-gray-600">Rubro Principal (20 Opciones)</label>
+                                <label class="font-semibold text-gray-600">Rubro Principal</label>
                                 <select id="editRubroPuesto" class="w-full border rounded-lg p-2 mt-1 bg-white outline-none">
                                     ${optionsHtml}
                                 </select>
@@ -1610,6 +1656,57 @@
                                     <span class="text-[9px] text-gray-400 block text-right">${c.Fecha_Hora || c.fecha}</span>
                                 </div>
                             `).join('') || '<p class="text-xs text-gray-400 py-2">Aún no hay calificaciones registradas.</p>'}
+                        </div>
+                    </div>
+
+                    <!-- BLOQUES PROMOCIONALES Y BANNER OFICIAL (AJUSTE 5) -->
+                    <div class="pt-3 border-t border-gray-200 space-y-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
+                                <div>
+                                    <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Piura</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu puesto GRATIS en nuestras redes!</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual y te publicitamos sin costo en el orden de llegada.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <div class="flex gap-2.5 text-sm text-gray-700">
+                                        <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                                        <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
+                                    </div>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS%20en%20Piura" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
+                                <div>
+                                    <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con enlace directo a WhatsApp y código QR profesional.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <span class="text-[10px] font-semibold text-gray-500">Planes únicos o mensuales</span>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual%20en%20Piura" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Cotizar Catálogo</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                            <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
+                            <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
+                            <p class="text-[11px] text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
+                            <div class="pt-1 flex justify-center gap-4 text-lg text-white">
+                                <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
+                            </div>
+                            <div class="pt-1">
+                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON%20en%20Piura" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                                    <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Publicidad por WhatsApp
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1648,10 +1745,8 @@
             }
         }
 
+        // PANEL MERCADOR(A) SIN SECCIÓN DE FAVORITOS (AJUSTE 4)
         function renderDashMercador() {
-            const misFavsIds = favoritosBD.filter(f => (f.Usuario_Correo || f.correo) === usuarioActual.Correo).map(f => String(f.Puesto_ID || f.puestoId));
-            const favoritos = puestosBD.filter(p => misFavsIds.includes(String(p.ID || p.id)));
-
             document.getElementById('dashMercador').innerHTML = `
                 <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
                     <div class="flex justify-between items-center border-b pb-2">
@@ -1662,20 +1757,10 @@
                         <button onclick="cerrarSesion()" class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
                     </div>
                     <div class="text-xs space-y-1 bg-gray-50 p-2.5 rounded-xl border">
+                        <p><strong>Correo Electrónico:</strong> ${usuarioActual.Correo || 'No asignado'}</p>
                         <p><strong>WhatsApp:</strong> ${usuarioActual.WhatsApp || 'No asignado'}</p>
                         <p><strong>Oficio/Profesión:</strong> ${usuarioActual.oficio || 'Comerciante'}</p>
                         <p><strong>Cumpleaños:</strong> ${usuarioActual.cumpleanos || 'No especificado'}</p>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-bold text-gray-700 uppercase mb-2">Mis Puestos Favoritos (${favoritos.length})</h4>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                            ${favoritos.map(f => `
-                                <div class="bg-gray-50 p-2 rounded-xl border text-xs">
-                                    <p class="font-bold truncate">${f.Nombre_Puesto || f.nombre}</p>
-                                    <span class="text-[9px] text-brand-red font-semibold">${f.Provincia || f.provincia}</span>
-                                </div>
-                            `).join('') || '<p class="text-xs text-gray-400 col-span-full">Sin favoritos registrados.</p>'}
-                        </div>
                     </div>
                 </div>
             `;
