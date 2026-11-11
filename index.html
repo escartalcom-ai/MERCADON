@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MERCATODON - Puestos en Acción</title>
     <!-- Favicon e Iconos (PNG) -->
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/favicon.png" fallback="https://placehold.co/32x32/E53935/ffffff?text=M">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/favicon.png" fallback="https://placehold.co/32x32/E53935/ffffff?text=M">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/logo.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -412,7 +412,7 @@
 
     <!-- MODALES -->
 
-    <!-- MODAL UBICACIÓN (Ajuste 1: Todas las provincias) -->
+    <!-- MODAL UBICACIÓN -->
     <div id="modalUbicacion" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalUbicacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -498,7 +498,7 @@
         </div>
     </div>
 
-    <!-- MODAL REGISTRO (Sin advertencia estática - Ajuste 3) -->
+    <!-- MODAL REGISTRO -->
     <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto no-scrollbar">
             <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -688,7 +688,6 @@
             firebase.initializeApp(firebaseConfig);
         }
 
-        // Ajuste 1: Se añade "Todas las provincias" dentro de la Región Piura
         const ubigeoPiura = {
             "Piura": {
                 "Todas las provincias": ["Todos los distritos"],
@@ -1054,7 +1053,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Ajuste 2: Al hacer clic en usuario/dashboard, si es CEO se mantiene en el Panel del CEO
         function verDashboard() {
             if (!usuarioActual) { abrirAuthModal(); return; }
             if (usuarioActual.rol === 'ceo') {
@@ -1132,7 +1130,6 @@
             });
         }
 
-        // Ajuste 1: Filtrado adaptado para "Todas las provincias"
         function renderPuestos(lista = puestosBD) {
             const grid = document.getElementById('gridPuestos');
             if (!grid) return;
@@ -1271,6 +1268,7 @@
             }
         }
 
+        // Ajuste 1: En la sección "Mis Puestos Favoritos", si ya lo califiqué, ya no aparece el botón "Mercar"
         function verFavoritosModal() {
             if (!usuarioActual) { abrirAuthModal(); return; }
             const misFavsIds = favoritosBD.filter(f => 
@@ -1310,6 +1308,19 @@
                         avgStars = (suma / totalCals).toFixed(1);
                     }
 
+                    let yaCalificoUsuario = false;
+                    if (usuarioActual && usuarioActual.rol === 'mercador') {
+                        yaCalificoUsuario = calsPuesto.some(c => 
+                            (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
+                            (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
+                            (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
+                        );
+                    }
+
+                    const botonMercarHtml = (usuarioActual && usuarioActual.rol === 'mercador' && yaCalificoUsuario) 
+                        ? `<span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Ya Mercado</span>`
+                        : `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
+
                     cont.innerHTML += `
                         <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
                             <div>
@@ -1326,7 +1337,7 @@
                                         <i class="fa-solid fa-star text-[10px]"></i>
                                         <span>${totalCals > 0 ? avgStars : '0'}</span>
                                     </div>
-                                    <button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>
+                                    ${botonMercarHtml}
                                 </div>
                                 <div class="grid grid-cols-3 gap-1">
                                     <a href="${web || '#'}" target="_blank" class="h-8 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded transition" title="Web"><i class="fa-solid fa-globe text-lg"></i></a>
@@ -1425,12 +1436,14 @@
                 ]);
 
                 renderPuestos();
+                if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
+                    verFavoritosModal();
+                }
                 cerrarModal('modalMercar');
                 mostrarToast(`¡Gracias! Has mercado con ${calificacionTemp} estrellas.`);
             }
         }
 
-        // Ajuste 1: Inicialización con "Todas las provincias"
         function inicializarUbicacionUI() {
             const selProv = document.getElementById('selProvincia');
             if (!selProv) return;
@@ -1508,7 +1521,6 @@
 
         function abrirModalUbicacion() { document.getElementById('modalUbicacion').classList.remove('hidden'); }
         
-        // Ajuste 2: Verificar si es CEO al hacer clic en el botón de usuario
         function abrirAuthModal() {
             if (usuarioActual) {
                 if (usuarioActual.rol === 'ceo') {
@@ -1650,7 +1662,6 @@
             document.getElementById('modalFormAuth').classList.remove('hidden');
         }
 
-        // Ajuste 4: Prevención estricta de duplicados en registros
         async function procesarAuth(e) {
             e.preventDefault();
             const email = document.getElementById('regCorreo').value.trim().toLowerCase();
@@ -1663,7 +1674,6 @@
             const wspFinal = rol === 'mercadero' ? wspPuesto : (wspMercador || "930528649");
             const residencia = document.getElementById('regResidencia') ? document.getElementById('regResidencia').value.trim() : "";
 
-            // Validación anticipada de duplicados (Ajuste 4)
             const correoDuplicadoPuesto = puestosBD.some(p => String(p.Correo_Acceso || p.correo || '').toLowerCase() === email);
             const wspDuplicadoPuesto = puestosBD.some(p => String(p.WhatsApp || p.whatsapp || '').trim() === wspFinal);
             const correoDuplicadoUsuario = usuariosBD.some(u => String(u.Correo || u.correo || '').toLowerCase() === email);
@@ -1812,6 +1822,7 @@
             mostrarToast("Sesión cerrada correctamente");
         }
 
+        // Ajuste 2 & Ajuste 3: Panel de Mercadero con visualización de calificaciones, estrellas, comentarios y bloques promocionales inferiores
         function renderDashMercadero() {
             const puesto = puestosBD.find(p => (p.Correo_Acceso || p.correo) === usuarioActual.Correo || String(p.ID || p.id) === String(usuarioActual.puestoId)) || puestosBD[0];
             if (!puesto) return;
@@ -1823,6 +1834,8 @@
             const rubrosOpciones = ["Alimentos", "Bebidas", "Carnes", "Pescados", "Frutas", "Regionales", "Gastronomía", "Panadería", "Lácteos", "Salud", "Belleza", "Moda", "Tecnología", "Hogar", "Ferretería", "Limpieza", "Mascotas", "Librería", "Servicios", "Otros"];
             const rubroActual = puesto.Rubro || puesto.rubro || "Alimentos";
             let optionsHtml = rubrosOpciones.map(r => `<option value="${r}" ${r === rubroActual ? 'selected' : ''}>${r}</option>`).join('');
+
+            const promedioEstrellas = calificacionesPuesto.length > 0 ? (calificacionesPuesto.reduce((a,c)=>a+parseInt(c.Estrellas||0),0)/calificacionesPuesto.length).toFixed(1) : '0';
 
             document.getElementById('dashMercadero').innerHTML = `
                 <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
@@ -1840,10 +1853,28 @@
                         </div>
                         <div class="bg-amber-50 p-2.5 rounded-xl border">
                             <span class="text-[10px] text-gray-500 font-semibold">Calificación Promedio</span>
-                            <p class="text-lg font-bold text-amber-500">${calificacionesPuesto.length > 0 ? (calificacionesPuesto.reduce((a,c)=>a+parseInt(c.Estrellas||0),0)/calificacionesPuesto.length).toFixed(1) : '0'} <i class="fa-solid fa-star text-xs"></i></p>
+                            <p class="text-lg font-bold text-amber-500">${promedioEstrellas} <i class="fa-solid fa-star text-xs"></i></p>
                         </div>
                     </div>
-                    <div class="bg-gray-50 p-3 rounded-xl border space-y-2.5">
+
+                    <!-- Ajuste 2: Bloque detallado de calificaciones recibidas, estrellas y comentarios en el panel del Mercadero -->
+                    <div class="space-y-2 pt-2 border-t">
+                        <h4 class="text-xs font-bold text-gray-800 uppercase">Calificaciones Recibidas (${calificacionesPuesto.length})</h4>
+                        <div class="space-y-2 max-h-64 overflow-y-auto">
+                            ${calificacionesPuesto.map((c, idx) => `
+                                <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs space-y-1 shadow-sm">
+                                    <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
+                                        <span>#${idx + 1} - ${c.Usuario_Nombre || 'Cliente'}</span>
+                                        <span class="text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</span>
+                                    </div>
+                                    <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
+                                    <div class="text-[10px] text-gray-400 text-right pt-0.5"><i class="fa-regular fa-clock"></i> ${c.Fecha_Hora || 'N/A'}</div>
+                                </div>
+                            `).join('') || '<p class="text-xs text-gray-400 py-3 text-center">Aún no hay calificaciones registradas en tu puesto.</p>'}
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-xl border space-y-2.5 pt-3">
                         <h4 class="text-xs font-bold text-gray-800 uppercase">Editar Información de mi Puesto y GPS</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                             <div><label class="font-semibold text-gray-600">Nombre del Puesto</label><input type="text" id="editNombrePuesto" value="${puesto.Nombre_Puesto || puesto.nombre}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
@@ -1864,6 +1895,57 @@
                             <div class="col-span-full"><label class="font-semibold text-gray-600">Catálogo o Facebook</label><input type="url" id="editWebPuesto" value="${puesto.Web_Catalogo || puesto.web || ''}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
                         </div>
                         <button onclick="guardarEdicionMercadero('${puestoId}')" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2 rounded-lg text-xs shadow transition">Actualizar Datos y GPS</button>
+                    </div>
+
+                    <!-- Ajuste 3: Bloques Promocionales y Banner Oficial en la parte inferior del Panel Mercadero -->
+                    <div class="pt-3 border-t border-gray-200 space-y-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
+                                <div>
+                                    <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Piura</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu puesto GRATIS en nuestras redes!</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual y te publicitamos sin costo en el orden de llegada.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <div class="flex gap-2.5 text-sm text-gray-700">
+                                        <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                                        <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
+                                    </div>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS%20en%20Piura" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
+                                <div>
+                                    <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con enlace directo a WhatsApp y código QR profesional.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <span class="text-[10px] font-semibold text-gray-500">Planes únicos o mensuales</span>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual%20en%20Piura" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Cotizar Catálogo</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                            <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
+                            <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
+                            <p class="text-[11px] text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
+                            <div class="pt-1 flex justify-center gap-4 text-lg text-white">
+                                <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
+                            </div>
+                            <div class="pt-1">
+                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON%20en%20Piura" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                                    <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Publicidad por WhatsApp
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1913,6 +1995,7 @@
             }
         }
 
+        // Ajuste 3: Panel de Mercador con bloques promocionales inferiores incluidos
         function renderDashMercador() {
             const misCals = calificacionesBD.filter(c => 
                 (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
@@ -1974,6 +2057,57 @@
                                     </div>
                                 `;
                             }).join('') || '<p class="text-xs text-gray-400 py-3 text-center">Aún no has registrado calificaciones en puestos.</p>'}
+                        </div>
+                    </div>
+
+                    <!-- Ajuste 3: Bloques Promocionales y Banner Oficial en la parte inferior del Panel Mercador -->
+                    <div class="pt-3 border-t border-gray-200 space-y-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
+                                <div>
+                                    <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Piura</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu puesto GRATIS en nuestras redes!</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual y te publicitamos sin costo en el orden de llegada.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <div class="flex gap-2.5 text-sm text-gray-700">
+                                        <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                                        <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
+                                    </div>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS%20en%20Piura" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
+                                <div>
+                                    <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con enlace directo a WhatsApp y código QR profesional.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <span class="text-[10px] font-semibold text-gray-500">Planes únicos o mensuales</span>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual%20en%20Piura" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Cotizar Catálogo</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                            <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
+                            <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio en Piura y llega a miles de clientes!</h3>
+                            <p class="text-[11px] text-white/90">Anuncia tu puesto en nuestra plataforma con máxima visibilidad regional.</p>
+                            <div class="pt-1 flex justify-center gap-4 text-lg text-white">
+                                <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
+                            </div>
+                            <div class="pt-1">
+                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON%20en%20Piura" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                                    <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Publicidad por WhatsApp
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2161,6 +2295,9 @@
                 await eliminarEnSheets('calificaciones', calId, 0);
                 renderCeoTable();
                 renderPuestos();
+                if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
+                    verFavoritosModal();
+                }
                 mostrarToast("Calificación eliminada.");
             }
         }
@@ -2219,6 +2356,9 @@
                 await eliminarEnSheets('puestos', id, 0);
                 renderCeoTable();
                 renderPuestos();
+                if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
+                    verFavoritosModal();
+                }
                 mostrarToast("Puesto eliminado de Google Sheets.");
             }
         }
