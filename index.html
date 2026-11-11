@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MERCATODON - Puestos en Acción</title>
+    <!-- Preconnect para rendimiento ultrarrápido (Ajuste 1) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+
     <!-- Favicon, Logo e Ícono PNG -->
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/favicon.png" fallback="https://placehold.co/32x32/E53935/ffffff?text=M">
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/logo.png">
@@ -106,20 +113,23 @@
 
         <!-- SECCIÓN 1: INICIO -->
         <section id="secInicio" class="space-y-1.5">
+            <!-- Slider Principal Dinámico desde Google Sheets -->
             <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
-                <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out"></div>
+                <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out">
+                    <!-- Cargados dinámicamente -->
+                </div>
                 <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition z-10"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                 <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition z-10"><i class="fa-solid fa-chevron-right text-xs"></i></button>
             </div>
 
             <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-1.5">
-                <!-- SECCIÓN A -->
+                <!-- SECCIÓN A (Con botones sutiles de desplazamiento en PC - Ajuste 2) -->
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionA', -250)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionA" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full px-1"></div>
-                        <button onclick="scrollSeccion('bannerSeccionA', 250)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionA', -250)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionA" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionA', 250)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
@@ -127,9 +137,9 @@
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-crown text-slate-400 text-xs"></i> Patrocinios</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionB', -250)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionB" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full px-1"></div>
-                        <button onclick="scrollSeccion('bannerSeccionB', 250)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionB', -250)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionB" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionB', 250)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
@@ -137,9 +147,9 @@
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-video text-slate-400 text-xs"></i> Spots Comerciales</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionC', -300)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionC" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full px-1"></div>
-                        <button onclick="scrollSeccion('bannerSeccionC', 300)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionC', -300)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionC" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionC', 300)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
@@ -147,9 +157,9 @@
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-truck-fast text-slate-400 text-xs"></i> Servicios y Proveedores</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionD', -250)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionD" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full px-1"></div>
-                        <button onclick="scrollSeccion('bannerSeccionD', 250)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionD', -250)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionD" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionD', 250)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
@@ -157,9 +167,9 @@
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i> Campañas Especiales</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionE', -250)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionE" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full px-1"></div>
-                        <button onclick="scrollSeccion('bannerSeccionE', 250)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionE', -250)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionE" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionE', 250)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
@@ -167,9 +177,9 @@
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-handshake text-slate-400 text-xs"></i> Nuestros Aliados</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionF', -250)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionF" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full px-1"></div>
-                        <button onclick="scrollSeccion('bannerSeccionF', 250)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionF', -250)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionF" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionF', 250)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
@@ -177,9 +187,9 @@
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-bell text-slate-400 text-xs"></i> Novedades</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionG', -250)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <div id="bannerSeccionG" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full px-1"></div>
-                        <button onclick="scrollSeccion('bannerSeccionG', 250)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionG', -250)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionG" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionG', 250)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
@@ -241,12 +251,12 @@
                 <div id="contenedorRubros" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
             </div>
             <div id="gridPuestos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"></div>
-            <div class="pt-2 border-t-2 border-dashed border-gray-300 space-y-2 relative group">
+            <div class="pt-2 border-t-2 border-dashed border-gray-300 space-y-1.5 relative group">
                 <h3 class="text-xs font-normal text-center text-slate-500 uppercase tracking-widest">Publicidad y Promociones Destacadas</h3>
                 <div class="relative flex items-center">
-                    <button onclick="scrollSeccion('publicidadFinPuestos', -250)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                    <div id="publicidadFinPuestos" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 w-full px-1"></div>
-                    <button onclick="scrollSeccion('publicidadFinPuestos', 250)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    <button onclick="scrollSeccion('publicidadFinPuestos', -250)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <div id="publicidadFinPuestos" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                    <button onclick="scrollSeccion('publicidadFinPuestos', 250)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
             </div>
         </section>
@@ -255,12 +265,12 @@
         <section id="secDashboard" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3">
             <div id="dashMercadero" class="hidden space-y-3"></div>
             <div id="dashMercador" class="hidden space-y-3"></div>
-            <div class="pt-2 border-t border-gray-200 space-y-2 relative group">
+            <div class="pt-2 border-t border-gray-200 space-y-1.5 relative group">
                 <h3 class="text-xs font-normal text-slate-500 uppercase tracking-widest text-center">Publicidad Recomendada para Usuarios</h3>
                 <div class="relative flex items-center">
-                    <button onclick="scrollSeccion('publicidadPanelesUsuarios', -250)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                    <div id="publicidadPanelesUsuarios" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 w-full px-1"></div>
-                    <button onclick="scrollSeccion('publicidadPanelesUsuarios', 250)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    <button onclick="scrollSeccion('publicidadPanelesUsuarios', -250)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <div id="publicidadPanelesUsuarios" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                    <button onclick="scrollSeccion('publicidadPanelesUsuarios', 250)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
             </div>
         </section>
@@ -357,13 +367,19 @@
         </div>
     </div>
 
-    <!-- MODAL AUTH / LOGIN (CON ADVERTENCIA E ÍCONOS - AJUSTE 6) -->
+    <!-- MODAL AUTH / LOGIN -->
     <div id="modalAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center">
                 <h3 class="font-black text-xl text-gray-900">Ingreso / Registro</h3>
                 <p class="text-xs text-gray-500 mt-1">Ingresa con tus credenciales o crea una cuenta</p>
+            </div>
+
+            <!-- Contenedor de Error de Inicio de Sesión Inmediato (Ajuste 6) -->
+            <div id="msgLoginError" class="hidden p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-brand-red text-sm flex-shrink-0"></i>
+                <span id="msgLoginErrorTexto">Credenciales incorrectas o usuario no registrado.</span>
             </div>
 
             <form onsubmit="loginDirecto(event)" class="space-y-3 bg-gray-50 p-3 rounded-xl border">
@@ -379,12 +395,6 @@
                             <i id="eyeLoginIcon" class="fa-solid fa-eye text-xs"></i>
                         </button>
                     </div>
-                </div>
-
-                <!-- ALERTA DE ERROR DE CREDENCIALES CON ÍCONO (AJUSTE 6) -->
-                <div id="msgLoginErrorContainer" class="hidden p-2 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[11px] flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation text-amber-500 text-base"></i>
-                    <span id="msgLoginErrorTexto">Credenciales incorrectas o usuario no registrado.</span>
                 </div>
                 
                 <div id="msgRecuperacionContainer" class="hidden p-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-800 text-[11px] flex items-center gap-1.5">
@@ -427,7 +437,7 @@
             <form id="formAuth" onsubmit="procesarAuth(event)" class="space-y-2.5">
                 <input type="hidden" id="authRol">
                 <div id="camposMercadero" class="space-y-2.5 hidden bg-red-50/50 p-2.5 rounded-xl border border-red-100">
-                    <div class="text-[10px] font-black text-brand-red uppercase tracking-wide">Datos del Puesto</div>
+                    <div class="text-[10px] font-black text-brand-red uppercase tracking-wide">Datos del Puesto (Inicia con 0 estrellas)</div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Nombre del Puesto *</label>
                         <input type="text" id="regPuestoNombre" placeholder="Ej: Puesto Don José" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
@@ -566,21 +576,19 @@
         </div>
     </div>
 
-    <!-- MODAL FAVORITOS (CON TARJETAS CUADRADAS COMPACTAS Y CARRUSEL DE PUBLICIDAD - AJUSTE 2 y 3) -->
+    <!-- MODAL FAVORITOS -->
     <div id="modalFavoritos" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-4xl w-full p-5 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto no-scrollbar">
-            <button onclick="cerrarModal('modalFavoritos')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="font-bold text-base text-gray-900 flex items-center gap-2 border-b pb-2"><i class="fa-solid fa-heart text-red-500"></i> Mis Puestos Favoritos</h3>
-            
-            <!-- Grid de favoritos compacto idéntico a sección Puestos -->
+        <div class="bg-white rounded-2xl max-w-3xl w-full p-5 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <button onclick="cerrarModal('modalFavoritos')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-bold text-base text-gray-900 flex items-center gap-2"><i class="fa-solid fa-heart text-red-500"></i> Mis Puestos Favoritos</h3>
+            <!-- Tarjetas compactas cuadradas idénticas a la sección puestos (Ajuste 3) -->
             <div id="listaFavoritosModal" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"></div>
-            
-            <div class="pt-3 border-t border-gray-200 space-y-2 relative group">
-                <h4 class="text-xs font-normal text-slate-500 uppercase tracking-widest text-center">Publicidad y Promociones</h4>
+            <div class="pt-4 border-t border-gray-200 space-y-1.5 relative group">
+                <h4 class="text-xs font-semibold text-slate-500 text-center uppercase tracking-widest">Publicidad y Promociones</h4>
                 <div class="relative flex items-center">
-                    <button onclick="scrollSeccion('publicidadFinFavoritos', -250)" class="absolute left-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                    <div id="publicidadFinFavoritos" class="flex gap-2 overflow-x-auto no-scrollbar pb-1 w-full px-1"></div>
-                    <button onclick="scrollSeccion('publicidadFinFavoritos', 250)" class="absolute right-1 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full flex items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    <button onclick="scrollSeccion('publicidadFinFavoritos', -250)" class="absolute left-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                    <div id="publicidadFinFavoritos" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 scroll-smooth w-full"></div>
+                    <button onclick="scrollSeccion('publicidadFinFavoritos', 250)" class="absolute right-0 z-10 bg-black/40 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition hidden sm:flex shadow-md"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                 </div>
             </div>
         </div>
@@ -667,19 +675,15 @@
         let busquedaExpandida = false;
         let intervalosSecciones = {};
 
-        // AJUSTE 1: CARGA RÁPIDA E INICIALIZACIÓN INSTANTÁNEA
         window.onload = function() {
             inicializarUbicacionUI();
             inicializarUbicacionRegistro();
             renderRubros();
             renderPuestos();
-            renderBannersDinamicos(); // Renderizado inmediato con caché local
             actualizarHeaderUsuario();
             registrarServiceWorkerNativo();
             configurarSwipeTactil();
             configurarInstalacionPWA();
-            
-            // Sincronización asíncrona en segundo plano sin demora al usuario
             sincronizarDatosRemotos();
             
             if (usuarioActual) {
@@ -687,22 +691,15 @@
             }
         };
 
+        // Sincronización robusta con Google Sheets (Ajuste 4)
         async function sincronizarDatosRemotos() {
-            try {
-                await Promise.all([
-                    cargarHojaRemota('puestos', data => { puestosBD = data; localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD)); renderPuestos(); }),
-                    cargarHojaRemota('usuarios', data => { usuariosBD = data; localStorage.setItem('mercatodon_usuarios', JSON.stringify(usuariosBD)); }),
-                    cargarHojaRemota('calificaciones', data => { calificacionesBD = data; localStorage.setItem('mercatodon_calificaciones', JSON.stringify(calificacionesBD)); }),
-                    cargarHojaRemota('favoritos', data => { favoritosBD = data; localStorage.setItem('mercatodon_favoritos', JSON.stringify(favoritosBD)); }),
-                    cargarHojaRemota('publicidad', data => { 
-                        publicidadBD = data; 
-                        localStorage.setItem('mercatodon_publicidad', JSON.stringify(publicidadBD)); 
-                        renderBannersDinamicos(); 
-                    })
-                ]);
-            } catch (e) {
-                console.log("Modo offline / usando caché local");
-            }
+            await Promise.all([
+                cargarHojaRemota('puestos', data => { if(data && data.length) { puestosBD = data; localStorage.setItem('mercatodon_puestos', JSON.stringify(puestosBD)); renderPuestos(); }}),
+                cargarHojaRemota('usuarios', data => { if(data && data.length) { usuariosBD = data; localStorage.setItem('mercatodon_usuarios', JSON.stringify(usuariosBD)); }}),
+                cargarHojaRemota('calificaciones', data => { if(data && data.length) { calificacionesBD = data; localStorage.setItem('mercatodon_calificaciones', JSON.stringify(calificacionesBD)); }}),
+                cargarHojaRemota('favoritos', data => { if(data && data.length) { favoritosBD = data; localStorage.setItem('mercatodon_favoritos', JSON.stringify(favoritosBD)); }}),
+                cargarHojaRemota('publicidad', data => { if(data && data.length) { publicidadBD = data; localStorage.setItem('mercatodon_publicidad', JSON.stringify(publicidadBD)); renderBannersDinamicos(); }})
+            ]);
         }
 
         async function cargarHojaRemota(nombreHoja, callback) {
@@ -711,7 +708,7 @@
                 let data = await res.json();
                 if (data && data.length > 0) callback(data);
             } catch (e) {
-                console.log(`Caché local activa para ${nombreHoja}`);
+                console.log(`Usando caché local para ${nombreHoja}`);
             }
         }
 
@@ -779,7 +776,7 @@
             return null;
         }
 
-        // AJUSTE 2: RENDERIZADO DE BANNERS Y PUBLICIDAD HORIZONTAL SIN ESPACIOS VACÍOS
+        // BANNERS HORIZONTALES DINÁMICOS Y NÚMERO DE ORDEN (Ajuste 2)
         function renderBannersDinamicos() {
             const seccionesMap = {
                 "A": "bannerSeccionA",
@@ -813,6 +810,7 @@
             if (!publicidadBD || publicidadBD.length === 0) return;
 
             const ahora = new Date();
+
             const vigentes = publicidadBD.filter(b => {
                 const inicio = b.Fecha_Inicio || b.fecha_inicio;
                 const fin = b.Fecha_Fin || b.fecha_fin;
@@ -874,9 +872,8 @@
                             </a>
                         `;
                     } else {
-                        // Tarjetas horizontales de la medida exacta de Ofertas y Promociones
                         bannerCardHtml = `
-                            <a href="${destinoUrl}" target="_blank" class="min-w-[140px] max-w-[160px] sm:min-w-[180px] sm:max-w-[200px] h-20 sm:h-24 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 block hover:border-brand-red transition relative">
+                            <a href="${destinoUrl}" target="_blank" class="min-w-[160px] sm:min-w-[200px] bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 block hover:border-brand-red transition aspect-[16/9]">
                                 <img src="${imgUrl}" class="w-full h-full object-cover rounded-xl" alt="${b.Nombre_Cliente || 'Publicidad'}">
                             </a>
                         `;
@@ -908,7 +905,7 @@
                         if (cont.scrollLeft + cont.clientWidth >= cont.scrollWidth - 10) {
                             cont.scrollTo({ left: 0, behavior: 'smooth' });
                         } else {
-                            cont.scrollBy({ left: 200, behavior: 'smooth' });
+                            cont.scrollBy({ left: 220, behavior: 'smooth' });
                         }
                     }, segs * 1000);
                 }
@@ -1023,6 +1020,7 @@
             });
         }
 
+        // Renderizado público de puestos y sus mercas (Ajuste 8)
         function renderPuestos(lista = puestosBD) {
             const grid = document.getElementById('gridPuestos');
             if (!grid) return;
@@ -1061,7 +1059,7 @@
                         </div>
                         <div class="mt-2 space-y-1.5">
                             <div class="flex items-center justify-between bg-gray-50 p-1 rounded-lg border border-gray-100">
-                                <div class="flex items-center gap-1 text-amber-500 font-extrabold text-[11px]">
+                                <div class="flex items-center gap-1 text-amber-500 font-extrabold text-[11px]" title="Calificación pública">
                                     <i class="fa-solid fa-star text-[10px]"></i>
                                     <span>${mercas} <span class="text-[9px] text-gray-400 font-normal">${textoMercas}</span></span>
                                 </div>
@@ -1084,7 +1082,7 @@
             renderPuestos();
         }
 
-        // ==================== AJUSTE 4: PERSISTENCIA NUBE DE FAVORITOS & CALIFICACIONES ====================
+        // Guardar favoritos de manera independiente por usuario sincronizado (Ajuste 4)
         function toggleFavorito(id) {
             if (!usuarioActual) { abrirAuthModal(); return; }
             const idx = favoritosBD.findIndex(f => (f.Usuario_Correo || f.correo) === usuarioActual.Correo && (f.Puesto_ID || f.puestoId) == id);
@@ -1110,7 +1108,7 @@
             renderPuestos();
         }
 
-        // AJUSTE 3: MODAL FAVORITOS CON TARJETAS CUADRADAS COMPACTAS
+        // Tarjetas compactas en Mis Puestos Favoritos (Ajuste 3)
         function verFavoritosModal() {
             if (!usuarioActual) { abrirAuthModal(); return; }
             const misFavsIds = favoritosBD.filter(f => (f.Usuario_Correo || f.correo) === usuarioActual.Correo).map(f => String(f.Puesto_ID || f.puestoId));
@@ -1119,7 +1117,7 @@
             const cont = document.getElementById('listaFavoritosModal');
             cont.innerHTML = '';
             if (favs.length === 0) {
-                cont.innerHTML = '<p class="text-xs text-gray-400 col-span-full text-center py-6">No tienes puestos favoritos guardados.</p>';
+                cont.innerHTML = '<p class="text-xs text-gray-400 col-span-full text-center py-4">No tienes puestos favoritos guardados.</p>';
             } else {
                 favs.forEach(p => {
                     const id = p.ID || p.id;
@@ -1136,7 +1134,7 @@
                             <div>
                                 <div class="flex items-center justify-between gap-1 mb-1">
                                     <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded truncate max-w-[75%]" title="${rubro}">${rubro}</span>
-                                    <button onclick="toggleFavorito(${id}); verFavoritosModal();" class="text-xs text-red-500 hover:scale-110 transition"><i class="fa-solid fa-heart"></i></button>
+                                    <button onclick="toggleFavorito(${id}); verFavoritosModal();" class="text-xs text-red-500 hover:scale-110 transition" title="Quitar de favoritos"><i class="fa-solid fa-heart"></i></button>
                                 </div>
                                 <h4 class="font-bold text-gray-900 text-xs leading-tight line-clamp-1">${nombre}</h4>
                                 <p class="text-[10px] text-gray-500 mt-0.5 line-clamp-2 h-6 leading-tight">${desc}</p>
@@ -1147,7 +1145,7 @@
                                         <i class="fa-solid fa-star text-[10px]"></i>
                                         <span>${mercas} <span class="text-[9px] text-gray-400 font-normal">${textoMercas}</span></span>
                                     </div>
-                                    <button onclick="cerrarModal('modalFavoritos'); abrirMercarModal(${id})" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>
+                                    <button onclick="abrirMercarModal(${id})" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>
                                 </div>
                                 <div class="grid grid-cols-3 gap-1">
                                     <a href="${web || '#'}" target="_blank" class="h-8 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded transition" title="Web"><i class="fa-solid fa-globe text-lg"></i></a>
@@ -1200,6 +1198,7 @@
             });
         }
 
+        // Persistencia robusta de calificaciones en Google Sheets (Ajuste 4)
         function confirmarMercar() {
             if (!usuarioActual || usuarioActual.rol === 'mercadero') {
                 cerrarModal('modalMercar');
@@ -1246,7 +1245,7 @@
             }
         }
 
-        // ==================== AUTENTICACIÓN, CAMUFLAJE CEO & FIREBASE ====================
+        // ==================== AUTENTICACIÓN & ADVERTENCIAS (AJUSTE 6) ====================
         function inicializarUbicacionUI() {
             const selProv = document.getElementById('selProvincia');
             if (!selProv) return;
@@ -1317,16 +1316,17 @@
         function abrirModalUbicacion() { document.getElementById('modalUbicacion').classList.remove('hidden'); }
         function abrirAuthModal() {
             if (usuarioActual) { verDashboard(); return; }
-            document.getElementById('msgLoginErrorContainer').classList.add('hidden');
+            document.getElementById('msgLoginError').classList.add('hidden');
             document.getElementById('modalAuth').classList.remove('hidden');
         }
 
-        // LOGIN CON ADVERTENCIA DE CREDENCIALES (AJUSTE 6)
+        // Login directo con advertencia visual inmediata (Ajuste 6)
         async function loginDirecto(e) {
             e.preventDefault();
             const email = document.getElementById('loginCorreo').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
-            const errorContainer = document.getElementById('msgLoginErrorContainer');
+            const errorContainer = document.getElementById('msgLoginError');
+            const errorTexto = document.getElementById('msgLoginErrorTexto');
 
             errorContainer.classList.add('hidden');
 
@@ -1384,8 +1384,8 @@
                 mostrarToast("Sesión iniciada correctamente.");
 
             } catch (error) {
+                errorTexto.innerText = "Credenciales incorrectas o usuario no registrado.";
                 errorContainer.classList.remove('hidden');
-                document.getElementById('msgLoginErrorTexto').innerText = "Credenciales incorrectas o usuario no registrado.";
             }
         }
 
@@ -1465,7 +1465,6 @@
                 const gpsPuesto = document.getElementById('regGps').value;
                 const webPuesto = document.getElementById('regPuestoWeb').value;
 
-                // Calificación inicial en 0 (Ajuste 6)
                 const nuevoPuesto = {
                     ID: Date.now(),
                     Nombre_Puesto: nombrePuesto,
@@ -1475,7 +1474,7 @@
                     Provincia: provinciaPuesto,
                     Distrito: distritoPuesto,
                     GPS: gpsPuesto,
-                    Mercas: 0,
+                    Mercas: 0, // Inicia con 0 estrellas (Ajuste 6)
                     WhatsApp: wspFinal,
                     Web_Catalogo: webPuesto || "",
                     Duenio_Nombre: nombreUsuario,
@@ -1577,15 +1576,17 @@
         }
 
         // ==================== DASHBOARDS & PANEL CEO ====================
-        // AJUSTE 5: CAMPO DE RUBRO CON LAS 20 OPCIONES EN EDICIÓN DE MERCADERO
         function renderDashMercadero() {
             const puesto = puestosBD.find(p => (p.Correo_Acceso || p.correo) === usuarioActual.Correo || (p.ID || p.id) === usuarioActual.puestoId) || puestosBD[0];
             if (!puesto) return;
             const puestoId = puesto.ID || puesto.id;
             const calificacionesPuesto = calificacionesBD.filter(c => (c.Puesto_ID || c.puestoId) == puestoId);
 
-            const rubrosOpciones = ["Alimentos", "Bebidas", "Carnes", "Pescados", "Frutas", "Regionales", "Gastronomía", "Panadería", "Lácteos", "Salud", "Belleza", "Moda", "Tecnología", "Hogar", "Ferretería", "Limpieza", "Mascotas", "Librería", "Servicios", "Otros"];
-            let rubroOptionsHtml = rubrosOpciones.map(r => `<option value="${r}" ${p.Rubro === r ? 'selected' : ''}>${r}</option>`).join('');
+            // Generar opciones del selector de rubros (Ajuste 5)
+            const opcionesRubros = rubrosConfig.filter(r => r.nombre !== "Todos").map(r => {
+                const selected = (puesto.Rubro || puesto.rubro) === r.nombre ? 'selected' : '';
+                return `<option value="${r.nombre}" ${selected}>${r.nombre}</option>`;
+            }).join('');
 
             document.getElementById('dashMercadero').innerHTML = `
                 <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
@@ -1612,7 +1613,7 @@
                             <div><label class="font-semibold text-gray-600">Nombre del Puesto</label><input type="text" id="editNombrePuesto" value="${puesto.Nombre_Puesto || puesto.nombre}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
                             <div>
                                 <label class="font-semibold text-gray-600">Rubro Principal</label>
-                                <select id="editRubroPuesto" class="w-full border rounded-lg p-2 mt-1 bg-white">${rubroOptionsHtml}</select>
+                                <select id="editRubroPuesto" class="w-full border rounded-lg p-2 mt-1 bg-white">${opcionesRubros}</select>
                             </div>
                             <div class="col-span-full"><label class="font-semibold text-gray-600">Descripción Breve</label><input type="text" id="editDescPuesto" value="${puesto.Descripcion || puesto.desc}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
                             <div><label class="font-semibold text-gray-600">WhatsApp</label><input type="text" id="editWspPuesto" value="${puesto.WhatsApp || puesto.whatsapp}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
