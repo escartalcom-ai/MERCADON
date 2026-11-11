@@ -11,8 +11,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Plus Jakarta Sans y Fredoka -->
+   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Fredoka:wght@400;700&display=swap" rel="stylesheet"> 
     <!-- Firebase SDK (Compat v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -22,23 +22,24 @@
 
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            red: '#E53935',
-                            darkRed: '#C62828',
-                            orange: '#FF6F00',
-                            gold: '#FFD700',
-                            whatsapp: '#25D366'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'Segoe UI', 'Roboto', 'sans-serif']
-                    }
+    theme: {
+        extend: {
+            colors: {
+                brand: {
+                    red: '#E53935',
+                    darkRed: '#C62828',
+                    orange: '#FF6F00',
+                    gold: '#FFD700',
+                    whatsapp: '#25D366'
                 }
+            },
+            fontFamily: {
+                sans: ['Plus Jakarta Sans', 'Segoe UI', 'Roboto', 'sans-serif'],
+                fredoka: ['Fredoka', 'sans-serif'] // <--- Añadido aquí
             }
         }
+    }
+}
     </script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -96,14 +97,16 @@
     <header id="headerPrincipal" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
-                <div class="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md flex-shrink-0">
-                    <img src="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png" loading="lazy" onerror="this.src='https://placehold.co/36x36/E53935/ffffff?text=M'" alt="Logo" class="w-full h-full object-cover rounded-xl">
-                </div>
-                <div class="leading-none">
-                    <span class="text-sm sm:text-lg font-black text-brand-red tracking-tight block">MERCATODON</span>
-                    <span class="text-[8px] text-gray-500 font-bold tracking-wider uppercase block mt-0.5">Puestos en Acción</span>
-                </div>
+    <div class="w-9 h-9 bg-brand-red rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md flex-shrink-0">
+        <img src="https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/logo.png" loading="lazy" onerror="this.src='https://placehold.co/36x36/E53935/ffffff?text=M'" alt="Logo" class="w-full h-full object-cover rounded-xl">
             </div>
+    <div class="leading-none">
+        <!-- MERCATODON en Fredoka Bold -->
+        <span class="text-sm sm:text-lg font-bold font-fredoka text-brand-red tracking-tight block">MERCATODON</span>
+        <!-- Puestos en Acción en Fredoka Normal -->
+        <span class="text-[8px] text-gray-500 font-normal font-fredoka tracking-wider uppercase block mt-0.5">Puestos en Acción</span>
+    </div>
+</div>
 
             <div class="flex items-center gap-1.5 sm:gap-2 ml-auto">
                 <button onclick="abrirModalUbicacion()" class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200">
