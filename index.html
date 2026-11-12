@@ -1344,7 +1344,9 @@
                         } else {
                             botonMercarHtml = `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
                         }
-
+             } else {
+                        botonMercarHtml = `<span class="text-[9px] font-bold text-gray-400 italic">Puesto Validado</span>`;
+                    }
                     cont.innerHTML += `
                         <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
                             <div>
