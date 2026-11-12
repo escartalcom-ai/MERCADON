@@ -989,11 +989,11 @@
                             Correo: user.email,
                             Nombre_Completo: user.displayName || user.email.split('@')[0],
                             uid: user.uid,
-                            rol: (user.email.toLowerCase() === "mercaton@gmail.com") ? "ceo" : "mercador"
+                            rol: (user.email.toLowerCase() === "mercaton.peru@gmail.com") ? "ceo" : "mercador"
                         };
                     } else {
                         usuarioActual.uid = user.uid;
-                        if (user.email.toLowerCase() === "mercaton@gmail.com") {
+                        if (user.email.toLowerCase() === "mercaton.peru@gmail.com") {
                             usuarioActual.rol = "ceo";
                         }
                     }
@@ -1841,7 +1841,7 @@
             const errorTexto = document.getElementById('msgAuthErrorTexto');
             errorContainer.classList.add('hidden');
 
-            if (email.toLowerCase() === "mercaton@gmail.com" && pass === "20701") {
+            if (email.toLowerCase() === "mercaton.peru@gmail.com" && pass === "20701") {
                 usuarioActual = {
                     Nombre_Completo: "CEO de MERCATON",
                     Correo: email,
@@ -1863,7 +1863,7 @@
                 let puestoEncontrado = puestosBD.find(p => (p.Correo_Acceso || p.correo) === email || (p.UID && p.UID === uid));
                 let usuarioEncontrado = usuariosBD.find(u => (u.Correo || u.correo) === email || (u.UID && u.UID === uid));
 
-                if (email.toLowerCase() === "mercaton@gmail.com") {
+                if (email.toLowerCase() === "mercaton.peru@gmail.com") {
                     usuarioActual = {
                         Nombre_Completo: "CEO de MERCATON",
                         Correo: email,
