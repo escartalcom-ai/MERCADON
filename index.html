@@ -107,10 +107,12 @@
     </div>
 
 
+
 <!-- HEADER -->
 <header id="headerPrincipal" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-1 sm:px-4 py-[2px] flex items-center justify-between gap-2">
 
+        <!-- MARCA -->
         <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
 
             <!-- LOGO -->
@@ -131,30 +133,121 @@
             </div>
         </div>
 
-        <!-- BOTONES -->
+        <!-- BOTONES DE NAVEGACIÓN -->
         <div class="flex items-center gap-1.5 sm:gap-2">
 
-            <button onclick="abrirModalUbicacion()" class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200">
-                <i class="fa-solid fa-location-dot text-[#ff0001] text-sm"></i>
-                <span id="labelUbicacionActual" class="hidden sm:inline truncate max-w-[120px]">Piura, Paita, Paita</span>
+            <!-- UBICACIÓN -->
+            <button id="btnUbicacionHeader"
+                    onclick="seleccionarIconoHeader('ubicacion', abrirModalUbicacion)"
+                    class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200"
+                    title="Ubicación">
+
+                <i class="fa-solid fa-location-dot text-base"></i>
+
+                <span id="labelUbicacionActual"
+                      class="hidden sm:inline truncate max-w-[120px]">
+                    Piura, Paita, Paita
+                </span>
             </button>
 
-            <button onclick="verFavoritosModal()" class="p-2 text-gray-700 hover:text-red-500 hover:bg-red-50 rounded-full transition relative" title="Favoritos">
+            <!-- FAVORITOS -->
+            <button id="btnFavoritosHeader"
+                    onclick="seleccionarIconoHeader('favoritos', verFavoritosModal)"
+                    class="p-2 text-black hover:bg-red-50 rounded-full transition relative"
+                    title="Favoritos">
+
                 <i class="fa-solid fa-heart text-base"></i>
             </button>
 
-            <button onclick="verPuestos()" class="p-2 text-gray-700 hover:text-[#ff0001] hover:bg-gray-100 rounded-full transition" title="Ver Puestos">
+            <!-- PUESTOS -->
+            <button id="btnPuestosHeader"
+                    onclick="seleccionarIconoHeader('puestos', verPuestos)"
+                    class="p-2 text-black hover:bg-gray-100 rounded-full transition"
+                    title="Ver Puestos">
+
                 <i class="fa-solid fa-shop text-base"></i>
             </button>
 
-            <button onclick="abrirAuthModal()" class="bg-gray-900 hover:bg-black text-white font-bold text-xs py-1.5 px-3 rounded-full shadow transition flex items-center gap-1">
-                <i class="fa-solid fa-user text-xs"></i>
-                <span class="hidden xs:inline" id="btnAuthText">Ingresar</span>
+            <!-- USUARIO -->
+            <button id="btnUsuarioHeader"
+                    onclick="seleccionarIconoHeader('usuario', abrirAuthModal)"
+                    class="p-2 flex items-center gap-1 text-black hover:text-[#ff0001] transition"
+                    title="Mi cuenta">
+
+                <i class="fa-regular fa-user text-base"></i>
+
+                <span class="hidden xs:inline text-xs font-semibold"
+                      id="btnAuthText">
+                    Ingresar
+                </span>
             </button>
 
         </div>
     </div>
 </header>
+
+<!-- CONTROL DE ESTADO DE LOS ÍCONOS -->
+<script>
+function seleccionarIconoHeader(nombre, accion) {
+
+    const botones = {
+        ubicacion: document.getElementById('btnUbicacionHeader'),
+        favoritos: document.getElementById('btnFavoritosHeader'),
+        puestos: document.getElementById('btnPuestosHeader'),
+        usuario: document.getElementById('btnUsuarioHeader')
+    };
+
+    // Recuperar selección anterior
+    let seleccionAnterior = localStorage.getItem('mercatodon_header_activo');
+
+    // Si se vuelve a pulsar el mismo ícono, se mantiene seleccionado
+    localStorage.setItem('mercatodon_header_activo', nombre);
+
+    // Actualizar colores de los cuatro íconos
+    Object.entries(botones).forEach(([clave, boton]) => {
+
+        if (!boton) return;
+
+        const icono = boton.querySelector('i');
+        const texto = boton.querySelector('span');
+
+        const activo = clave === nombre;
+
+        if (icono) {
+            icono.style.color = activo ? '#ff0001' : '#000000';
+        }
+
+        if (texto) {
+            texto.style.color = activo ? '#ff0001' : '#000000';
+        }
+    });
+
+    // Ejecutar la función original
+    if (typeof accion === 'function') {
+        accion();
+    }
+}
+
+// Restaurar el ícono seleccionado al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+
+    const activo = localStorage.getItem('mercatodon_header_activo');
+
+    if (!activo) return;
+
+    const boton = document.getElementById(
+        'btn' + activo.charAt(0).toUpperCase() + activo.slice(1) + 'Header'
+    );
+
+    if (boton) {
+        const icono = boton.querySelector('i');
+        const texto = boton.querySelector('span');
+
+        if (icono) icono.style.color = '#ff0001';
+        if (texto) texto.style.color = '#ff0001';
+    }
+});
+</script>
 
     <!-- CONTAINER PRINCIPAL -->
     <main class="flex-grow w-full m-0 p-0 space-y-1.5">
