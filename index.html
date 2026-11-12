@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="rgb(229, 57, 53)">
     <title>MERCATODON - Puestos en Acción</title>
     <!-- Favicon e Iconos (PNG) -->
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/favicon.png">
@@ -17,8 +18,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     
-    <!-- Manifest PWA -->
-    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"MERCATODON","short_name":"MERCATODON","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#E53935","icons":[{"src":"https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png","sizes":"192x192","type":"image/png"}]}'>
+    <!-- Manifest PWA Externo -->
+    <link rel="manifest" href="./manifest.json">
 
     <script>
         tailwind.config = {
@@ -26,11 +27,12 @@
                 extend: {
                     colors: {
                         brand: {
-                            red: '#E53935',
-                            darkRed: '#C62828',
-                            orange: '#FF6F00',
-                            gold: '#FFD700',
-                            whatsapp: '#25D366'
+                            red: 'rgb(229, 57, 53)',
+                            darkRed: 'rgb(198, 40, 40)',
+                            orange: 'rgb(255, 111, 0)',
+                            gold: 'rgb(255, 215, 0)',
+                            whatsapp: 'rgb(37, 211, 102)',
+                            pureRed: 'rgb(255, 0, 1)'
                         }
                     },
                     fontFamily: {
@@ -51,38 +53,38 @@
                 display: block;
             }
             .banner-scroll-container::-webkit-scrollbar-track {
-                background: #f1f1f1;
+                background: rgb(241, 241, 241);
                 border-radius: 4px;
             }
             .banner-scroll-container::-webkit-scrollbar-thumb {
-                background: #c5c5c5;
+                background: rgb(197, 197, 197);
                 border-radius: 4px;
             }
             .banner-scroll-container::-webkit-scrollbar-thumb:hover {
-                background: #999;
+                background: rgb(153, 153, 153);
             }
             .banner-scroll-container {
                 scrollbar-width: thin;
-                scrollbar-color: #c5c5c5 #f1f1f1;
+                scrollbar-color: rgb(197, 197, 197) rgb(241, 241, 241);
             }
         }
 
         .star-rating { cursor: pointer; transition: color 0.15s ease, transform 0.15s ease; }
         .star-rating:hover { transform: scale(1.25); }
-        .card-puesto { border: 2px solid #FFD700 !important; box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2); }
+        .card-puesto { border: 2px solid rgb(255, 215, 0) !important; box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2); }
         #toast { transition: opacity 0.3s ease, transform 0.3s ease; z-index: 99999; }
-        input[type="date"] {
+        .date-select-modern {
             border-radius: 0.75rem;
-            border: 1px solid #d1d5db;
-            padding: 0.5rem;
+            border: 1px solid rgb(209, 213, 219);
+            padding: 0.45rem 0.35rem;
             font-size: 0.75rem;
-            background-color: #fff;
+            background-color: rgb(255, 255, 255);
             outline: none;
-            transition: ring 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        input[type="date"]:focus {
-            ring: 2px;
-            border-color: #E53935;
+        .date-select-modern:focus {
+            border-color: rgb(229, 57, 53);
+            box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.15);
         }
     </style>
 </head>
@@ -94,7 +96,7 @@
         <span id="toastMsg">Mensaje del sistema</span>
     </div>
 
-    <!-- BANNER DE INSTALACIÓN PWA -->
+    <!-- BANNER / VENTANA DE INSTALACIÓN PWA -->
     <div id="bannerInstalacionPWA" class="hidden bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white px-3 py-2 text-xs flex items-center justify-between border-b border-gray-700">
         <div class="flex items-center gap-2">
             <i class="fa-solid fa-mobile-screen-button text-brand-orange text-sm"></i>
@@ -106,148 +108,116 @@
         </div>
     </div>
 
+    <!-- HEADER -->
+    <header id="headerPrincipal" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-1 sm:px-4 py-[2px] flex items-center justify-between gap-2">
 
+            <!-- MARCA -->
+            <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
+                <!-- LOGO -->
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-md flex-shrink-0 overflow-hidden" style="background-color: rgb(255, 0, 1);">
+                    <img src="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png"
+                         loading="lazy"
+                         onerror="this.src='https://placehold.co/40x40/ff0001/ffffff?text=M'"
+                         alt="Logo"
+                         class="w-full h-full object-cover">
+                </div>
 
-<!-- HEADER -->
-<header id="headerPrincipal" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-1 sm:px-4 py-[2px] flex items-center justify-between gap-2">
-
-        <!-- MARCA -->
-        <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
-
-            <!-- LOGO -->
-            <div class="w-8 h-8 bg-[#ff0001] rounded-xl flex items-center justify-center text-white shadow-md flex-shrink-0 overflow-hidden">
-                <img src="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png"
-                     loading="lazy"
-                     onerror="this.src='https://placehold.co/40x40/ff0001/ffffff?text=M'"
-                     alt="Logo"
-                     class="w-full h-full object-cover">
+                <!-- NOMBRE -->
+                <div class="leading-none flex-shrink-0">
+                    <span class="text-2xl sm:text-2xl font-bold tracking-tight block whitespace-nowrap"
+                          style="font-family: 'Fredoka', sans-serif; font-weight: 700; color: rgb(255, 0, 1);">
+                        MERCATODON
+                    </span>
+                </div>
             </div>
 
-            <!-- NOMBRE -->
-            <div class="leading-none flex-shrink-0">
-                <span class="text-2xl sm:text-2xl font-bold text-[#ff0001] tracking-tight block whitespace-nowrap"
-                      style="font-family: 'Fredoka', sans-serif; font-weight: 700;">
-                    MERCATODON
-                </span>
+            <!-- BOTONES DE NAVEGACIÓN -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <!-- UBICACIÓN -->
+                <button id="btnUbicacionHeader"
+                        onclick="seleccionarIconoHeader('ubicacion', abrirModalUbicacion)"
+                        class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200"
+                        title="Ubicación">
+                    <i class="fa-solid fa-location-dot text-base"></i>
+                    <span id="labelUbicacionActual" class="hidden sm:inline truncate max-w-[120px]">
+                        Piura, Paita, Paita
+                    </span>
+                </button>
+
+                <!-- FAVORITOS -->
+                <button id="btnFavoritosHeader"
+                        onclick="seleccionarIconoHeader('favoritos', verFavoritosModal)"
+                        class="p-2 text-black hover:bg-red-50 rounded-full transition relative"
+                        title="Favoritos">
+                    <i class="fa-solid fa-heart text-base"></i>
+                </button>
+
+                <!-- PUESTOS -->
+                <button id="btnPuestosHeader"
+                        onclick="seleccionarIconoHeader('puestos', verPuestos)"
+                        class="p-2 text-black hover:bg-gray-100 rounded-full transition"
+                        title="Ver Puestos">
+                    <i class="fa-solid fa-shop text-base"></i>
+                </button>
+
+                <!-- USUARIO -->
+                <button id="btnUsuarioHeader"
+                        onclick="seleccionarIconoHeader('usuario', abrirAuthModal)"
+                        class="p-2 flex items-center gap-1 text-black hover:text-brand-pureRed transition"
+                        title="Mi cuenta">
+                    <i class="fa-regular fa-user text-base"></i>
+                    <span class="hidden xs:inline text-xs font-semibold" id="btnAuthText">
+                        Ingresar
+                    </span>
+                </button>
             </div>
         </div>
+    </header>
 
-        <!-- BOTONES DE NAVEGACIÓN -->
-        <div class="flex items-center gap-1.5 sm:gap-2">
+    <!-- CONTROL DE ESTADO DE LOS ÍCONOS -->
+    <script>
+    function seleccionarIconoHeader(nombre, accion) {
+        const botones = {
+            ubicacion: document.getElementById('btnUbicacionHeader'),
+            favoritos: document.getElementById('btnFavoritosHeader'),
+            puestos: document.getElementById('btnPuestosHeader'),
+            usuario: document.getElementById('btnUsuarioHeader')
+        };
 
-            <!-- UBICACIÓN -->
-            <button id="btnUbicacionHeader"
-                    onclick="seleccionarIconoHeader('ubicacion', abrirModalUbicacion)"
-                    class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200"
-                    title="Ubicación">
+        localStorage.setItem('mercatodon_header_activo', nombre);
 
-                <i class="fa-solid fa-location-dot text-base"></i>
+        Object.entries(botones).forEach(([clave, boton]) => {
+            if (!boton) return;
+            const icono = boton.querySelector('i');
+            const texto = boton.querySelector('span');
+            const activo = clave === nombre;
 
-                <span id="labelUbicacionActual"
-                      class="hidden sm:inline truncate max-w-[120px]">
-                    Piura, Paita, Paita
-                </span>
-            </button>
+            if (icono) icono.style.color = activo ? 'rgb(255, 0, 1)' : 'rgb(0, 0, 0)';
+            if (texto) texto.style.color = activo ? 'rgb(255, 0, 1)' : 'rgb(0, 0, 0)';
+        });
 
-            <!-- FAVORITOS -->
-            <button id="btnFavoritosHeader"
-                    onclick="seleccionarIconoHeader('favoritos', verFavoritosModal)"
-                    class="p-2 text-black hover:bg-red-50 rounded-full transition relative"
-                    title="Favoritos">
-
-                <i class="fa-solid fa-heart text-base"></i>
-            </button>
-
-            <!-- PUESTOS -->
-            <button id="btnPuestosHeader"
-                    onclick="seleccionarIconoHeader('puestos', verPuestos)"
-                    class="p-2 text-black hover:bg-gray-100 rounded-full transition"
-                    title="Ver Puestos">
-
-                <i class="fa-solid fa-shop text-base"></i>
-            </button>
-
-            <!-- USUARIO -->
-            <button id="btnUsuarioHeader"
-                    onclick="seleccionarIconoHeader('usuario', abrirAuthModal)"
-                    class="p-2 flex items-center gap-1 text-black hover:text-[#ff0001] transition"
-                    title="Mi cuenta">
-
-                <i class="fa-regular fa-user text-base"></i>
-
-                <span class="hidden xs:inline text-xs font-semibold"
-                      id="btnAuthText">
-                    Ingresar
-                </span>
-            </button>
-
-        </div>
-    </div>
-</header>
-
-<!-- CONTROL DE ESTADO DE LOS ÍCONOS -->
-<script>
-function seleccionarIconoHeader(nombre, accion) {
-
-    const botones = {
-        ubicacion: document.getElementById('btnUbicacionHeader'),
-        favoritos: document.getElementById('btnFavoritosHeader'),
-        puestos: document.getElementById('btnPuestosHeader'),
-        usuario: document.getElementById('btnUsuarioHeader')
-    };
-
-    // Recuperar selección anterior
-    let seleccionAnterior = localStorage.getItem('mercatodon_header_activo');
-
-    // Si se vuelve a pulsar el mismo ícono, se mantiene seleccionado
-    localStorage.setItem('mercatodon_header_activo', nombre);
-
-    // Actualizar colores de los cuatro íconos
-    Object.entries(botones).forEach(([clave, boton]) => {
-
-        if (!boton) return;
-
-        const icono = boton.querySelector('i');
-        const texto = boton.querySelector('span');
-
-        const activo = clave === nombre;
-
-        if (icono) {
-            icono.style.color = activo ? '#ff0001' : '#000000';
+        if (typeof accion === 'function') {
+            accion();
         }
+    }
 
-        if (texto) {
-            texto.style.color = activo ? '#ff0001' : '#000000';
+    document.addEventListener('DOMContentLoaded', function() {
+        const activo = localStorage.getItem('mercatodon_header_activo');
+        if (!activo) return;
+
+        const boton = document.getElementById(
+            'btn' + activo.charAt(0).toUpperCase() + activo.slice(1) + 'Header'
+        );
+
+        if (boton) {
+            const icono = boton.querySelector('i');
+            const texto = boton.querySelector('span');
+            if (icono) icono.style.color = 'rgb(255, 0, 1)';
+            if (texto) texto.style.color = 'rgb(255, 0, 1)';
         }
     });
-
-    // Ejecutar la función original
-    if (typeof accion === 'function') {
-        accion();
-    }
-}
-
-// Restaurar el ícono seleccionado al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-
-    const activo = localStorage.getItem('mercatodon_header_activo');
-
-    if (!activo) return;
-
-    const boton = document.getElementById(
-        'btn' + activo.charAt(0).toUpperCase() + activo.slice(1) + 'Header'
-    );
-
-    if (boton) {
-        const icono = boton.querySelector('i');
-        const texto = boton.querySelector('span');
-
-        if (icono) icono.style.color = '#ff0001';
-        if (texto) texto.style.color = '#ff0001';
-    }
-});
-</script>
+    </script>
 
     <!-- CONTAINER PRINCIPAL -->
     <main class="flex-grow w-full m-0 p-0 space-y-1.5">
@@ -256,71 +226,72 @@ document.addEventListener('DOMContentLoaded', function() {
         <section id="secInicio" class="space-y-1.5">
             <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
                 <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out"></div>
-                <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition z-10"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition z-10"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 text-white p-2 rounded-full transition z-10" style="background-color: rgba(0, 0, 0, 0.45);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 text-white p-2 rounded-full transition z-10" style="background-color: rgba(0, 0, 0, 0.45);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
             </div>
 
             <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-1.5">
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionA', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionA', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                         <div id="bannerSeccionA" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
-                        <button onclick="scrollSeccion('bannerSeccionA', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionA', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-crown text-slate-400 text-xs"></i> Patrocinios</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionB', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionB', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                         <div id="bannerSeccionB" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
-                        <button onclick="scrollSeccion('bannerSeccionB', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionB', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
+                <!-- BLOQUE SPOTS COMERCIALES -->
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-video text-slate-400 text-xs"></i> Spots Comerciales</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionC', -300)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="pausarSpotsComerciales(); scrollSeccion('bannerSeccionC', -300)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                         <div id="bannerSeccionC" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
-                        <button onclick="scrollSeccion('bannerSeccionC', 300)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="pausarSpotsComerciales(); scrollSeccion('bannerSeccionC', 300)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-truck-fast text-slate-400 text-xs"></i> Servicios y Proveedores</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionD', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionD', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                         <div id="bannerSeccionD" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
-                        <button onclick="scrollSeccion('bannerSeccionD', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionD', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i> Campañas Especiales</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionE', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionE', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                         <div id="bannerSeccionE" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
-                        <button onclick="scrollSeccion('bannerSeccionE', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionE', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-handshake text-slate-400 text-xs"></i> Nuestros Aliados</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionF', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionF', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                         <div id="bannerSeccionF" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
-                        <button onclick="scrollSeccion('bannerSeccionF', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionF', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
                 <div class="space-y-1 relative group">
                     <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-bell text-slate-400 text-xs"></i> Novedades</h3>
                     <div class="relative flex items-center">
-                        <button onclick="scrollSeccion('bannerSeccionG', -200)" class="hidden sm:flex absolute left-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionG', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
                         <div id="bannerSeccionG" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
-                        <button onclick="scrollSeccion('bannerSeccionG', 200)" class="hidden sm:flex absolute right-0 z-10 bg-black/50 hover:bg-black/80 text-white w-7 h-7 rounded-full items-center justify-center transition shadow"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="scrollSeccion('bannerSeccionG', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
@@ -358,9 +329,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <!-- Banner Oficial -->
                 <div id="bannerOficialMercatodon" class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
-                    <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
+                    <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATODON</span>
                     <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
-                    <p class="text-[11px] text-white/90">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
+                    <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
                     <div class="pt-1 flex justify-center gap-4 text-lg text-white">
                         <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
                         <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
@@ -378,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         <!-- SECCIÓN 2: PUESTOS & RUBROS -->
         <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3 hidden">
-            <div class="sticky top-[53px] z-20 bg-gray-50/95 backdrop-blur-md py-1.5 border-b border-gray-200">
+            <div class="sticky top-[53px] z-20 backdrop-blur-md py-1.5 border-b border-gray-200" style="background-color: rgba(249, 250, 251, 0.95);">
                 <div id="contenedorRubros" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
             </div>
             
@@ -418,9 +389,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
 
                 <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
-                    <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
+                    <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATODON</span>
                     <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
-                    <p class="text-[11px] text-white/90">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
+                    <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
                     <div class="pt-1 flex justify-center gap-4 text-lg text-white">
                         <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
                         <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
@@ -470,13 +441,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             <div class="space-y-2 bg-gray-50 p-3 rounded-xl border">
                 <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
-                    <div class="flex gap-2 w-full sm:w-auto">
+                    <div class="flex gap-2 w-full sm:w-auto flex-wrap">
                         <button onclick="cambiarTabCeo('mercaderos')" id="tabBtnMercaderos" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-brand-red text-white transition">Ver Mercaderos (Puestos)</button>
                         <button onclick="cambiarTabCeo('compradores')" id="tabBtnCompradores" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition">Ver Compradores</button>
                         <button onclick="cambiarTabCeo('calificaciones')" id="tabBtnCalificaciones" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition">Ver Calificaciones</button>
                     </div>
                     <div class="w-full sm:w-64">
-                        <input type="text" id="inputBusquedaCeo" onkeyup="renderCeoTable()" placeholder="Búsqueda inteligente..." class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                        <input type="text" id="inputBusquedaCeo" onkeyup="renderCeoTable()" placeholder="Búsqueda inteligente (puesto, usuario...)..." class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2 items-center text-xs pt-1">
@@ -489,10 +460,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         <option value="anio">Este Año</option>
                         <option value="personalizado">Rango Personalizado</option>
                     </select>
-                    <div id="rangoPersonalizadoCeoContainer" class="hidden flex gap-1 items-center">
-                        <input type="date" id="ceoFechaInicio" onchange="renderCeoTable()">
-                        <span>a</span>
-                        <input type="date" id="ceoFechaFin" onchange="renderCeoTable()">
+                    <!-- SELECTOR RÁPIDO DÍA / MES / AÑO PARA FILTRACIÓN -->
+                    <div id="rangoPersonalizadoCeoContainer" class="hidden flex flex-wrap gap-1.5 items-center bg-white p-1.5 rounded-xl border">
+                        <span class="text-[10px] font-bold text-gray-500">Desde:</span>
+                        <select id="ceoIniDia" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <select id="ceoIniMes" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <select id="ceoIniAnio" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <span class="text-[10px] font-bold text-gray-500 ml-1">Hasta:</span>
+                        <select id="ceoFinDia" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <select id="ceoFinMes" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <select id="ceoFinAnio" onchange="renderCeoTable()" class="date-select-modern"></select>
                     </div>
                 </div>
             </div>
@@ -537,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- MODALES -->
 
     <!-- MODAL UBICACIÓN -->
-    <div id="modalUbicacion" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="modalUbicacion" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalUbicacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-bold text-gray-900 text-base flex items-center gap-2"><i class="fa-solid fa-location-dot text-brand-red"></i> Ubicación en la Región Piura</h3>
@@ -560,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     <!-- MODAL AUTH / LOGIN -->
-    <div id="modalAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="modalAuth" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center">
@@ -623,14 +600,14 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     <!-- MODAL REGISTRO -->
-    <div id="modalFormAuth" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="modalFormAuth" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto no-scrollbar">
             <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 id="formAuthTitulo" class="font-bold text-base text-gray-900 border-b pb-2">Registro de Usuario</h3>
 
             <form id="formAuth" onsubmit="procesarAuth(event)" class="space-y-2.5">
                 <input type="hidden" id="authRol">
-                <div id="camposMercadero" class="space-y-2.5 hidden bg-red-50/50 p-2.5 rounded-xl border border-red-100">
+                <div id="camposMercadero" class="space-y-2.5 hidden p-2.5 rounded-xl border border-red-100" style="background-color: rgba(254, 242, 242, 0.5);">
                     <div class="text-[10px] font-black text-brand-red uppercase tracking-wide">Datos del Puesto</div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Nombre del Puesto *</label>
@@ -682,20 +659,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="space-y-2.5">
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos del Dueño*</label>
-                        <input type="text" id="regNombreCompleto" required placeholder="Nombres y Apellidos del Dueño del Puesto" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        <input type="text" id="regNombreCompleto" required placeholder="Nombres y Apellidos" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
                     <div id="campoWhatsappMercador">
                         <label class="text-xs font-semibold text-gray-700">WhatsApp *</label>
                         <input type="tel" id="regWhatsappMercador" placeholder="930528649" class="w-full border rounded-xl p-2 text-xs outline-none">
                     </div>
-                    <div id="camposExtraMercador" class="grid grid-cols-2 gap-2">
+                    <div id="camposExtraMercador" class="space-y-2.5">
                         <div>
                             <label class="text-xs font-semibold text-gray-700">Oficio / Profesión</label>
                             <input type="text" id="regOficio" placeholder="Ej: Independiente" class="w-full border rounded-xl p-2 text-xs outline-none">
                         </div>
                         <div>
-                            <label class="text-xs font-semibold text-gray-700">Cumpleaños</label>
-                            <input type="date" id="regCumpleanos" class="w-full border rounded-xl p-2 text-xs outline-none">
+                            <label class="text-xs font-semibold text-gray-700">Cumpleaños (Día / Mes / Año)</label>
+                            <div class="grid grid-cols-3 gap-1.5 mt-1">
+                                <select id="regCumpleDia" class="date-select-modern w-full"></select>
+                                <select id="regCumpleMes" class="date-select-modern w-full"></select>
+                                <select id="regCumpleAnio" class="date-select-modern w-full"></select>
+                            </div>
                         </div>
                     </div>
                     <div id="campoResidenciaMercador">
@@ -725,7 +706,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     <!-- MODAL MERCAR (CALIFICAR) -->
-    <div id="modalMercar" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="modalMercar" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalMercar')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div id="infoPuestoMercar" class="space-y-1 text-center">
@@ -750,7 +731,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     <!-- MODAL DONACIÓN -->
-    <div id="modalDonacion" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="modalDonacion" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative">
             <button onclick="cerrarModal('modalDonacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center">
@@ -773,7 +754,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     <!-- MODAL FAVORITOS -->
-    <div id="modalFavoritos" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="modalFavoritos" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-5 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
             <button onclick="cerrarModal('modalFavoritos')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="flex flex-col sm:flex-row justify-between items-center gap-2 border-b pb-2">
@@ -787,7 +768,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     <!-- MODAL DETALLE CEO -->
-    <div id="modalCeoDetalle" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="modalCeoDetalle" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative max-h-[85vh] overflow-y-auto">
             <button onclick="cerrarModal('modalCeoDetalle')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 id="ceoDetalleTitulo" class="font-bold text-base text-gray-900 border-b pb-2">Información del Usuario</h3>
@@ -867,6 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let deferredPromptPWA = null;
         let busquedaExpandida = false;
         let intervalosSecciones = {};
+        let funcionesReanudarSecciones = {};
         
         let intervaloSlider = null;
         let mainSegundosGlobal = 5;
@@ -881,9 +863,120 @@ document.addEventListener('DOMContentLoaded', function() {
             "G": "bannerSeccionG"
         };
 
+        // --- HELPER GLOBAL: OBTENER NOMBRE DEL PUESTO POR ID ---
+        function obtenerNombrePuestoPorId(puestoId) {
+            const p = puestosBD.find(x => String(x.ID || x.id) === String(puestoId));
+            return p ? (p.Nombre_Puesto || p.nombre) : 'Puesto sin nombre registrado';
+        }
+
+        // --- HELPER GLOBAL: FORMATO 24 HORAS (DD/MM/YYYY HH:mm) ---
+        function obtenerFechaHora24hActual() {
+            const ahora = new Date();
+            const d = String(ahora.getDate()).padStart(2, '0');
+            const m = String(ahora.getMonth() + 1).padStart(2, '0');
+            const y = ahora.getFullYear();
+            const hh = String(ahora.getHours()).padStart(2, '0');
+            const mm = String(ahora.getMinutes()).padStart(2, '0');
+            return `${d}/${m}/${y} ${hh}:${mm}`;
+        }
+
+        function formatearFechaHora24h(fechaVal) {
+            if (!fechaVal) return 'N/A';
+            const str = String(fechaVal).trim();
+            // Detectar formato DD/MM/YYYY con hora 12h/24h
+            const regexPe = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{2})(?::\d{2})?\s*(a\.?\s*m\.?|p\.?\s*m\.?|am|pm)?)?$/i;
+            const matchPe = str.match(regexPe);
+            if (matchPe) {
+                const dia = matchPe[1].padStart(2, '0');
+                const mes = matchPe[2].padStart(2, '0');
+                const anio = matchPe[3];
+                if (matchPe[4] !== undefined && matchPe[5] !== undefined) {
+                    let horas = parseInt(matchPe[4], 10);
+                    const mins = matchPe[5].padStart(2, '0');
+                    const mer = (matchPe[6] || '').toLowerCase().replace(/[\s\.]/g, '');
+                    if (mer === 'pm' && horas < 12) horas += 12;
+                    if (mer === 'am' && horas === 12) horas = 0;
+                    return `${dia}/${mes}/${anio} ${String(horas).padStart(2, '0')}:${mins}`;
+                }
+                return `${dia}/${mes}/${anio} 00:00`;
+            }
+            const parsed = new Date(str);
+            if (!isNaN(parsed.getTime())) {
+                const d = String(parsed.getDate()).padStart(2, '0');
+                const m = String(parsed.getMonth() + 1).padStart(2, '0');
+                const y = parsed.getFullYear();
+                const hh = String(parsed.getHours()).padStart(2, '0');
+                const mm = String(parsed.getMinutes()).padStart(2, '0');
+                return `${d}/${m}/${y} ${hh}:${mm}`;
+            }
+            return str;
+        }
+
+        function parsearFechaSegura(fechaStr) {
+            if (!fechaStr) return new Date(0);
+            const str = String(fechaStr).trim();
+            const matchPe = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{2}))?/);
+            if (matchPe) {
+                const dia = parseInt(matchPe[1], 10);
+                const mes = parseInt(matchPe[2], 10) - 1;
+                const anio = parseInt(matchPe[3], 10);
+                const hh = matchPe[4] ? parseInt(matchPe[4], 10) : 0;
+                const mm = matchPe[5] ? parseInt(matchPe[5], 10) : 0;
+                return new Date(anio, mes, dia, hh, mm);
+            }
+            const d = new Date(str);
+            return isNaN(d.getTime()) ? new Date(0) : d;
+        }
+
+        // --- SELECTORES MODERNOS DE FECHA (DÍA / MES / AÑO) ---
+        function inicializarSelectoresFechaModernos() {
+            const meses = [
+                { val: '01', txt: 'Enero' }, { val: '02', txt: 'Febrero' }, { val: '03', txt: 'Marzo' },
+                { val: '04', txt: 'Abril' }, { val: '05', txt: 'Mayo' }, { val: '06', txt: 'Junio' },
+                { val: '07', txt: 'Julio' }, { val: '08', txt: 'Agosto' }, { val: '09', txt: 'Septiembre' },
+                { val: '10', txt: 'Octubre' }, { val: '11', txt: 'Noviembre' }, { val: '12', txt: 'Diciembre' }
+            ];
+            const anioActual = new Date().getFullYear();
+
+            const poblarGrupoFecha = (idDia, idMes, idAnio, anioInicio, anioFin, defDia, defMes, defAnio) => {
+                const sDia = document.getElementById(idDia);
+                const sMes = document.getElementById(idMes);
+                const sAnio = document.getElementById(idAnio);
+                if (!sDia || !sMes || !sAnio) return;
+
+                sDia.innerHTML = '';
+                for (let d = 1; d <= 31; d++) {
+                    const v = String(d).padStart(2, '0');
+                    sDia.innerHTML += `<option value="${v}">${d}</option>`;
+                }
+
+                sMes.innerHTML = meses.map(m => `<option value="${m.val}">${m.txt}</option>`).join('');
+
+                sAnio.innerHTML = '';
+                for (let a = anioFin; a >= anioInicio; a--) {
+                    sAnio.innerHTML += `<option value="${a}">${a}</option>`;
+                }
+
+                sDia.value = defDia;
+                sMes.value = defMes;
+                sAnio.value = String(defAnio);
+            };
+
+            // Cumpleaños en Registro (1935 hasta año actual)
+            poblarGrupoFecha('regCumpleDia', 'regCumpleMes', 'regCumpleAnio', 1935, anioActual, '01', '01', 1995);
+
+            // Rango Personalizado CEO (2024 hasta año actual + 1)
+            const hoy = new Date();
+            const dHoy = String(hoy.getDate()).padStart(2, '0');
+            const mHoy = String(hoy.getMonth() + 1).padStart(2, '0');
+            poblarGrupoFecha('ceoIniDia', 'ceoIniMes', 'ceoIniAnio', 2024, anioActual + 1, '01', mHoy, anioActual);
+            poblarGrupoFecha('ceoFinDia', 'ceoFinMes', 'ceoFinAnio', 2024, anioActual + 1, dHoy, mHoy, anioActual);
+        }
+
         window.onload = function() {
             inicializarUbicacionUI();
             inicializarUbicacionRegistro();
+            inicializarSelectoresFechaModernos();
             renderRubros();
             sincronizarDatosRemotos();
             registrarServiceWorkerNativo();
@@ -939,7 +1032,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     payload.keyColIndex = keyCol;
                     payload.keyValue = keyVal;
                 }
-                let res = await fetch(APPS_SCRIPT_URL, {
+                await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
@@ -991,16 +1084,33 @@ document.addEventListener('DOMContentLoaded', function() {
             if (el) el.scrollBy({ left: amount, behavior: 'smooth' });
         }
 
+        // --- EXTRACCIÓN UNIVERSAL DE YOUTUBE SIN RESTRICCIONES ---
         function obtenerEmbedYoutube(url) {
             if (!url) return null;
-            let videoId = null;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            if (match && match[2].length === 11) {
-                videoId = match[2];
-                return `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0`;
+            const strUrl = String(url).trim();
+            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const match = strUrl.match(regExp);
+            if (match && match[1]) {
+                const videoId = match[1];
+                return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`;
             }
             return null;
+        }
+
+        // --- PAUSA DEDICADA PARA SPOTS COMERCIALES (1 HORA = 3600000 ms) ---
+        function pausarSpotsComerciales() {
+            if (intervalosSecciones["C"]) {
+                clearInterval(intervalosSecciones["C"]);
+                intervalosSecciones["C"] = null;
+            }
+            if (timeoutPausasSliders["C"]) {
+                clearTimeout(timeoutPausasSliders["C"]);
+            }
+            timeoutPausasSliders["C"] = setTimeout(() => {
+                if (typeof funcionesReanudarSecciones["C"] === 'function') {
+                    funcionesReanudarSecciones["C"]();
+                }
+            }, 3600000); // 1 hora exacta de inactividad
         }
 
         function renderBannersDinamicos() {
@@ -1043,7 +1153,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     mainCount++;
                     mainSegundosGlobal = segs;
                     if (embedYoutube) {
-                        slidesHtml += `<div class="w-full h-full flex-shrink-0 relative block"><iframe class="w-full h-full rounded-xl" src="${embedYoutube}" frameborder="0" allowfullscreen loading="lazy"></iframe></div>`;
+                        slidesHtml += `<div class="w-full h-full flex-shrink-0 relative block"><iframe class="w-full h-full rounded-xl" src="${embedYoutube}" title="${b.Nombre_Cliente || 'Video'}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>`;
                     } else {
                         slidesHtml += `<a href="${destinoUrl}" target="_blank" class="w-full h-full flex-shrink-0 relative block"><img src="${imgUrl}" loading="lazy" class="w-full h-full object-cover pointer-events-none" alt="${b.Nombre_Cliente || 'Banner'}"></a>`;
                     }
@@ -1051,10 +1161,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     const contenedorId = seccionesMapGlobal[secKey];
                     let bannerCardHtml = "";
 
-                    if (embedYoutube) {
-                        bannerCardHtml = `<div class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video block"><iframe class="w-full h-full" src="${embedYoutube}" frameborder="0" allowfullscreen loading="lazy"></iframe></div>`;
-                    } else if (secKey === "C") {
-                        bannerCardHtml = `<a href="${destinoUrl}" target="_blank" class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video flex items-center justify-center text-white block"><img src="${imgUrl}" loading="lazy" class="w-full h-full object-cover absolute inset-0 opacity-70" alt="${b.Nombre_Cliente || 'Spot'}"><i class="fa-solid fa-circle-play text-3xl text-red-500 z-10"></i><span class="absolute bottom-2 left-2 text-[10px] bg-black/60 px-2 py-0.5 rounded font-bold z-10">${b.Nombre_Cliente || 'Spot'}</span></a>`;
+                    if (secKey === "C") {
+                        // En Spots Comerciales: priorizar reproducción directa de YouTube sin restricciones
+                        const youtubeSpot = embedYoutube || obtenerEmbedYoutube(imgUrl) || obtenerEmbedYoutube(destinoUrl);
+                        if (youtubeSpot) {
+                            bannerCardHtml = `
+                                <div ontouchstart="pausarSpotsComerciales()" onclick="pausarSpotsComerciales()" class="min-w-[260px] sm:min-w-[320px] bg-black rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video block border border-gray-800">
+                                    <iframe class="w-full h-full" src="${youtubeSpot}" title="${b.Nombre_Cliente || 'Spot Comercial'}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+                                </div>`;
+                        } else {
+                            bannerCardHtml = `
+                                <a href="${destinoUrl}" target="_blank" ontouchstart="pausarSpotsComerciales()" onclick="pausarSpotsComerciales()" class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video flex items-center justify-center text-white block">
+                                    <img src="${imgUrl}" loading="lazy" class="w-full h-full object-cover absolute inset-0 opacity-75" alt="${b.Nombre_Cliente || 'Spot'}">
+                                    <i class="fa-solid fa-circle-play text-3xl text-red-500 z-10"></i>
+                                    <span class="absolute bottom-2 left-2 text-[10px] px-2 py-0.5 rounded font-bold z-10" style="background-color: rgba(0, 0, 0, 0.65);">${b.Nombre_Cliente || 'Spot'}</span>
+                                </a>`;
+                        }
+                    } else if (embedYoutube) {
+                        bannerCardHtml = `<div class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video block"><iframe class="w-full h-full" src="${embedYoutube}" title="${b.Nombre_Cliente || 'Video'}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>`;
                     } else {
                         bannerCardHtml = `<a href="${destinoUrl}" target="_blank" class="min-w-[120px] max-w-[140px] sm:min-w-[150px] sm:max-w-[160px] bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 block hover:border-brand-red transition"><img src="${imgUrl}" loading="lazy" class="w-full h-24 sm:h-28 object-cover rounded-xl" alt="${b.Nombre_Cliente || 'Publicidad'}"></a>`;
                     }
@@ -1084,24 +1208,41 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (cont.scrollLeft + cont.clientWidth >= cont.scrollWidth - 10) {
                                 cont.scrollTo({ left: 0, behavior: 'smooth' });
                             } else {
-                                cont.scrollBy({ left: 200, behavior: 'smooth' });
+                                cont.scrollBy({ left: 220, behavior: 'smooth' });
                             }
                         }, segs * 1000);
                     }
 
+                    funcionesReanudarSecciones[secCode] = iniciarIntervaloSeccion;
                     iniciarIntervaloSeccion();
 
-                    const pausarSeccionHandler = () => {
-                        if (intervalosSecciones[secCode]) clearInterval(intervalosSecciones[secCode]);
-                        if (timeoutPausasSliders[secCode]) clearTimeout(timeoutPausasSliders[secCode]);
-                        timeoutPausasSliders[secCode] = setTimeout(() => {
-                            iniciarIntervaloSeccion();
-                        }, 300000); // 5 minutos de inactividad antes de reanudar
-                    };
+                    if (secCode === "C") {
+                        // En Spots Comerciales: contacto táctil detiene de inmediato y reanuda tras 1 hora (3600000 ms) sin actividad
+                        cont.addEventListener('touchstart', pausarSpotsComerciales, { passive: true });
+                        cont.addEventListener('touchmove', pausarSpotsComerciales, { passive: true });
+                        cont.addEventListener('mousedown', pausarSpotsComerciales);
+                        cont.addEventListener('click', pausarSpotsComerciales);
+                    } else {
+                        const pausarSeccionHandler = () => {
+                            if (intervalosSecciones[secCode]) clearInterval(intervalosSecciones[secCode]);
+                            if (timeoutPausasSliders[secCode]) clearTimeout(timeoutPausasSliders[secCode]);
+                            timeoutPausasSliders[secCode] = setTimeout(() => {
+                                iniciarIntervaloSeccion();
+                            }, 300000);
+                        };
+                        cont.addEventListener('click', pausarSeccionHandler);
+                        cont.addEventListener('touchstart', pausarSeccionHandler, { passive: true });
+                        cont.addEventListener('mousedown', pausarSeccionHandler);
+                    }
+                }
+            });
 
-                    cont.addEventListener('click', pausarSeccionHandler);
-                    cont.addEventListener('touchstart', pausarSeccionHandler, { passive: true });
-                    cont.addEventListener('mousedown', pausarSeccionHandler);
+            // Detectar también si el usuario toca un iframe de YouTube dentro de Spots Comerciales (cambio de foco de ventana)
+            window.addEventListener('blur', () => {
+                const activeEl = document.activeElement;
+                const contC = document.getElementById('bannerSeccionC');
+                if (activeEl && activeEl.tagName === 'IFRAME' && contC && contC.contains(activeEl)) {
+                    pausarSpotsComerciales();
                 }
             });
 
@@ -1112,7 +1253,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (timeoutPausasSliders['main']) clearTimeout(timeoutPausasSliders['main']);
                     timeoutPausasSliders['main'] = setTimeout(() => {
                         iniciarSlider(mainSegundosGlobal);
-                    }, 300000); // 5 minutos de inactividad
+                    }, 300000);
                 };
                 sliderContainerEl.addEventListener('click', pausarSliderHandler);
                 sliderContainerEl.addEventListener('touchstart', pausarSliderHandler, { passive: true });
@@ -1326,9 +1467,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         botonMercarHtml = `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
                     }
-    } else {
-
                 }
+
                 grid.innerHTML += `
                     <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
                         <div>
@@ -1385,7 +1525,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ID_Favorito: Date.now(),
                     Usuario_Correo: userCorreo,
                     Puesto_ID: id,
-                    Fecha: new Date().toLocaleString(),
+                    Fecha: obtenerFechaHora24hActual(),
                     Usuario_UID: userUid
                 };
                 favoritosBD.push(nuevoFav);
@@ -1453,8 +1593,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         } else {
                             botonMercarHtml = `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
                         }
-             } else {
                     }
+
                     cont.innerHTML += `
                         <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
                             <div>
@@ -1539,8 +1679,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const comentario = document.getElementById('mercarComentario').value || "Sin comentario";
             const nombreUsuario = usuarioActual.Nombre_Completo || usuarioActual.nombre;
             const userUid = usuarioActual.uid || "";
+            const fechaHora24 = obtenerFechaHora24hActual();
 
-            // Verificar si ya existe calificación previa de este usuario para actualizarla o agregarla sincronizadamente
             const indiceExistente = calificacionesBD.findIndex(c => 
                 String(c.Puesto_ID || c.puestoId) === String(puestoSeleccionadoId) && 
                 ((c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(nombreUsuario).toLowerCase()) ||
@@ -1549,10 +1689,9 @@ document.addEventListener('DOMContentLoaded', function() {
             );
 
             if (indiceExistente >= 0) {
-                // Actualización síncrona
                 calificacionesBD[indiceExistente].Estrellas = calificacionTemp;
                 calificacionesBD[indiceExistente].Comentario = comentario;
-                calificacionesBD[indiceExistente].Fecha_Hora = new Date().toLocaleString('es-PE', { hour12: false });
+                calificacionesBD[indiceExistente].Fecha_Hora = fechaHora24;
                 
                 const calReg = calificacionesBD[indiceExistente];
                 await enviarASheets('calificaciones', [
@@ -1567,7 +1706,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 renderPuestos();
                 if(usuarioActual && usuarioActual.rol === 'mercador') {
-                    renderDashMercador();
+                    renderListaCalificacionesMercador();
                 }
                 if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
                     verFavoritosModal();
@@ -1584,7 +1723,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Usuario_Nombre: nombreUsuario,
                     Estrellas: calificacionTemp,
                     Comentario: comentario,
-                    Fecha_Hora: new Date().toLocaleString('es-PE', { hour12: false }),
+                    Fecha_Hora: fechaHora24,
                     Usuario_UID: userUid,
                     Usuario_Correo: usuarioActual.Correo || ''
                 };
@@ -1602,7 +1741,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 renderPuestos();
                 if(usuarioActual && usuarioActual.rol === 'mercador') {
-                    renderDashMercador();
+                    renderListaCalificacionesMercador();
                 }
                 if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
                     verFavoritosModal();
@@ -1765,7 +1904,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         WhatsApp: "930528649",
                         rol: "mercador",
                         oficio: "Comerciante",
-                        cumpleanos: "2000-01-01",
+                        cumpleanos: "01/01/2000",
                         residencia: "",
                         uid: uid
                     };
@@ -1774,7 +1913,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
                 cerrarModal('modalAuth');
                 actualizarHeaderUsuario();
-                renderPuestos(); // Actualizar interfaz de puestos (ocultar botones mercar si es mercadero)
+                renderPuestos();
                 if(usuarioActual.rol === 'ceo') {
                     verCeoPanel();
                 } else {
@@ -1860,6 +1999,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
                 const uid = userCredential.user.uid;
+                const fechaReg24 = obtenerFechaHora24hActual();
 
                 if (rol === 'mercadero') {
                     const nombrePuesto = document.getElementById('regPuestoNombre').value.trim();
@@ -1885,7 +2025,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         Duenio_Nombre: nombreUsuario,
                         Correo_Acceso: email,
                         Estado: "Activo",
-                        UID: uid
+                        UID: uid,
+                        Fecha_Registro: fechaReg24
                     };
                     puestosBD.push(nuevoPuesto);
                     
@@ -1920,8 +2061,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     renderPuestos();
                 } else {
                     const oficio = document.getElementById('regOficio').value || "Comerciante";
-                    const cumpleanos = document.getElementById('regCumpleanos').value || "2000-01-01";
-                    const fechaReg = new Date().toLocaleString('es-PE', { hour12: false });
+                    const cDia = document.getElementById('regCumpleDia').value || "01";
+                    const cMes = document.getElementById('regCumpleMes').value || "01";
+                    const cAnio = document.getElementById('regCumpleAnio').value || "2000";
+                    const cumpleanos = `${cDia}/${cMes}/${cAnio}`;
 
                     const nuevoUsuario = {
                         ID_Usuario: Date.now(),
@@ -1930,7 +2073,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         WhatsApp: wspFinal,
                         Oficio: oficio,
                         Cumpleanos: cumpleanos,
-                        Fecha_Registro: fechaReg,
+                        Fecha_Registro: fechaReg24,
                         Estado: "Activo",
                         UID: uid,
                         Residencia: residencia
@@ -1999,7 +2142,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const puestoId = puesto.ID || puesto.id;
             
             let calificacionesPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(puestoId));
-            calificacionesPuesto.sort((a, b) => new Date(b.Fecha_Hora || b.fecha || 0) - new Date(a.Fecha_Hora || a.fecha || 0));
+            calificacionesPuesto.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
 
             const rubrosOpciones = ["Alimentos", "Bebidas", "Carnes", "Pescados", "Frutas", "Regionales", "Gastronomía", "Panadería", "Lácteos", "Salud", "Belleza", "Moda", "Tecnología", "Hogar", "Ferretería", "Limpieza", "Mascotas", "Librería", "Servicios", "Otros"];
             const rubroActual = puesto.Rubro || puesto.rubro || "Alimentos";
@@ -2037,7 +2180,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <span class="text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</span>
                                     </div>
                                     <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
-                                    <div class="text-[10px] text-gray-400 text-right pt-0.5"><i class="fa-regular fa-clock"></i> ${c.Fecha_Hora || 'N/A'}</div>
+                                    <div class="text-[10px] text-gray-400 text-right pt-0.5"><i class="fa-regular fa-clock"></i> ${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</div>
                                 </div>
                             `).join('') || '<p class="text-xs text-gray-400 py-3 text-center">Aún no hay calificaciones registradas en tu puesto.</p>'}
                         </div>
@@ -2099,9 +2242,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
 
                         <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
-                            <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
+                            <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATODON</span>
                             <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
-                            <p class="text-[11px] text-white/90">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
+                            <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
                             <div class="pt-1 flex justify-center gap-4 text-lg text-white">
                                 <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
                                 <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
@@ -2163,24 +2306,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-
+        // --- PANEL DE MERCADOR(A) CON BÚSQUEDA EN TIEMPO REAL SIN PERDER FOCO NI TEXTO ---
         function renderDashMercador() {
             const misCals = calificacionesBD.filter(c => 
                 (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
                 (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
                 (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
             );
-
-            misCals.sort((a, b) => new Date(b.Fecha_Hora || b.fecha || 0) - new Date(a.Fecha_Hora || a.fecha || 0));
-
-            const queryMercador = document.getElementById('buscadorMisCalificaciones')?.value.toLowerCase() || '';
-            let filtradasCals = misCals;
-            if(queryMercador) {
-                filtradasCals = misCals.filter(c => 
-                    String(c.Comentario || '').toLowerCase().includes(queryMercador) ||
-                    String(c.Puesto_ID || '').toLowerCase().includes(queryMercador)
-                );
-            }
 
             document.getElementById('dashMercador').innerHTML = `
                 <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
@@ -2201,32 +2333,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <div class="space-y-2 pt-2 border-t">
                         <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
-                            <h4 class="text-xs font-bold text-gray-800 uppercase">Puestos Calificados (${misCals.length})</h4>
-                            <div class="w-full sm:w-60">
-                                <input type="text" id="buscadorMisCalificaciones" onkeyup="renderDashMercador()" placeholder="Búsqueda inteligente en historial..." class="w-full border rounded-lg p-1.5 text-xs bg-gray-50 outline-none bg-white">
+                            <h4 id="tituloContadorCalsMercador" class="text-xs font-bold text-gray-800 uppercase">Puestos Calificados (${misCals.length})</h4>
+                            <div class="w-full sm:w-64 relative">
+                                <i class="fa-solid fa-magnifying-glass text-gray-400 text-xs absolute left-2.5 top-2.5"></i>
+                                <input type="text" id="buscadorMisCalificaciones" oninput="renderListaCalificacionesMercador()" placeholder="Buscar puesto o comentario..." class="w-full border border-gray-300 rounded-lg pl-7 pr-2.5 py-1.5 text-xs text-gray-900 bg-white outline-none focus:border-brand-red select-text">
                             </div>
                         </div>
 
-
-                        <div class="space-y-2 max-h-72 overflow-y-auto">
-                            ${filtradasCals.map((c, idx) => {
-                                const puestoCalificado = puestosBD.find(p => String(p.ID || p.id) === String(c.Puesto_ID || c.puestoId));
-                                const nombrePuesto = puestoCalificado ? (puestoCalificado.Nombre_Puesto || puestoCalificado.nombre) : `Puesto ID: ${c.Puesto_ID}`;
-                                return `
-                                    <div class="bg-white border border-gray-200 p-3 rounded-xl text-xs space-y-1.5 shadow-sm">
-                                        <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
-                                            <span>#${idx + 1} - ${nombrePuesto}</span>
-                                            <span class="text-amber-500">${'★'.repeat(c.Estrellas || 5)}</span>
-                                        </div>
-                                        <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
-                                        <div class="flex justify-between items-center pt-1">
-                                            <span class="text-[10px] text-gray-400"><i class="fa-regular fa-clock"></i> ${c.Fecha_Hora || 'N/A'}</span>
-                                            <button onclick="abrirEditarCalificacion('${c.ID_Calificacion || c.id || ''}')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-2.5 py-1 rounded-lg text-[10px] transition"><i class="fa-solid fa-pen text-[9px]"></i> Editar Calificación</button>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('') || '<p class="text-xs text-gray-400 py-3 text-center">Aún no has registrado calificaciones en puestos.</p>'}
-                        </div>
+                        <div id="contenedorListaCalsMercador" class="space-y-2 max-h-72 overflow-y-auto"></div>
                     </div>
 
                     <div class="pt-3 border-t border-gray-200 space-y-2">
@@ -2262,9 +2376,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
 
                         <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
-                            <span class="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">PUBLICIDAD OFICIAL MERCATODON</span>
+                            <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATODON</span>
                             <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
-                            <p class="text-[11px] text-white/90">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
+                            <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
                             <div class="pt-1 flex justify-center gap-4 text-lg text-white">
                                 <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
                                 <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
@@ -2280,6 +2394,58 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `;
+
+            renderListaCalificacionesMercador();
+        }
+
+        function renderListaCalificacionesMercador() {
+            const cont = document.getElementById('contenedorListaCalsMercador');
+            const titulo = document.getElementById('tituloContadorCalsMercador');
+            if (!cont) return;
+
+            const misCals = calificacionesBD.filter(c => 
+                (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
+                (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
+                (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
+            );
+
+            misCals.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
+
+            if (titulo) titulo.innerText = `Puestos Calificados (${misCals.length})`;
+
+            const inputEl = document.getElementById('buscadorMisCalificaciones');
+            const queryMercador = inputEl ? inputEl.value.toLowerCase().trim() : '';
+
+            let filtradasCals = misCals;
+            if (queryMercador) {
+                filtradasCals = misCals.filter(c => {
+                    const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId).toLowerCase();
+                    const comentario = String(c.Comentario || '').toLowerCase();
+                    return nombrePuesto.includes(queryMercador) || comentario.includes(queryMercador);
+                });
+            }
+
+            if (filtradasCals.length === 0) {
+                cont.innerHTML = `<p class="text-xs text-gray-400 py-3 text-center">${queryMercador ? 'No se encontraron resultados para tu búsqueda.' : 'Aún no has registrado calificaciones en puestos.'}</p>`;
+                return;
+            }
+
+            cont.innerHTML = filtradasCals.map((c, idx) => {
+                const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId);
+                return `
+                    <div class="bg-white border border-gray-200 p-3 rounded-xl text-xs space-y-1.5 shadow-sm">
+                        <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
+                            <span>#${idx + 1} - ${nombrePuesto}</span>
+                            <span class="text-amber-500">${'★'.repeat(c.Estrellas || 5)}</span>
+                        </div>
+                        <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-[10px] text-gray-400"><i class="fa-regular fa-clock"></i> ${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</span>
+                            <button onclick="abrirEditarCalificacion('${c.ID_Calificacion || c.id || ''}')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-2.5 py-1 rounded-lg text-[10px] transition"><i class="fa-solid fa-pen text-[9px]"></i> Editar Calificación</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function abrirEditarCalificacion(calId) {
@@ -2326,27 +2492,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const queryCeo = document.getElementById('inputBusquedaCeo')?.value.toLowerCase() || '';
             const periodo = document.getElementById('filtroPeriodoCeo')?.value || 'historial';
-            const fechaIni = document.getElementById('ceoFechaInicio')?.value ? new Date(document.getElementById('ceoFechaInicio').value) : null;
-            const fechaFin = document.getElementById('ceoFechaFin')?.value ? new Date(document.getElementById('ceoFechaFin').value) : null;
             
             const rangoContainer = document.getElementById('rangoPersonalizadoCeoContainer');
+            let fechaIni = null;
+            let fechaFin = null;
+
             if (periodo === 'personalizado') {
                 rangoContainer.classList.remove('hidden');
+                const iD = document.getElementById('ceoIniDia')?.value || '01';
+                const iM = document.getElementById('ceoIniMes')?.value || '01';
+                const iA = document.getElementById('ceoIniAnio')?.value || '2024';
+                const fD = document.getElementById('ceoFinDia')?.value || '31';
+                const fM = document.getElementById('ceoFinMes')?.value || '12';
+                const fA = document.getElementById('ceoFinAnio')?.value || '2026';
+                fechaIni = new Date(parseInt(iA), parseInt(iM) - 1, parseInt(iD), 0, 0, 0);
+                fechaFin = new Date(parseInt(fA), parseInt(fM) - 1, parseInt(fD), 23, 59, 59);
             } else {
                 rangoContainer.classList.add('hidden');
             }
 
             const filtrarPorFecha = (fechaStr) => {
                 if (!fechaStr || periodo === 'historial') return true;
-                const d = new Date(fechaStr);
-                if (isNaN(d)) return true;
+                const d = parsearFechaSegura(fechaStr);
+                if (isNaN(d.getTime()) || d.getTime() === 0) return true;
                 const ahora = new Date();
 
                 if (periodo === 'dia') {
                     return d.toDateString() === ahora.toDateString();
                 } else if (periodo === 'semana') {
-                    const unافي = 7 * 24 * 60 * 60 * 1000;
-                    return (ahora - d) <= unافي;
+                    const sieteDiasMs = 7 * 24 * 60 * 60 * 1000;
+                    return (ahora - d) <= sieteDiasMs;
                 } else if (periodo === 'mes') {
                     return d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
                 } else if (periodo === 'anio') {
@@ -2393,7 +2568,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 thead.innerHTML = `
                     <th class="p-2 border">Comprador / Oficio</th>
                     <th class="p-2 border">Residencia</th>
-                    <th class="p-2 border">Fecha y Hora de Registro</th>
+                    <th class="p-2 border">Fecha y Hora (24h)</th>
                     <th class="p-2 border">Contacto / Correo</th>
                     <th class="p-2 border text-center">Acciones</th>
                 `;
@@ -2412,7 +2587,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-2 font-bold">${u.Nombre_Completo || u.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Oficio: ${u.Oficio || u.oficio || 'N/A'}</span></td>
                             <td class="p-2">${u.Residencia || u.residencia || 'No especificada'}</td>
-                            <td class="p-2">${u.Fecha_Registro || u.fecha || 'N/A'}</td>
+                            <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(u.Fecha_Registro || u.fecha)}</td>
                             <td class="p-2">${correo}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${u.WhatsApp || u.whatsapp}</span></td>
                             <td class="p-2 text-center">
                                 <div class="flex items-center justify-center gap-1.5">
@@ -2428,26 +2603,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     <th class="p-2 border">Usuario / Puesto</th>
                     <th class="p-2 border">Calificación</th>
                     <th class="p-2 border">Comentario</th>
-                    <th class="p-2 border">Fecha y Hora</th>
+                    <th class="p-2 border">Fecha y Hora (24h)</th>
                     <th class="p-2 border text-center">Acciones</th>
                 `;
 
                 let filtradasCals = calificacionesBD.filter(c => {
+                    const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId).toLowerCase();
                     const matchQuery = (c.Usuario_Nombre || c.usuario || '').toLowerCase().includes(queryCeo) ||
-                                       (c.Comentario || c.comentario || '').toLowerCase().includes(queryCeo);
+                                       (c.Comentario || c.comentario || '').toLowerCase().includes(queryCeo) ||
+                                       nombrePuesto.includes(queryCeo);
                     const matchFecha = filtrarPorFecha(c.Fecha_Hora || c.fecha);
                     return matchQuery && matchFecha;
                 });
 
                 filtradasCals.forEach(c => {
-                    const p = puestosBD.find(x => String(x.ID || x.id) === String(c.Puesto_ID || c.puestoId));
-                    const nombrePuesto = p ? (p.Nombre_Puesto || p.nombre) : `Puesto ID: ${c.Puesto_ID}`;
+                    const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId);
                     tbody.innerHTML += `
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-2 font-bold">${c.Usuario_Nombre || c.usuario}<br><span class="text-[10px] text-gray-500 font-normal">Puesto: ${nombrePuesto}</span></td>
+                            <td class="p-2 font-bold">${c.Usuario_Nombre || c.usuario}<br><span class="text-[10px] text-gray-500 font-normal">Puesto: <strong>${nombrePuesto}</strong></span></td>
                             <td class="p-2 text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</td>
                             <td class="p-2 italic">"${c.Comentario || ''}"</td>
-                            <td class="p-2 text-[11px]">${c.Fecha_Hora || c.fecha || 'N/A'}</td>
+                            <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</td>
                             <td class="p-2 text-center">
                                 <button onclick="eliminarCalificacionCeo('${c.ID_Calificacion || c.id}')" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition" title="Eliminar Calificación"><i class="fa-solid fa-trash-can text-xs"></i></button>
                             </td>
@@ -2484,7 +2660,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p><strong>Ubicación:</strong> ${p.Region}, ${p.Provincia}, ${p.Distrito}</p>
                 <div class="pt-2 border-t mt-2">
                     <strong class="block mb-1">Calificaciones recibidas (${cals.length}):</strong>
-                    ${cals.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1"><strong>${c.Usuario_Nombre}:</strong> ${c.Estrellas}★ - "${c.Comentario}"</div>`).join('') || '<span class="text-gray-400">Sin calificaciones</span>'}
+                    ${cals.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1"><strong>${c.Usuario_Nombre}:</strong> ${c.Estrellas}★ - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">Sin calificaciones</span>'}
                 </div>
             `;
             document.getElementById('modalCeoDetalle').classList.remove('hidden');
@@ -2505,10 +2681,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p><strong>Oficio:</strong> ${u.Oficio || 'Comerciante'}</p>
                 <p><strong>Cumpleaños:</strong> ${u.Cumpleanos || 'N/A'}</p>
                 <p><strong>Residencia:</strong> ${u.Residencia || u.residencia || 'No especificada'}</p>
-                <p><strong>Fecha Registro:</strong> ${u.Fecha_Registro || u.fecha || 'N/A'}</p>
+                <p><strong>Fecha y Hora Registro (24h):</strong> ${formatearFechaHora24h(u.Fecha_Registro || u.fecha)}</p>
                 <div class="pt-2 border-t mt-2">
                     <strong class="block mb-1">Calificaciones realizadas (${calsObj.length}):</strong>
-                    ${calsObj.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal">Puesto ID ${c.Puesto_ID}: <strong>${c.Estrellas}★</strong> - "${c.Comentario}"</div>`).join('') || '<span class="text-gray-400">No ha calificado ningún puesto</span>'}
+                    ${calsObj.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal"><strong>${obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId)}</strong>: <strong>${c.Estrellas}★</strong> - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">No ha calificado ningún puesto</span>'}
                 </div>
                 <div class="pt-2 border-t mt-2">
                     <strong class="block mb-1">Favoritos (${favsPuestos.length}):</strong>
@@ -2570,24 +2746,54 @@ document.addEventListener('DOMContentLoaded', function() {
             }, { passive: true });
         }
 
+        // --- INSTALACIÓN PWA CON PERSISTENCIA (NO VOLVER A MOSTRAR SI YA SE INSTALÓ) ---
+        function appYaInstalada() {
+            return window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true ||
+                   localStorage.getItem('mercatodon_pwa_instalada') === 'true';
+        }
+
         function configurarInstalacionPWA() {
+            const banner = document.getElementById('bannerInstalacionPWA');
+            if (appYaInstalada()) {
+                if (banner) banner.classList.add('hidden');
+                return;
+            }
+
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
+                if (appYaInstalada()) return;
                 deferredPromptPWA = e;
-                document.getElementById('bannerInstalacionPWA').classList.remove('hidden');
+                if (banner) banner.classList.remove('hidden');
+            });
+
+            window.addEventListener('appinstalled', () => {
+                localStorage.setItem('mercatodon_pwa_instalada', 'true');
+                deferredPromptPWA = null;
+                if (banner) banner.classList.add('hidden');
+                mostrarToast("¡MERCATODON se instaló correctamente en tu dispositivo!");
             });
         }
 
         function instalarAppNativa() {
             if (deferredPromptPWA) {
                 deferredPromptPWA.prompt();
-                deferredPromptPWA.userChoice.then(() => { deferredPromptPWA = null; document.getElementById('bannerInstalacionPWA').classList.add('hidden'); });
+                deferredPromptPWA.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        localStorage.setItem('mercatodon_pwa_instalada', 'true');
+                        document.getElementById('bannerInstalacionPWA').classList.add('hidden');
+                    }
+                    deferredPromptPWA = null;
+                });
             } else {
-                mostrarToast("Para instalar en tu dispositivo: Haz clic en el menú de tu navegador (...) y selecciona 'Instalar aplicación' o 'Agregar a la pantalla principal'.");
+                mostrarToast("Para instalar en tu dispositivo: Abre el menú de tu navegador y selecciona 'Instalar aplicación' o 'Agregar a pantalla principal'.");
             }
         }
 
-        function cerrarBannerPWA() { document.getElementById('bannerInstalacionPWA').classList.add('hidden'); }
+        function cerrarBannerPWA() {
+            document.getElementById('bannerInstalacionPWA').classList.add('hidden');
+        }
+
         function abrirModalDonacion() { document.getElementById('modalDonacion').classList.remove('hidden'); }
         function enviarDonacion() {
             const nombre = document.getElementById('donanteNombre').value || "Anónimo";
@@ -2613,9 +2819,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function registrarServiceWorkerNativo() {
             if ('serviceWorker' in navigator) {
-                const swCode = `self.addEventListener('install', e => self.skipWaiting()); self.addEventListener('activate', e => self.clients.claim());`;
-                const blob = new Blob([swCode], { type: 'text/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
             }
         }
     </script>
