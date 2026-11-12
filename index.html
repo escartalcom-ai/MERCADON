@@ -1,0 +1,2818 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="rgb(229, 57, 53)">
+    <title>MERCATON - Puestos en Acción</title>
+    <!-- Favicon e Iconos (PNG) -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATON/main/favicon.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATON/main/logo.png">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans y Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Fredoka:wght@400;700&display=swap" rel="stylesheet"> 
+    <!-- Firebase SDK (Compat v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <!-- Manifest PWA Externo -->
+    <link rel="manifest" href="./manifest.json">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: 'rgb(229, 57, 53)',
+                            darkRed: 'rgb(198, 40, 40)',
+                            orange: 'rgb(255, 111, 0)',
+                            gold: 'rgb(255, 215, 0)',
+                            whatsapp: 'rgb(37, 211, 102)',
+                            pureRed: 'rgb(255, 0, 1)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        fredoka: ['Fredoka', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @media (min-width: 768px) {
+            .banner-scroll-container::-webkit-scrollbar {
+                height: 6px;
+                display: block;
+            }
+            .banner-scroll-container::-webkit-scrollbar-track {
+                background: rgb(241, 241, 241);
+                border-radius: 4px;
+            }
+            .banner-scroll-container::-webkit-scrollbar-thumb {
+                background: rgb(197, 197, 197);
+                border-radius: 4px;
+            }
+            .banner-scroll-container::-webkit-scrollbar-thumb:hover {
+                background: rgb(153, 153, 153);
+            }
+            .banner-scroll-container {
+                scrollbar-width: thin;
+                scrollbar-color: rgb(197, 197, 197) rgb(241, 241, 241);
+            }
+        }
+
+        .star-rating { cursor: pointer; transition: color 0.15s ease, transform 0.15s ease; }
+        .star-rating:hover { transform: scale(1.25); }
+        .card-puesto { border: 2px solid rgb(255, 215, 0) !important; box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2); }
+        #toast { transition: opacity 0.3s ease, transform 0.3s ease; z-index: 99999; }
+        .date-select-modern {
+            border-radius: 0.75rem;
+            border: 1px solid rgb(209, 213, 219);
+            padding: 0.45rem 0.35rem;
+            font-size: 0.75rem;
+            background-color: rgb(255, 255, 255);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .date-select-modern:focus {
+            border-color: rgb(229, 57, 53);
+            box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between select-none m-0 p-0 overflow-x-hidden">
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[99999] bg-gray-900 text-white text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none flex items-center gap-2 border border-gray-700">
+        <i class="fa-solid fa-circle-check text-brand-orange"></i>
+        <span id="toastMsg">Mensaje del sistema</span>
+    </div>
+
+    <!-- BANNER / VENTANA DE INSTALACIÓN PWA -->
+    <div id="bannerInstalacionPWA" class="hidden bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white px-3 py-2 text-xs flex items-center justify-between border-b border-gray-700">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-mobile-screen-button text-brand-orange text-sm"></i>
+            <span>Instala la App nativa de <strong>MERCATON</strong> en tu celular o PC</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="instalarAppNativa()" class="bg-brand-red hover:bg-brand-darkRed text-white font-bold py-1 px-3 rounded-full text-[11px] shadow transition">Instalar App</button>
+            <button onclick="cerrarBannerPWA()" class="text-gray-400 hover:text-white px-1"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header id="headerPrincipal" class="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-1 sm:px-4 py-[2px] flex items-center justify-between gap-2">
+
+            <!-- MARCA -->
+            <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
+                <!-- LOGO -->
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-md flex-shrink-0 overflow-hidden" style="background-color: rgb(255, 0, 1);">
+                    <img src="https://raw.githubusercontent.com/escartalcom-ai/MERCATON/main/logo.png"
+                         loading="lazy"
+                         onerror="this.src='https://placehold.co/40x40/ff0001/ffffff?text=M'"
+                         alt="Logo"
+                         class="w-full h-full object-cover">
+                </div>
+
+                <!-- NOMBRE -->
+                <div class="leading-none flex-shrink-0">
+                    <span class="text-2xl sm:text-2xl font-bold tracking-tight block whitespace-nowrap"
+                          style="font-family: 'Fredoka', sans-serif; font-weight: 700; color: rgb(255, 0, 1);">
+                        MERCATON
+                    </span>
+                </div>
+            </div>
+
+            <!-- BOTONES DE NAVEGACIÓN -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <!-- UBICACIÓN -->
+                <button id="btnUbicacionHeader"
+                        onclick="seleccionarIconoHeader('ubicacion', abrirModalUbicacion)"
+                        class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-1.5 px-2.5 rounded-full transition font-medium border border-gray-200"
+                        title="Ubicación">
+                    <i class="fa-solid fa-location-dot text-base"></i>
+                    <span id="labelUbicacionActual" class="hidden sm:inline truncate max-w-[120px]">
+                        Piura, Paita, Paita
+                    </span>
+                </button>
+
+                <!-- FAVORITOS -->
+                <button id="btnFavoritosHeader"
+                        onclick="seleccionarIconoHeader('favoritos', verFavoritosModal)"
+                        class="p-2 text-black hover:bg-red-50 rounded-full transition relative"
+                        title="Favoritos">
+                    <i class="fa-solid fa-heart text-base"></i>
+                </button>
+
+                <!-- PUESTOS -->
+                <button id="btnPuestosHeader"
+                        onclick="seleccionarIconoHeader('puestos', verPuestos)"
+                        class="p-2 text-black hover:bg-gray-100 rounded-full transition"
+                        title="Ver Puestos">
+                    <i class="fa-solid fa-shop text-base"></i>
+                </button>
+
+                <!-- USUARIO -->
+                <button id="btnUsuarioHeader"
+                        onclick="seleccionarIconoHeader('usuario', abrirAuthModal)"
+                        class="p-2 flex items-center gap-1 text-black hover:text-brand-pureRed transition"
+                        title="Mi cuenta">
+                    <i class="fa-regular fa-user text-base"></i>
+                    <span class="hidden xs:inline text-xs font-semibold" id="btnAuthText">
+                        Ingresar
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTROL DE ESTADO DE LOS ÍCONOS -->
+    <script>
+    function seleccionarIconoHeader(nombre, accion) {
+        const botones = {
+            ubicacion: document.getElementById('btnUbicacionHeader'),
+            favoritos: document.getElementById('btnFavoritosHeader'),
+            puestos: document.getElementById('btnPuestosHeader'),
+            usuario: document.getElementById('btnUsuarioHeader')
+        };
+
+        localStorage.setItem('mercaton_header_activo', nombre);
+
+        Object.entries(botones).forEach(([clave, boton]) => {
+            if (!boton) return;
+            const icono = boton.querySelector('i');
+            const texto = boton.querySelector('span');
+            const activo = clave === nombre;
+
+            if (icono) icono.style.color = activo ? 'rgb(255, 0, 1)' : 'rgb(0, 0, 0)';
+            if (texto) texto.style.color = activo ? 'rgb(255, 0, 1)' : 'rgb(0, 0, 0)';
+        });
+
+        if (typeof accion === 'function') {
+            accion();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const activo = localStorage.getItem('mercaton_header_activo');
+        if (!activo) return;
+
+        const boton = document.getElementById(
+            'btn' + activo.charAt(0).toUpperCase() + activo.slice(1) + 'Header'
+        );
+
+        if (boton) {
+            const icono = boton.querySelector('i');
+            const texto = boton.querySelector('span');
+            if (icono) icono.style.color = 'rgb(255, 0, 1)';
+            if (texto) texto.style.color = 'rgb(255, 0, 1)';
+        }
+    });
+    </script>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="flex-grow w-full m-0 p-0 space-y-1.5">
+
+        <!-- SECCIÓN 1: INICIO -->
+        <section id="secInicio" class="space-y-1.5">
+            <div id="sliderContainer" class="relative w-full overflow-hidden shadow-md bg-gray-200 aspect-[21/9] sm:aspect-[24/7] m-0 p-0 cursor-grab active:cursor-grabbing">
+                <div id="sliderWrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out"></div>
+                <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 text-white p-2 rounded-full transition z-10" style="background-color: rgba(0, 0, 0, 0.45);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 text-white p-2 rounded-full transition z-10" style="background-color: rgba(0, 0, 0, 0.45);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-2 sm:px-3 space-y-1.5">
+                <div class="space-y-1 relative group">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-tags text-slate-400 text-xs"></i> Ofertas y Promociones</h3>
+                    <div class="relative flex items-center">
+                        <button onclick="scrollSeccion('bannerSeccionA', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionA" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionA', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1 relative group">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-crown text-slate-400 text-xs"></i> Patrocinios</h3>
+                    <div class="relative flex items-center">
+                        <button onclick="scrollSeccion('bannerSeccionB', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionB" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionB', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <!-- BLOQUE SPOTS COMERCIALES -->
+                <div class="space-y-1 relative group">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-video text-slate-400 text-xs"></i> Spots Comerciales</h3>
+                    <div class="relative flex items-center">
+                        <button onclick="pausarSpotsComerciales(); scrollSeccion('bannerSeccionC', -300)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionC" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
+                        <button onclick="pausarSpotsComerciales(); scrollSeccion('bannerSeccionC', 300)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1 relative group">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-truck-fast text-slate-400 text-xs"></i> Servicios y Proveedores</h3>
+                    <div class="relative flex items-center">
+                        <button onclick="scrollSeccion('bannerSeccionD', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionD" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionD', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1 relative group">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-calendar-days text-slate-400 text-xs"></i> Campañas Especiales</h3>
+                    <div class="relative flex items-center">
+                        <button onclick="scrollSeccion('bannerSeccionE', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionE" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionE', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1 relative group">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-handshake text-slate-400 text-xs"></i> Nuestros Aliados</h3>
+                    <div class="relative flex items-center">
+                        <button onclick="scrollSeccion('bannerSeccionF', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionF" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionF', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1 relative group">
+                    <h3 class="text-xs sm:text-sm font-normal text-slate-500 flex items-center gap-1.5 tracking-wide"><i class="fa-solid fa-bell text-slate-400 text-xs"></i> Novedades</h3>
+                    <div class="relative flex items-center">
+                        <button onclick="scrollSeccion('bannerSeccionG', -200)" class="hidden sm:flex absolute left-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <div id="bannerSeccionG" class="flex gap-2.5 overflow-x-auto banner-scroll-container pb-1 scroll-smooth w-full"></div>
+                        <button onclick="scrollSeccion('bannerSeccionG', 200)" class="hidden sm:flex absolute right-0 z-10 text-white w-7 h-7 rounded-full items-center justify-center transition shadow" style="background-color: rgba(0, 0, 0, 0.55);"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <!-- Bloques Promocionales -->
+                <div id="bloquesPromocionalesInicio" class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
+                        <div>
+                            <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Digital</div>
+                            <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu Puesto, Producto o Servicio GRATIS en nuestras redes!</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual (imagen) o audiovisual (video).</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                            <div class="flex gap-2.5 text-sm text-gray-700">
+                                <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                                <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                                <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                                <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
+                            </div>
+                            <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto/producto/servicio%20GRATIS%20en%20MERCATON" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
+                        <div>
+                            <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
+                            <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con carrito de compras y código QR profesional y personalizado.</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                            <span class="text-[10px] font-semibold text-gray-500">Planes únicos, mensuales y anuales</span>
+                            <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Cotizar Catálogo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banner Oficial -->
+                <div id="bannerOficialMercaton" class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                    <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATON</span>
+                    <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
+                    <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
+                    <div class="pt-1 flex justify-center gap-4 text-lg text-white">
+                        <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                    <div class="pt-1">
+                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                            <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Cotización
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: PUESTOS & RUBROS -->
+        <section id="secPuestos" class="max-w-7xl mx-auto px-2 sm:px-3 space-y-3 hidden">
+            <div class="sticky top-[53px] z-20 backdrop-blur-md py-1.5 border-b border-gray-200" style="background-color: rgba(249, 250, 251, 0.95);">
+                <div id="contenedorRubros" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
+            </div>
+            
+            <div id="gridPuestos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2"></div>
+            
+            <!-- BLOQUES PROMOCIONALES + BANNER OFICIAL -->
+            <div class="pt-3 border-t border-gray-200 space-y-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
+                        <div>
+                            <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Digital</div>
+                            <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu Puesto, Producto o Servicio GRATIS en nuestras redes!</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual (imagen) o audiovisual (video).</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                            <div class="flex gap-2.5 text-sm text-gray-700">
+                                <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                                <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                                <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                                <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
+                            </div>
+                            <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
+                        <div>
+                            <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
+                            <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                            <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con carrito de compras y código QR profesional y personalizado.</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                            <span class="text-[10px] font-semibold text-gray-500">Planes únicos, mensuales y anuales</span>
+                            <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Cotizar Catálogo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                    <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATON</span>
+                    <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
+                    <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
+                    <div class="pt-1 flex justify-center gap-4 text-lg text-white">
+                        <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                    <div class="pt-1">
+                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                            <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Cotización
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: DASHBOARDS -->
+        <section id="secDashboard" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3">
+            <div id="dashMercadero" class="hidden space-y-3"></div>
+            <div id="dashMercador" class="hidden space-y-3"></div>
+        </section>
+
+        <!-- SECCIÓN 4: PANEL CEO -->
+        <section id="secCeo" class="max-w-7xl mx-auto px-2 sm:px-3 hidden space-y-3 bg-white p-4 rounded-2xl border-2 border-red-500 shadow-xl">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 id="tituloPanelCeoHeader" class="text-base font-black text-brand-red flex items-center gap-2"><i class="fa-solid fa-user-shield"></i> Panel del CEO</h2>
+                <button onclick="cerrarSesion()" class="text-xs bg-gray-200 hover:bg-gray-300 font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                <div class="bg-red-50 p-2.5 rounded-xl border border-red-200">
+                    <span class="text-[10px] text-gray-500 font-semibold">Total Puestos</span>
+                    <p id="ceoCantPuestos" class="text-lg font-bold text-brand-red">0</p>
+                </div>
+                <div class="bg-orange-50 p-2.5 rounded-xl border border-orange-200">
+                    <span class="text-[10px] text-gray-500 font-semibold">Usuarios Reg.</span>
+                    <p id="ceoCantUsuarios" class="text-lg font-bold text-brand-orange">0</p>
+                </div>
+                <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                    <span class="text-[10px] text-gray-500 font-semibold">Total Mercas</span>
+                    <p id="ceoCantMercadas" class="text-lg font-bold text-amber-600">0</p>
+                </div>
+                <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
+                    <span class="text-[10px] text-gray-500 font-semibold">Banners Activos</span>
+                    <p id="ceoCantBanners" class="text-lg font-bold text-blue-600">0</p>
+                </div>
+            </div>
+
+            <div class="space-y-2 bg-gray-50 p-3 rounded-xl border">
+                <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
+                    <div class="flex gap-2 w-full sm:w-auto flex-wrap">
+                        <button onclick="cambiarTabCeo('mercaderos')" id="tabBtnMercaderos" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-brand-red text-white transition">Ver Mercaderos (Puestos)</button>
+                        <button onclick="cambiarTabCeo('compradores')" id="tabBtnCompradores" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition">Ver Compradores</button>
+                        <button onclick="cambiarTabCeo('calificaciones')" id="tabBtnCalificaciones" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition">Ver Calificaciones</button>
+                    </div>
+                    <div class="w-full sm:w-64">
+                        <input type="text" id="inputBusquedaCeo" onkeyup="renderCeoTable()" placeholder="Búsqueda inteligente (puesto, usuario...)..." class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 items-center text-xs pt-1">
+                    <span class="font-bold text-gray-600">Filtrar por periodo:</span>
+                    <select id="filtroPeriodoCeo" onchange="renderCeoTable()" class="border rounded-lg p-1.5 bg-white outline-none text-xs">
+                        <option value="historial">Todo el Historial</option>
+                        <option value="dia">Hoy (Día)</option>
+                        <option value="semana">Esta Semana</option>
+                        <option value="mes">Este Mes</option>
+                        <option value="anio">Este Año</option>
+                        <option value="personalizado">Rango Personalizado</option>
+                    </select>
+                    <!-- SELECTOR RÁPIDO DÍA / MES / AÑO PARA FILTRACIÓN -->
+                    <div id="rangoPersonalizadoCeoContainer" class="hidden flex flex-wrap gap-1.5 items-center bg-white p-1.5 rounded-xl border">
+                        <span class="text-[10px] font-bold text-gray-500">Desde:</span>
+                        <select id="ceoIniDia" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <select id="ceoIniMes" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <select id="ceoIniAnio" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <span class="text-[10px] font-bold text-gray-500 ml-1">Hasta:</span>
+                        <select id="ceoFinDia" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <select id="ceoFinMes" onchange="renderCeoTable()" class="date-select-modern"></select>
+                        <select id="ceoFinAnio" onchange="renderCeoTable()" class="date-select-modern"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <h3 id="ceoTituloTabla" class="text-xs font-bold text-gray-600 uppercase mb-2">Gestión de Mercaderos</h3>
+                <table class="w-full text-xs text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700" id="ceoTablaHeader">
+                            <th class="p-2 border">Puesto / Dueño</th>
+                            <th class="p-2 border">Rubro</th>
+                            <th class="p-2 border">Ubicación / Residencia</th>
+                            <th class="p-2 border">Fecha Registro / Contacto</th>
+                            <th class="p-2 border text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCeoContenido"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200 py-2.5 mt-3">
+        <div class="max-w-7xl mx-auto px-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs text-gray-600 font-medium">
+            <div class="flex items-center gap-1.5">
+                <span>MERCATON - Desarrollado por</span>
+                <a href="https://comaxion.vercel.app" target="_blank" rel="noopener" class="text-brand-red font-bold hover:underline">COMAXION</a>
+            </div>
+            <button onclick="abrirModalDonacion()" class="bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold py-1 px-3 rounded-full border border-amber-200 flex items-center gap-1 transition shadow-sm">
+                <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i>
+                <span>Apoyo Voluntario</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- SCROLL TOP -->
+    <button id="btnScrollTop" onclick="scrollArriba()" class="fixed bottom-4 right-4 z-40 bg-white hover:bg-gray-100 text-gray-700 p-2.5 rounded-full shadow-lg border border-gray-200 transition opacity-0 pointer-events-none">
+        <i class="fa-solid fa-arrow-up text-xs"></i>
+    </button>
+
+    <!-- MODALES -->
+
+    <!-- MODAL UBICACIÓN -->
+    <div id="modalUbicacion" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl relative">
+            <button onclick="cerrarModal('modalUbicacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-bold text-gray-900 text-base flex items-center gap-2"><i class="fa-solid fa-location-dot text-brand-red"></i> Ubicación en la Región Piura</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-semibold text-gray-600">Región / Departamento</label>
+                    <select id="selRegion" class="w-full mt-1 border border-gray-300 rounded-xl p-2.5 text-xs outline-none bg-gray-100" disabled><option value="Piura">Piura</option></select>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-600">Provincia</label>
+                    <select id="selProvincia" onchange="cargarDistritos()" class="w-full mt-1 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-red outline-none"></select>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-600">Distrito</label>
+                    <select id="selDistrito" class="w-full mt-1 border border-gray-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-brand-red outline-none"></select>
+                </div>
+            </div>
+            <button onclick="guardarUbicacion()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-xs shadow transition">Confirmar y Filtrar Puestos</button>
+        </div>
+    </div>
+
+    <!-- MODAL AUTH / LOGIN -->
+    <div id="modalAuth" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+            <button onclick="cerrarModal('modalAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center">
+                <h3 class="font-black text-xl text-gray-900">Ingreso / Registro</h3>
+                <p class="text-xs text-gray-500 mt-1">Ingresa con tus credenciales o crea una cuenta</p>
+            </div>
+
+            <form onsubmit="loginDirecto(event)" class="space-y-3 bg-gray-50 p-3 rounded-xl border">
+                <div>
+                    <label class="text-[11px] font-bold text-gray-700">Correo Electrónico</label>
+                    <input type="email" id="loginCorreo" required class="w-full border rounded-lg p-2 text-xs outline-none bg-white">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-gray-700">Contraseña</label>
+                    <div class="relative">
+                        <input type="password" id="loginPass" required class="w-full border rounded-lg p-2 pr-8 text-xs outline-none bg-white">
+                        <button type="button" onclick="togglePasswordVisibility('loginPass', 'eyeLoginIcon')" class="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600">
+                            <i id="eyeLoginIcon" class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="msgAuthErrorContainer" class="hidden p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-800 text-[11px] flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-brand-red text-sm flex-shrink-0"></i>
+                    <span id="msgAuthErrorTexto">Credenciales incorrectas o usuario no registrado.</span>
+                </div>
+
+                <div id="msgRecuperacionContainer" class="hidden p-2.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-800 text-[11px] flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-blue-600 text-sm flex-shrink-0"></i>
+                    <span id="msgRecuperacionTexto">Enlace de recuperación enviado. Revisa tu correo.</span>
+                </div>
+
+                <div class="text-right flex justify-between items-center">
+                    <button type="button" onclick="recuperarPasswordLogin()" class="text-[11px] text-brand-red hover:underline font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-key"></i> Olvidé contraseña
+                    </button>
+                    <button type="submit" class="bg-gray-900 hover:bg-black text-white font-bold py-1.5 px-4 rounded-lg text-xs transition">Iniciar Sesión</button>
+                </div>
+            </form>
+
+            <div class="relative flex py-1 items-center">
+                <div class="flex-grow border-t border-gray-200"></div>
+                <span class="flex-shrink mx-2 text-[10px] text-gray-400 font-bold uppercase">¿No tienes cuenta? Registrate</span>
+                <div class="flex-grow border-t border-gray-200"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="abrirFormularioAuth('mercadero')" class="border border-gray-200 hover:border-brand-red p-3 rounded-xl cursor-pointer text-center space-y-1 transition hover:shadow-md">
+                    <i class="fa-solid fa-store text-brand-red text-lg"></i>
+                    <h4 class="font-bold text-xs text-gray-900">Mercadero(a)</h4>
+                    <p class="text-[9px] text-gray-500 leading-tight">Vendedor / Puesto</p>
+                </div>
+                <div onclick="abrirFormularioAuth('mercador')" class="border border-gray-200 hover:border-brand-orange p-3 rounded-xl cursor-pointer text-center space-y-1 transition hover:shadow-md">
+                    <i class="fa-solid fa-basket-shopping text-brand-orange text-lg"></i>
+                    <h4 class="font-bold text-xs text-gray-900">Mercador(a)</h4>
+                    <p class="text-[9px] text-gray-500 leading-tight">Comprador</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRO -->
+    <div id="modalFormAuth" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto no-scrollbar">
+            <button onclick="cerrarModal('modalFormAuth')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="formAuthTitulo" class="font-bold text-base text-gray-900 border-b pb-2">Registro de Usuario</h3>
+
+            <form id="formAuth" onsubmit="procesarAuth(event)" class="space-y-2.5">
+                <input type="hidden" id="authRol">
+                <div id="camposMercadero" class="space-y-2.5 hidden p-2.5 rounded-xl border border-red-100" style="background-color: rgba(254, 242, 242, 0.5);">
+                    <div class="text-[10px] font-black text-brand-red uppercase tracking-wide">Datos del Puesto</div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Nombre del Puesto *</label>
+                        <input type="text" id="regPuestoNombre" placeholder="Ej: Puesto Don José" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Rubro Principal *</label>
+                        <select id="regPuestoRubro" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                            <option value="Alimentos">Alimentos</option><option value="Bebidas">Bebidas</option><option value="Carnes">Carnes</option><option value="Pescados">Pescados</option><option value="Frutas">Frutas</option><option value="Regionales">Regionales</option><option value="Gastronomía">Gastronomía</option><option value="Panadería">Panadería</option><option value="Lácteos">Lácteos</option><option value="Salud">Salud</option><option value="Belleza">Belleza</option><option value="Moda">Moda</option><option value="Tecnología">Tecnología</option><option value="Hogar">Hogar</option><option value="Ferretería">Ferretería</option><option value="Limpieza">Limpieza</option><option value="Mascotas">Mascotas</option><option value="Librería">Librería</option><option value="Servicios">Servicios</option><option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Descripción (breve) *</label>
+                        <input type="text" id="regPuestoDesc" placeholder="Describe brevemente tu puesto" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Región</label>
+                            <input type="text" id="regRegion" value="Piura" readonly class="w-full border rounded-xl p-2 text-xs outline-none bg-gray-100 text-gray-600 font-bold">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Provincia *</label>
+                            <select id="regProvinciaPuesto" onchange="cargarDistritosRegistro()" class="w-full border rounded-xl p-2 text-xs outline-none bg-white"></select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Distrito *</label>
+                            <select id="regDistritoPuesto" class="w-full border rounded-xl p-2 text-xs outline-none bg-white"></select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Ubicación GPS</label>
+                            <div class="flex gap-1">
+                                <input type="text" id="regGps" placeholder="GPS" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                                <button type="button" onclick="detectarGpsRegistro()" class="bg-white hover:bg-gray-100 border px-2.5 rounded-xl text-xs font-bold" title="Detectar GPS"><i class="fa-solid fa-location-crosshairs text-brand-red"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">WhatsApp del Puesto *</label>
+                        <input type="tel" id="regWhatsapp" placeholder="930528649" class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Catálogo Virtual o Fanpage (Facebook)</label>
+                        <input type="url" id="regPuestoWeb" placeholder="https://..." class="w-full border rounded-xl p-2 text-xs outline-none bg-white">
+                    </div>
+                </div>
+
+                <div class="space-y-2.5">
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Nombres y Apellidos del Dueño*</label>
+                        <input type="text" id="regNombreCompleto" required placeholder="Nombres y Apellidos" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                    <div id="campoWhatsappMercador">
+                        <label class="text-xs font-semibold text-gray-700">WhatsApp *</label>
+                        <input type="tel" id="regWhatsappMercador" placeholder="930528649" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                    <div id="camposExtraMercador" class="space-y-2.5">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Oficio / Profesión</label>
+                            <input type="text" id="regOficio" placeholder="Ej: Independiente" class="w-full border rounded-xl p-2 text-xs outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Cumpleaños (Día / Mes / Año)</label>
+                            <div class="grid grid-cols-3 gap-1.5 mt-1">
+                                <select id="regCumpleDia" class="date-select-modern w-full"></select>
+                                <select id="regCumpleMes" class="date-select-modern w-full"></select>
+                                <select id="regCumpleAnio" class="date-select-modern w-full"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="campoResidenciaMercador">
+                        <label class="text-xs font-semibold text-gray-700">Lugar de Residencia</label>
+                        <input type="text" id="regResidencia" placeholder="Ej: Piura / Paita / Castilla" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Correo Electrónico (Acceso a Panel) *</label>
+                        <input type="email" id="regCorreo" required placeholder="correo@gmail.com" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Contraseña (Acceso a Panel) *</label>
+                        <div class="relative">
+                            <input type="password" id="regPass" required placeholder="••••••••" class="w-full border rounded-xl p-2 pr-8 text-xs outline-none">
+                            <button type="button" onclick="togglePasswordVisibility('regPass', 'eyeRegIcon')" class="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600"><i id="eyeRegIcon" class="fa-solid fa-eye text-xs"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-2 pt-1">
+                    <input type="checkbox" id="regTerms" required class="mt-0.5">
+                    <label for="regTerms" class="text-[10px] text-gray-500 leading-tight">Acepto Términos, Condiciones y Política de Datos (Ley N° 29733 Perú).</label>
+                </div>
+                <button type="submit" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-xs shadow transition">Guardar Registro e Ingresar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL MERCAR (CALIFICAR) -->
+    <div id="modalMercar" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative">
+            <button onclick="cerrarModal('modalMercar')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div id="infoPuestoMercar" class="space-y-1 text-center">
+                <span id="mercarRubro" class="text-[10px] font-extrabold uppercase bg-red-100 text-brand-red px-2 py-0.5 rounded-full">Rubro</span>
+                <h3 id="mercarNombre" class="font-bold text-lg text-gray-900 mt-1">Nombre Puesto</h3>
+                <p id="mercarDesc" class="text-xs text-gray-500">Descripción puesto</p>
+                <p id="mercarUbicacion" class="text-[11px] font-semibold text-gray-400">Piura, Paita, Paita</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl text-center space-y-2 border">
+                <p class="text-xs font-bold text-gray-700">Selecciona de 1 a 5 Estrellas:</p>
+                <div class="flex justify-center gap-2 text-2xl" id="estrellasContenedor">
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(1)"></i>
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(2)"></i>
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(3)"></i>
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(4)"></i>
+                    <i class="fa-regular fa-star star-rating text-gray-300" onclick="setCalificacion(5)"></i>
+                </div>
+            </div>
+            <textarea id="mercarComentario" placeholder="Comentario u opinión sobre el puesto..." class="w-full border rounded-xl p-2.5 text-xs outline-none focus:ring-2 focus:ring-brand-red resize-none h-20"></textarea>
+            <button onclick="confirmarMercar()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-black py-2.5 rounded-xl text-xs shadow transition border border-yellow-500">Mercar (Calificar)</button>
+        </div>
+    </div>
+
+    <!-- MODAL DONACIÓN -->
+    <div id="modalDonacion" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative">
+            <button onclick="cerrarModal('modalDonacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl mb-2"><i class="fa-solid fa-heart"></i></div>
+                <h3 class="font-bold text-base text-gray-900">Apoyo Voluntario a MERCATON</h3>
+                <p class="text-xs text-gray-500 mt-0.5">Tu contribución fortalece el comercio en Piura.</p>
+            </div>
+            <div class="space-y-2.5">
+                <input type="text" id="donanteNombre" placeholder="Tu Nombre (Opcional)" class="w-full border rounded-xl p-2 text-xs outline-none">
+                <select id="donanteMetodo" class="w-full border rounded-xl p-2 text-xs outline-none">
+                    <option value="Yape">Yape</option><option value="Plin">Plin</option><option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                </select>
+                <input type="number" id="donanteMonto" placeholder="Monto (S/.)" class="w-full border rounded-xl p-2 text-xs outline-none">
+                <textarea id="donanteNota" placeholder="Mensaje de apoyo..." class="w-full border rounded-xl p-2 text-xs outline-none h-16 resize-none"></textarea>
+            </div>
+            <button onclick="enviarDonacion()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs shadow transition flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp"></i> Enviar Aporte vía WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL FAVORITOS -->
+    <div id="modalFavoritos" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-5 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <button onclick="cerrarModal('modalFavoritos')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 border-b pb-2">
+                <h3 class="font-bold text-base text-gray-900 flex items-center gap-2"><i class="fa-solid fa-heart text-red-500"></i> Mis Puestos Favoritos</h3>
+                <div class="w-full sm:w-60">
+                    <input type="text" id="inputBusquedaFavoritos" onkeyup="verFavoritosModal()" placeholder="Buscar en favoritos..." class="w-full border rounded-xl p-1.5 text-xs outline-none bg-gray-50">
+                </div>
+            </div>
+            <div id="listaFavoritosModal" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLE CEO -->
+    <div id="modalCeoDetalle" class="fixed inset-0 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <button onclick="cerrarModal('modalCeoDetalle')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="ceoDetalleTitulo" class="font-bold text-base text-gray-900 border-b pb-2">Información del Usuario</h3>
+            <div id="ceoDetalleContenido" class="space-y-2 text-xs"></div>
+        </div>
+    </div>
+
+    <!-- SCRIPT PRINCIPAL -->
+    <script>
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzA8vHBao9cB34aRMgg29mMGGxx09Vyk9Zy_fEgXrqfN2wD6f3to-FEI_FU3_4dIRU2/exec";
+
+        // CONFIGURACIÓN DE FIREBASE (Reemplaza aquí con las credenciales de tu nuevo proyecto)
+        const firebaseConfig = {
+            apiKey: "TU_NUEVA_API_KEY",
+            authDomain: "tu-nuevo-proyecto.firebaseapp.com",
+            projectId: "tu-nuevo-proyecto",
+            storageBucket: "tu-nuevo-proyecto.firebasestorage.app",
+            messagingSenderId: "TU_MESSAGING_SENDER_ID",
+            appId: "TU_APP_ID",
+            measurementId: "TU_MEASUREMENT_ID"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const ubigeoPiura = {
+            "Piura": {
+                "Todas las provincias": ["Todos los distritos"],
+                "Paita": ["Todos los distritos", "Paita", "Amotape", "Arenal", "Colán", "La Huaca", "Tamarindo", "Vichayal"],
+                "Piura": ["Todos los distritos", "Piura", "Castilla", "Catacaos", "Cura Mori", "El Tallán", "La Arena", "La Unión", "Las Lomas", "Tambo Grande", "Veintiséis de Octubre"],
+                "Sullana": ["Todos los distritos", "Sullana", "Ignacio Escudero", "Bellavista", "Marcavelica", "Salitral", "Querecotillo", "Lancones", "Miguel Checa"],
+                "Talara": ["Todos los distritos", "Pariñas", "El Alto", "La Brea", "Lobitos", "Máncora", "Los Órganos"],
+                "Sechura": ["Todos los distritos", "Sechura", "Bellavista de la Unión", "Bernal", "Cristo Nos Valga", "Vice", "Rinconada Llicuar"],
+                "Morropón": ["Todos los distritos", "Chulucanas", "Buenos Aires", "Chalaco", "La Matanza", "Morropón", "Salitral", "San Juan de Bigote", "Santa Catalina de Mossa", "Santo Domingo", "Yamango"],
+                "Ayabaca": ["Todos los distritos", "Ayabaca", "Frias", "Jilili", "Lagunas", "Montero", "Paimas", "Pacaipampa", "Sapillica", "Sicchez", "Suyo"],
+                "Huancabamba": ["Todos los distritos", "Huancabamba", "Canchaque", "El Carmen de la Frontera", "Huarmaca", "Lalaquiz", "San Miguel de El Faique", "Sóndor", "Sondorillo"]
+            }
+        };
+
+        const rubrosConfig = [
+            { nombre: "Todos", icon: "fa-border-all" },
+            { nombre: "Alimentos", icon: "fa-utensils" },
+            { nombre: "Bebidas", icon: "fa-wine-glass" },
+            { nombre: "Carnes", icon: "fa-drumstick-bite" },
+            { nombre: "Pescados", icon: "fa-fish" },
+            { nombre: "Frutas", icon: "fa-apple-whole" },
+            { nombre: "Regionales", icon: "fa-location-dot" },
+            { nombre: "Gastronomía", icon: "fa-bowl-food" },
+            { nombre: "Panadería", icon: "fa-bread-slice" },
+            { nombre: "Lácteos", icon: "fa-cheese" },
+            { nombre: "Salud", icon: "fa-heart-pulse" },
+            { nombre: "Belleza", icon: "fa-spray-can" },
+            { nombre: "Moda", icon: "fa-shirt" },
+            { nombre: "Tecnología", icon: "fa-laptop" },
+            { nombre: "Hogar", icon: "fa-house-user" },
+            { nombre: "Ferretería", icon: "fa-hammer" },
+            { nombre: "Limpieza", icon: "fa-pump-soap" },
+            { nombre: "Mascotas", icon: "fa-paw" },
+            { nombre: "Librería", icon: "fa-book" },
+            { nombre: "Servicios", icon: "fa-wrench" },
+            { nombre: "Otros", icon: "fa-ellipsis" }
+        ];
+
+        let puestosBD = [];
+        let usuariosBD = [];
+        let calificacionesBD = [];
+        let publicidadBD = [];
+        let favoritosBD = [];
+
+        let usuarioActual = JSON.parse(localStorage.getItem('mercaton_usuario')) || null;
+        let ubicacionActual = JSON.parse(localStorage.getItem('mercaton_ubicacion')) || { region: "Piura", provincia: "Todas las provincias", distrito: "Todos los distritos" };
+        let rubroSeleccionado = "Todos";
+        let puestoSeleccionadoId = null;
+        let calificacionTemp = 0;
+        let slideIndex = 0;
+        let totalSlidesCount = 0;
+        let ceoTabActual = 'mercaderos';
+        let deferredPromptPWA = null;
+        let busquedaExpandida = false;
+        let intervalosSecciones = {};
+        let funcionesReanudarSecciones = {};
+        
+        let intervaloSlider = null;
+        let mainSegundosGlobal = 5;
+        let timeoutPausasSliders = {};
+        const seccionesMapGlobal = {
+            "A": "bannerSeccionA",
+            "B": "bannerSeccionB",
+            "C": "bannerSeccionC",
+            "D": "bannerSeccionD",
+            "E": "bannerSeccionE",
+            "F": "bannerSeccionF",
+            "G": "bannerSeccionG"
+        };
+
+        // --- HELPER GLOBAL: OBTENER NOMBRE DEL PUESTO POR ID ---
+        function obtenerNombrePuestoPorId(puestoId) {
+            const p = puestosBD.find(x => String(x.ID || x.id) === String(puestoId));
+            return p ? (p.Nombre_Puesto || p.nombre) : 'Puesto sin nombre registrado';
+        }
+
+        // --- HELPER GLOBAL: FORMATO 24 HORAS (DD/MM/YYYY HH:mm) ---
+        function obtenerFechaHora24hActual() {
+            const ahora = new Date();
+            const d = String(ahora.getDate()).padStart(2, '0');
+            const m = String(ahora.getMonth() + 1).padStart(2, '0');
+            const y = ahora.getFullYear();
+            const hh = String(ahora.getHours()).padStart(2, '0');
+            const mm = String(ahora.getMinutes()).padStart(2, '0');
+            return `${d}/${m}/${y} ${hh}:${mm}`;
+        }
+
+        function formatearFechaHora24h(fechaVal) {
+            if (!fechaVal) return 'N/A';
+            const str = String(fechaVal).trim();
+            const regexPe = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{2})(?::\d{2})?\s*(a\.?\s*m\.?|p\.?\s*m\.?|am|pm)?)?$/i;
+            const matchPe = str.match(regexPe);
+            if (matchPe) {
+                const dia = matchPe[1].padStart(2, '0');
+                const mes = matchPe[2].padStart(2, '0');
+                const anio = matchPe[3];
+                if (matchPe[4] !== undefined && matchPe[5] !== undefined) {
+                    let horas = parseInt(matchPe[4], 10);
+                    const mins = matchPe[5].padStart(2, '0');
+                    const mer = (matchPe[6] || '').toLowerCase().replace(/[\s\.]/g, '');
+                    if (mer === 'pm' && horas < 12) horas += 12;
+                    if (mer === 'am' && horas === 12) horas = 0;
+                    return `${dia}/${mes}/${anio} ${String(horas).padStart(2, '0')}:${mins}`;
+                }
+                return `${dia}/${mes}/${anio} 00:00`;
+            }
+            const parsed = new Date(str);
+            if (!isNaN(parsed.getTime())) {
+                const d = String(parsed.getDate()).padStart(2, '0');
+                const m = String(parsed.getMonth() + 1).padStart(2, '0');
+                const y = parsed.getFullYear();
+                const hh = String(parsed.getHours()).padStart(2, '0');
+                const mm = String(parsed.getMinutes()).padStart(2, '0');
+                return `${d}/${m}/${y} ${hh}:${mm}`;
+            }
+            return str;
+        }
+
+        function parsearFechaSegura(fechaStr) {
+            if (!fechaStr) return new Date(0);
+            const str = String(fechaStr).trim();
+            const matchPe = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{2}))?/);
+            if (matchPe) {
+                const dia = parseInt(matchPe[1], 10);
+                const mes = parseInt(matchPe[2], 10) - 1;
+                const anio = parseInt(matchPe[3], 10);
+                const hh = matchPe[4] ? parseInt(matchPe[4], 10) : 0;
+                const mm = matchPe[5] ? parseInt(matchPe[5], 10) : 0;
+                return new Date(anio, mes, dia, hh, mm);
+            }
+            const d = new Date(str);
+            return isNaN(d.getTime()) ? new Date(0) : d;
+        }
+
+        // --- SELECTORES MODERNOS DE FECHA (DÍA / MES / AÑO) ---
+        function inicializarSelectoresFechaModernos() {
+            const meses = [
+                { val: '01', txt: 'Enero' }, { val: '02', txt: 'Febrero' }, { val: '03', txt: 'Marzo' },
+                { val: '04', txt: 'Abril' }, { val: '05', txt: 'Mayo' }, { val: '06', txt: 'Junio' },
+                { val: '07', txt: 'Julio' }, { val: '08', txt: 'Agosto' }, { val: '09', txt: 'Septiembre' },
+                { val: '10', txt: 'Octubre' }, { val: '11', txt: 'Noviembre' }, { val: '12', txt: 'Diciembre' }
+            ];
+            const anioActual = new Date().getFullYear();
+
+            const poblarGrupoFecha = (idDia, idMes, idAnio, anioInicio, anioFin, defDia, defMes, defAnio) => {
+                const sDia = document.getElementById(idDia);
+                const sMes = document.getElementById(idMes);
+                const sAnio = document.getElementById(idAnio);
+                if (!sDia || !sMes || !sAnio) return;
+
+                sDia.innerHTML = '';
+                for (let d = 1; d <= 31; d++) {
+                    const v = String(d).padStart(2, '0');
+                    sDia.innerHTML += `<option value="${v}">${d}</option>`;
+                }
+
+                sMes.innerHTML = meses.map(m => `<option value="${m.val}">${m.txt}</option>`).join('');
+
+                sAnio.innerHTML = '';
+                for (let a = anioFin; a >= anioInicio; a--) {
+                    sAnio.innerHTML += `<option value="${a}">${a}</option>`;
+                }
+
+                sDia.value = defDia;
+                sMes.value = defMes;
+                sAnio.value = String(defAnio);
+            };
+
+            poblarGrupoFecha('regCumpleDia', 'regCumpleMes', 'regCumpleAnio', 1935, anioActual, '01', '01', 1995);
+
+            const hoy = new Date();
+            const dHoy = String(hoy.getDate()).padStart(2, '0');
+            const mHoy = String(hoy.getMonth() + 1).padStart(2, '0');
+            poblarGrupoFecha('ceoIniDia', 'ceoIniMes', 'ceoIniAnio', 2024, anioActual + 1, '01', mHoy, anioActual);
+            poblarGrupoFecha('ceoFinDia', 'ceoFinMes', 'ceoFinAnio', 2024, anioActual + 1, dHoy, mHoy, anioActual);
+        }
+
+        window.onload = function() {
+            inicializarUbicacionUI();
+            inicializarUbicacionRegistro();
+            inicializarSelectoresFechaModernos();
+            renderRubros();
+            sincronizarDatosRemotos();
+            registrarServiceWorkerNativo();
+            configurarSwipeTactil();
+            configurarInstalacionPWA();
+            actualizarHeaderUsuario();
+            
+            firebase.auth().onAuthStateChanged(user => {
+                if (user) {
+                    if (!usuarioActual) {
+                        usuarioActual = {
+                            Correo: user.email,
+                            Nombre_Completo: user.displayName || user.email.split('@')[0],
+                            uid: user.uid,
+                            rol: (user.email.toLowerCase() === "mercaton@gmail.com") ? "ceo" : "mercador"
+                        };
+                    } else {
+                        usuarioActual.uid = user.uid;
+                        if (user.email.toLowerCase() === "mercaton@gmail.com") {
+                            usuarioActual.rol = "ceo";
+                        }
+                    }
+                    localStorage.setItem('mercaton_usuario', JSON.stringify(usuarioActual));
+                    actualizarHeaderUsuario();
+                }
+            });
+        };
+
+        async function sincronizarDatosRemotos() {
+            await Promise.all([
+                cargarHojaRemota('puestos', data => { puestosBD = data; renderPuestos(); renderRubros(); }),
+                cargarHojaRemota('usuarios', data => { usuariosBD = data; }),
+                cargarHojaRemota('calificaciones', data => { calificacionesBD = data; renderPuestos(); renderRubros(); }),
+                cargarHojaRemota('favoritos', data => { favoritosBD = data; renderPuestos(); }),
+                cargarHojaRemota('publicidad', data => { publicidadBD = data; renderBannersDinamicos(); })
+            ]);
+        }
+
+        async function cargarHojaRemota(nombreHoja, callback) {
+            try {
+                let res = await fetch(`${APPS_SCRIPT_URL}?sheet=${nombreHoja}`);
+                let data = await res.json();
+                if (data && Array.isArray(data)) callback(data);
+            } catch (e) {
+                console.error(`Error cargando ${nombreHoja}:`, e);
+            }
+        }
+
+        async function enviarASheets(nombreHoja, filaDatos, actionType = "insert", keyCol = 0, keyVal = null) {
+            try {
+                let payload = { sheet: nombreHoja, action: actionType, row: filaDatos };
+                if (actionType === "update") {
+                    payload.keyColIndex = keyCol;
+                    payload.keyValue = keyVal;
+                }
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                return true;
+            } catch (e) {
+                console.error("Error al enviar a Google Sheets:", e);
+                return false;
+            }
+        }
+
+        async function eliminarEnSheets(nombreHoja, valorBusqueda, colIdx = 0) {
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: "delete", sheet: nombreHoja, value: valorBusqueda, colIndex: colIdx })
+                });
+            } catch (e) {
+                console.error("Error al eliminar en Sheets:", e);
+            }
+        }
+
+        function mostrarToast(mensaje) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = mensaje;
+            t.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => { t.classList.add('opacity-0', 'pointer-events-none'); }, 3000);
+        }
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function scrollSeccion(id, amount) {
+            const el = document.getElementById(id);
+            if (el) el.scrollBy({ left: amount, behavior: 'smooth' });
+        }
+
+        function obtenerEmbedYoutube(url) {
+            if (!url) return null;
+            const strUrl = String(url).trim();
+            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const match = strUrl.match(regExp);
+            if (match && match[1]) {
+                const videoId = match[1];
+                return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`;
+            }
+            return null;
+        }
+
+        function pausarSpotsComerciales() {
+            if (intervalosSecciones["C"]) {
+                clearInterval(intervalosSecciones["C"]);
+                intervalosSecciones["C"] = null;
+            }
+            if (timeoutPausasSliders["C"]) {
+                clearTimeout(timeoutPausasSliders["C"]);
+            }
+            timeoutPausasSliders["C"] = setTimeout(() => {
+                if (typeof funcionesReanudarSecciones["C"] === 'function') {
+                    funcionesReanudarSecciones["C"]();
+                }
+            }, 3600000);
+        }
+
+        function renderBannersDinamicos() {
+            Object.values(seccionesMapGlobal).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = '';
+            });
+
+            const sliderWrapper = document.getElementById('sliderWrapper');
+            if (sliderWrapper) sliderWrapper.innerHTML = '';
+
+            Object.keys(intervalosSecciones).forEach(k => clearInterval(intervalosSecciones[k]));
+            if (intervaloSlider) clearInterval(intervaloSlider);
+            Object.values(timeoutPausasSliders).forEach(t => clearTimeout(t));
+
+            if (!publicidadBD || publicidadBD.length === 0) return;
+
+            const ahora = new Date();
+            const vigentes = publicidadBD.filter(b => {
+                const inicio = b.Fecha_Inicio || b.fecha_inicio;
+                const fin = b.Fecha_Fin || b.fecha_fin;
+                if (!inicio || !fin) return true;
+                return ahora >= new Date(inicio) && ahora <= new Date(fin);
+            });
+
+            vigentes.sort((a, b) => parseInt(a.Orden || a.orden || 999) - parseInt(b.Orden || b.orden || 999));
+
+            let slidesHtml = '';
+            let mainCount = 0;
+            mainSegundosGlobal = 5;
+
+            vigentes.forEach(b => {
+                const secKey = String(b.Seccion || b.seccion || '').trim().toUpperCase();
+                const imgUrl = b.URL_Imagen || b.url_imagen || "";
+                const destinoUrl = b.URL_Destino || b.url_destino || "https://wa.me/51930528649";
+                const embedYoutube = obtenerEmbedYoutube(imgUrl) || obtenerEmbedYoutube(destinoUrl);
+                const segs = parseInt(b.Segundos_Pantalla || b.segundos_pantalla || 5);
+
+                if (secKey === "PRINCIPAL" || secKey === "MAIN") {
+                    mainCount++;
+                    mainSegundosGlobal = segs;
+                    if (embedYoutube) {
+                        slidesHtml += `<div class="w-full h-full flex-shrink-0 relative block"><iframe class="w-full h-full rounded-xl" src="${embedYoutube}" title="${b.Nombre_Cliente || 'Video'}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>`;
+                    } else {
+                        slidesHtml += `<a href="${destinoUrl}" target="_blank" class="w-full h-full flex-shrink-0 relative block"><img src="${imgUrl}" loading="lazy" class="w-full h-full object-cover pointer-events-none" alt="${b.Nombre_Cliente || 'Banner'}"></a>`;
+                    }
+                } else {
+                    const contenedorId = seccionesMapGlobal[secKey];
+                    let bannerCardHtml = "";
+
+                    if (secKey === "C") {
+                        const youtubeSpot = embedYoutube || obtenerEmbedYoutube(imgUrl) || obtenerEmbedYoutube(destinoUrl);
+                        if (youtubeSpot) {
+                            bannerCardHtml = `
+                                <div ontouchstart="pausarSpotsComerciales()" onclick="pausarSpotsComerciales()" class="min-w-[260px] sm:min-w-[320px] bg-black rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video block border border-gray-800">
+                                    <iframe class="w-full h-full" src="${youtubeSpot}" title="${b.Nombre_Cliente || 'Spot Comercial'}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+                                </div>`;
+                        } else {
+                            bannerCardHtml = `
+                                <a href="${destinoUrl}" target="_blank" ontouchstart="pausarSpotsComerciales()" onclick="pausarSpotsComerciales()" class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video flex items-center justify-center text-white block">
+                                    <img src="${imgUrl}" loading="lazy" class="w-full h-full object-cover absolute inset-0 opacity-75" alt="${b.Nombre_Cliente || 'Spot'}">
+                                    <i class="fa-solid fa-circle-play text-3xl text-red-500 z-10"></i>
+                                    <span class="absolute bottom-2 left-2 text-[10px] px-2 py-0.5 rounded font-bold z-10" style="background-color: rgba(0, 0, 0, 0.65);">${b.Nombre_Cliente || 'Spot'}</span>
+                                </a>`;
+                        }
+                    } else if (embedYoutube) {
+                        bannerCardHtml = `<div class="min-w-[240px] sm:min-w-[300px] bg-gray-900 rounded-xl overflow-hidden shadow relative flex-shrink-0 aspect-video block"><iframe class="w-full h-full" src="${embedYoutube}" title="${b.Nombre_Cliente || 'Video'}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>`;
+                    } else {
+                        bannerCardHtml = `<a href="${destinoUrl}" target="_blank" class="min-w-[120px] max-w-[140px] sm:min-w-[150px] sm:max-w-[160px] bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex-shrink-0 block hover:border-brand-red transition"><img src="${imgUrl}" loading="lazy" class="w-full h-24 sm:h-28 object-cover rounded-xl" alt="${b.Nombre_Cliente || 'Publicidad'}"></a>`;
+                    }
+
+                    if (contenedorId) {
+                        const cont = document.getElementById(contenedorId);
+                        if (cont) cont.innerHTML += bannerCardHtml;
+                    }
+                }
+            });
+
+            if (sliderWrapper && slidesHtml !== '') {
+                sliderWrapper.innerHTML = slidesHtml;
+                totalSlidesCount = mainCount;
+                iniciarSlider(mainSegundosGlobal);
+            }
+
+            Object.entries(seccionesMapGlobal).forEach(([secCode, idContenedor]) => {
+                const cont = document.getElementById(idContenedor);
+                if (cont && cont.children.length > 1) {
+                    const primerBanner = vigentes.find(v => String(v.Seccion || v.seccion || '').trim().toUpperCase() === secCode);
+                    const segs = primerBanner ? parseInt(primerBanner.Segundos_Pantalla || 5) : 5;
+                    
+                    function iniciarIntervaloSeccion() {
+                        if (intervalosSecciones[secCode]) clearInterval(intervalosSecciones[secCode]);
+                        intervalosSecciones[secCode] = setInterval(() => {
+                            if (cont.scrollLeft + cont.clientWidth >= cont.scrollWidth - 10) {
+                                cont.scrollTo({ left: 0, behavior: 'smooth' });
+                            } else {
+                                cont.scrollBy({ left: 220, behavior: 'smooth' });
+                            }
+                        }, segs * 1000);
+                    }
+
+                    funcionesReanudarSecciones[secCode] = iniciarIntervaloSeccion;
+                    iniciarIntervaloSeccion();
+
+                    if (secCode === "C") {
+                        cont.addEventListener('touchstart', pausarSpotsComerciales, { passive: true });
+                        cont.addEventListener('touchmove', pausarSpotsComerciales, { passive: true });
+                        cont.addEventListener('mousedown', pausarSpotsComerciales);
+                        cont.addEventListener('click', pausarSpotsComerciales);
+                    } else {
+                        const pausarSeccionHandler = () => {
+                            if (intervalosSecciones[secCode]) clearInterval(intervalosSecciones[secCode]);
+                            if (timeoutPausasSliders[secCode]) clearTimeout(timeoutPausasSliders[secCode]);
+                            timeoutPausasSliders[secCode] = setTimeout(() => {
+                                iniciarIntervaloSeccion();
+                            }, 300000);
+                        };
+                        cont.addEventListener('click', pausarSeccionHandler);
+                        cont.addEventListener('touchstart', pausarSeccionHandler, { passive: true });
+                        cont.addEventListener('mousedown', pausarSeccionHandler);
+                    }
+                }
+            });
+
+            window.addEventListener('blur', () => {
+                const activeEl = document.activeElement;
+                const contC = document.getElementById('bannerSeccionC');
+                if (activeEl && activeEl.tagName === 'IFRAME' && contC && contC.contains(activeEl)) {
+                    pausarSpotsComerciales();
+                }
+            });
+
+            const sliderContainerEl = document.getElementById('sliderContainer');
+            if (sliderContainerEl) {
+                const pausarSliderHandler = () => {
+                    if (intervaloSlider) clearInterval(intervaloSlider);
+                    if (timeoutPausasSliders['main']) clearTimeout(timeoutPausasSliders['main']);
+                    timeoutPausasSliders['main'] = setTimeout(() => {
+                        iniciarSlider(mainSegundosGlobal);
+                    }, 300000);
+                };
+                sliderContainerEl.addEventListener('click', pausarSliderHandler);
+                sliderContainerEl.addEventListener('touchstart', pausarSliderHandler, { passive: true });
+                sliderContainerEl.addEventListener('mousedown', pausarSliderHandler);
+            }
+
+            const ceoBanners = document.getElementById('ceoCantBanners');
+            if (ceoBanners) ceoBanners.innerText = vigentes.length;
+        }
+
+        function toggleBusquedaExpandible() {
+            const wrapper = document.getElementById('wrapperBusquedaExpandible');
+            const input = document.getElementById('inputBusquedaRubros');
+            busquedaExpandida = !busquedaExpandida;
+            if (busquedaExpandida) {
+                wrapper.classList.remove('w-9', 'px-2');
+                wrapper.classList.add('w-48', 'sm:w-60', 'px-2.5', 'ring-2', 'ring-brand-red');
+                input.classList.remove('w-0', 'opacity-0', 'px-0');
+                input.classList.add('w-full', 'opacity-100', 'px-1.5');
+                input.focus();
+            } else {
+                contraerBusquedaExpandible();
+            }
+        }
+
+        function contraerBusquedaExpandible() {
+            const wrapper = document.getElementById('wrapperBusquedaExpandible');
+            const input = document.getElementById('inputBusquedaRubros');
+            if (!wrapper || !input) return;
+            busquedaExpandida = false;
+            wrapper.classList.remove('w-48', 'sm:w-60', 'px-2.5', 'ring-2', 'ring-brand-red');
+            wrapper.classList.add('px-2', 'w-9');
+            input.classList.remove('w-full', 'opacity-100', 'px-1.5');
+            input.classList.add('w-0', 'opacity-0', 'px-0');
+        }
+
+        function filtrarPuestos() {
+            const inputEl = document.getElementById('inputBusquedaRubros');
+            const query = inputEl ? inputEl.value.toLowerCase() : "";
+            const res = puestosBD.filter(p => 
+                (p.Nombre_Puesto || p.nombre || "").toLowerCase().includes(query) || 
+                (p.Rubro || p.rubro || "").toLowerCase().includes(query) || 
+                (p.Descripcion || p.desc || "").toLowerCase().includes(query) ||
+                (p.Distrito || p.distrito || "").toLowerCase().includes(query) ||
+                (p.Provincia || p.provincia || "").toLowerCase().includes(query)
+            );
+            renderPuestos(res);
+        }
+
+        function verInicio() {
+            document.getElementById('secInicio').classList.remove('hidden');
+            document.getElementById('secPuestos').classList.add('hidden');
+            document.getElementById('secDashboard').classList.add('hidden');
+            document.getElementById('secCeo').classList.add('hidden');
+        }
+
+        function verPuestos() {
+            document.getElementById('secInicio').classList.add('hidden');
+            document.getElementById('secPuestos').classList.remove('hidden');
+            document.getElementById('secDashboard').classList.add('hidden');
+            document.getElementById('secCeo').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function verDashboard() {
+            if (!usuarioActual) { abrirAuthModal(); return; }
+            if (usuarioActual.rol === 'ceo') {
+                verCeoPanel();
+                return;
+            }
+            document.getElementById('secInicio').classList.add('hidden');
+            document.getElementById('secPuestos').classList.add('hidden');
+            document.getElementById('secDashboard').classList.remove('hidden');
+            document.getElementById('secCeo').classList.add('hidden');
+
+            if (usuarioActual.rol === 'mercadero') {
+                document.getElementById('dashMercadero').classList.remove('hidden');
+                document.getElementById('dashMercador').classList.add('hidden');
+                renderDashMercadero();
+            } else {
+                document.getElementById('dashMercadero').classList.add('hidden');
+                document.getElementById('dashMercador').classList.remove('hidden');
+                renderDashMercador();
+            }
+        }
+
+        function verCeoPanel() {
+            document.getElementById('secInicio').classList.add('hidden');
+            document.getElementById('secPuestos').classList.add('hidden');
+            document.getElementById('secDashboard').classList.add('hidden');
+            document.getElementById('secCeo').classList.remove('hidden');
+            renderCeoTable();
+        }
+
+        function renderRubros() {
+            const cont = document.getElementById('contenedorRubros');
+            if (!cont) return;
+
+            let puntajeRubros = {};
+            rubrosConfig.forEach(r => {
+                if(r.nombre === "Todos") return;
+                const puestosRubro = puestosBD.filter(p => (p.Rubro || p.rubro) === r.nombre);
+                let totalCalsRubro = 0;
+                let sumaEstrellasRubro = 0;
+                puestosRubro.forEach(p => {
+                    const cals = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(p.ID || p.id));
+                    totalCalsRubro += cals.length;
+                    cals.forEach(c => sumaEstrellasRubro += parseInt(c.Estrellas || c.estrellas || 0));
+                });
+                const porcentaje = totalCalsRubro > 0 ? (sumaEstrellasRubro / (totalCalsRubro * 5)) * 100 : 0;
+                puntajeRubros[r.nombre] = totalCalsRubro * 10 + porcentaje;
+            });
+
+            let rubrosOrdenados = [...rubrosConfig];
+            rubrosOrdenados.sort((a, b) => {
+                if (a.nombre === "Todos") return -1;
+                if (b.nombre === "Todos") return 1;
+                return (puntajeRubros[b.nombre] || 0) - (puntajeRubros[a.nombre] || 0);
+            });
+
+            cont.innerHTML = `
+                <div id="wrapperBusquedaExpandible" class="flex items-center flex-shrink-0 transition-all duration-300 ease-in-out bg-white border border-gray-200 rounded-xl px-2 py-1.5 shadow-sm w-9 overflow-hidden">
+                    <button onclick="toggleBusquedaExpandible()" class="text-gray-600 hover:text-brand-red p-0.5 flex items-center justify-center flex-shrink-0 transition" title="Buscar puesto">
+                        <i class="fa-solid fa-magnifying-glass text-xs sm:text-sm"></i>
+                    </button>
+                    <input type="text" id="inputBusquedaRubros" onkeyup="filtrarPuestos()" onblur="setTimeout(() => { if(!this.value) contraerBusquedaExpandible(); }, 200)" placeholder="Buscar puesto, producto..." class="w-0 opacity-0 overflow-hidden text-xs bg-transparent outline-none transition-all duration-300 ease-in-out px-0">
+                </div>
+            `;
+
+            rubrosOrdenados.forEach(r => {
+                const isSelected = rubroSeleccionado === r.nombre;
+                const activeStyle = isSelected ? 'bg-brand-red text-white font-extrabold shadow-md scale-105' : 'bg-white text-gray-700 font-bold border border-gray-200 hover:bg-gray-100';
+                cont.innerHTML += `
+                    <button onclick="filtrarRubro('${r.nombre}')" class="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition ${activeStyle}">
+                        <i class="fa-solid ${r.icon} text-xs"></i>
+                        <span>${r.nombre}</span>
+                    </button>
+                `;
+            });
+        }
+
+        function renderPuestos(lista = puestosBD) {
+            const grid = document.getElementById('gridPuestos');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            let filtrados = lista.filter(p => {
+                const matchRubro = (rubroSeleccionado === "Todos" || (p.Rubro || p.rubro) === rubroSeleccionado);
+                
+                const provPuesto = String(p.Provincia || p.provincia || "").trim().toLowerCase();
+                const disPuesto = String(p.Distrito || p.distrito || "").trim().toLowerCase();
+                
+                const selProv = String(ubicacionActual.provincia || "").trim().toLowerCase();
+                const selDis = String(ubicacionActual.distrito || "").trim().toLowerCase();
+
+                const matchProvincia = (!selProv || selProv.includes("todas") || provPuesto === selProv);
+                const matchDistrito = (!selDis || selDis.includes("todos") || disPuesto === selDis);
+
+                return matchRubro && matchProvincia && matchDistrito;
+            });
+            
+            filtrados.sort((a, b) => {
+                const calsA = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(a.ID || a.id));
+                const calsB = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(b.ID || b.id));
+                return calsB.length - calsA.length;
+            });
+
+            if (filtrados.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-gray-400 text-xs">No hay puestos registrados en esta ubicación (${ubicacionActual.provincia}) para este rubro.</div>`;
+                return;
+            }
+
+            filtrados.forEach(p => {
+                const id = p.ID || p.id;
+                const nombre = p.Nombre_Puesto || p.nombre;
+                const rubro = p.Rubro || p.rubro;
+                const desc = p.Descripcion || p.desc;
+                const whatsapp = p.WhatsApp || p.whatsapp;
+                const web = p.Web_Catalogo || p.web || "";
+
+                const calsPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(id));
+                const totalCals = calsPuesto.length;
+                let avgStars = 0;
+                if (totalCals > 0) {
+                    const suma = calsPuesto.reduce((acc, curr) => acc + parseInt(curr.Estrellas || curr.estrellas || 0), 0);
+                    avgStars = (suma / totalCals).toFixed(1);
+                }
+
+                const esFav = usuarioActual ? favoritosBD.some(f => 
+                    (String(f.Usuario_Correo || f.correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase() || 
+                    (f.Usuario_UID && usuarioActual.uid && String(f.Usuario_UID) === String(usuarioActual.uid))) && 
+                    String(f.Puesto_ID || f.puestoId) === String(id)
+                ) : false;
+
+                const corazonColor = esFav ? 'text-red-500' : 'text-gray-300';
+                const textoCals = totalCals === 1 ? 'merca' : 'mercas';
+
+                let yaCalificoUsuario = false;
+                if (usuarioActual && usuarioActual.rol === 'mercador') {
+                    yaCalificoUsuario = calsPuesto.some(c => 
+                        (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
+                        (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
+                        (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
+                    );
+                }
+
+                let botonMercarHtml = '';
+                if (!usuarioActual || usuarioActual.rol !== 'mercadero') {
+                    if (usuarioActual && usuarioActual.rol === 'mercador' && yaCalificoUsuario) {
+                        botonMercarHtml = `<span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Ya Mercado</span>`;
+                    } else {
+                        botonMercarHtml = `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
+                    }
+                }
+
+                grid.innerHTML += `
+                    <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
+                        <div>
+                            <div class="flex items-center justify-between gap-1 mb-1">
+                                <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded truncate max-w-[75%]" title="${rubro}">${rubro}</span>
+                                <button onclick="toggleFavorito('${id}')" class="text-xs ${corazonColor} hover:scale-110 transition"><i class="fa-solid fa-heart"></i></button>
+                            </div>
+                            <h4 class="font-bold text-gray-900 text-xs leading-tight line-clamp-1">${nombre}</h4>
+                            <p class="text-[10px] text-gray-500 mt-0.5 line-clamp-2 h-6 leading-tight">${desc}</p>
+                        </div>
+                        <div class="mt-2 space-y-1.5">
+                            <div class="flex items-center justify-between bg-gray-50 p-1 rounded-lg border border-gray-100">
+                                <div class="flex items-center gap-1 text-amber-500 font-extrabold text-[11px]">
+                                    <i class="fa-solid fa-star text-[10px]"></i>
+                                    <span>${totalCals > 0 ? avgStars : '0'} <span class="text-[9px] text-gray-400 font-normal">(${totalCals} ${textoCals})</span></span>
+                                </div>
+                                ${botonMercarHtml}
+                            </div>
+                            <div class="grid grid-cols-3 gap-1">
+                                <a href="${web || '#'}" target="_blank" class="h-8 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded transition" title="Web"><i class="fa-solid fa-globe text-lg"></i></a>
+                                <a href="https://maps.google.com/?q=${encodeURIComponent(nombre + ' Piura')}" target="_blank" class="h-8 bg-black hover:bg-gray-800 text-white flex items-center justify-center rounded transition" title="GPS"><i class="fa-solid fa-location-dot text-lg"></i></a>
+                                <a href="https://wa.me/${whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20MERCATON%20Piura" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp"><i class="fa-brands fa-whatsapp text-xl"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filtrarRubro(rubro) {
+            rubroSeleccionado = rubro;
+            renderRubros();
+            renderPuestos();
+        }
+
+        async function toggleFavorito(id) {
+            if (!usuarioActual) { abrirAuthModal(); return; }
+            const userCorreo = usuarioActual.Correo;
+            const userUid = usuarioActual.uid || "";
+
+            const idx = favoritosBD.findIndex(f => 
+                (String(f.Usuario_Correo || f.correo).toLowerCase() === String(userCorreo).toLowerCase() || 
+                (f.Usuario_UID && userUid && String(f.Usuario_UID) === String(userUid))) && 
+                String(f.Puesto_ID || f.puestoId) === String(id)
+            );
+            
+            if (idx >= 0) {
+                const favEliminado = favoritosBD[idx];
+                favoritosBD.splice(idx, 1);
+                await eliminarEnSheets('favoritos', favEliminado.ID_Favorito || favEliminado.id, 0);
+                mostrarToast("Eliminado de mis favoritos.");
+            } else {
+                const nuevoFav = {
+                    ID_Favorito: Date.now(),
+                    Usuario_Correo: userCorreo,
+                    Puesto_ID: id,
+                    Fecha: obtenerFechaHora24hActual(),
+                    Usuario_UID: userUid
+                };
+                favoritosBD.push(nuevoFav);
+                await enviarASheets('favoritos', [nuevoFav.ID_Favorito, nuevoFav.Usuario_Correo, nuevoFav.Puesto_ID, nuevoFav.Fecha, nuevoFav.Usuario_UID]);
+                mostrarToast("Guardado en mis favoritos.");
+            }
+            renderPuestos();
+            if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
+                verFavoritosModal();
+            }
+        }
+
+        function verFavoritosModal() {
+            if (!usuarioActual) { abrirAuthModal(); return; }
+            const misFavsIds = favoritosBD.filter(f => 
+                String(f.Usuario_Correo || f.correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase() || 
+                (f.Usuario_UID && usuarioActual.uid && String(f.Usuario_UID) === String(usuarioActual.uid))
+            ).map(f => String(f.Puesto_ID || f.puestoId));
+
+            let favs = puestosBD.filter(p => misFavsIds.includes(String(p.ID || p.id)));
+            
+            const queryFav = document.getElementById('inputBusquedaFavoritos')?.value.toLowerCase() || '';
+            if (queryFav) {
+                favs = favs.filter(f => 
+                    (f.Nombre_Puesto || f.nombre || '').toLowerCase().includes(queryFav) ||
+                    (f.Rubro || f.rubro || '').toLowerCase().includes(queryFav) ||
+                    (f.Descripcion || f.desc || '').toLowerCase().includes(queryFav)
+                );
+            }
+
+            const cont = document.getElementById('listaFavoritosModal');
+            cont.innerHTML = '';
+            if (favs.length === 0) {
+                cont.innerHTML = '<p class="text-xs text-gray-400 col-span-full text-center py-4">No se encontraron puestos favoritos con esa búsqueda.</p>';
+            } else {
+                favs.forEach(f => {
+                    const id = f.ID || f.id;
+                    const nombre = f.Nombre_Puesto || f.nombre;
+                    const rubro = f.Rubro || f.rubro;
+                    const desc = f.Descripcion || f.desc || '';
+                    const whatsapp = f.WhatsApp || f.whatsapp;
+                    const web = f.Web_Catalogo || f.web || "";
+
+                    const calsPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(id));
+                    const totalCals = calsPuesto.length;
+                    let avgStars = 0;
+                    if (totalCals > 0) {
+                        const suma = calsPuesto.reduce((acc, curr) => acc + parseInt(curr.Estrellas || 0), 0);
+                        avgStars = (suma / totalCals).toFixed(1);
+                    }
+
+                    let yaCalificoUsuario = false;
+                    if (usuarioActual && usuarioActual.rol === 'mercador') {
+                        yaCalificoUsuario = calsPuesto.some(c => 
+                            (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
+                            (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
+                            (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
+                        );
+                    }
+
+                    let botonMercarHtml = '';
+                    if (!usuarioActual || usuarioActual.rol !== 'mercadero') {
+                        if (usuarioActual && usuarioActual.rol === 'mercador' && yaCalificoUsuario) {
+                            botonMercarHtml = `<span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Ya Mercado</span>`;
+                        } else {
+                            botonMercarHtml = `<button onclick="abrirMercarModal('${id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black text-[10px] py-1 px-2.5 rounded transition shadow-sm border border-yellow-500">Mercar</button>`;
+                        }
+                    }
+
+                    cont.innerHTML += `
+                        <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
+                            <div>
+                                <div class="flex items-center justify-between gap-1 mb-1">
+                                    <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded truncate max-w-[75%]">${rubro}</span>
+                                    <button onclick="toggleFavorito('${id}')" class="text-xs text-red-500 hover:scale-110 transition"><i class="fa-solid fa-heart"></i></button>
+                                </div>
+                                <h4 class="font-bold text-gray-900 text-xs leading-tight line-clamp-1">${nombre}</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5 line-clamp-2 h-6 leading-tight">${desc}</p>
+                            </div>
+                            <div class="mt-2 space-y-1.5">
+                                <div class="flex items-center justify-between bg-gray-50 p-1 rounded-lg border border-gray-100">
+                                    <div class="flex items-center gap-1 text-amber-500 font-extrabold text-[11px]">
+                                        <i class="fa-solid fa-star text-[10px]"></i>
+                                        <span>${totalCals > 0 ? avgStars : '0'}</span>
+                                    </div>
+                                    ${botonMercarHtml}
+                                </div>
+                                <div class="grid grid-cols-3 gap-1">
+                                    <a href="${web || '#'}" target="_blank" class="h-8 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded transition" title="Web"><i class="fa-solid fa-globe text-lg"></i></a>
+                                    <a href="https://maps.google.com/?q=${encodeURIComponent(nombre + ' Piura')}" target="_blank" class="h-8 bg-black hover:bg-gray-800 text-white flex items-center justify-center rounded transition" title="GPS"><i class="fa-solid fa-location-dot text-lg"></i></a>
+                                    <a href="https://wa.me/${whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20MERCATON" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp"><i class="fa-brands fa-whatsapp text-xl"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('modalFavoritos').classList.remove('hidden');
+        }
+
+        function abrirMercarModal(id) {
+            if (!usuarioActual) {
+                abrirAuthModal();
+                mostrarToast("Inicia sesión como Mercador para poder calificar puestos.");
+                return;
+            }
+            if (usuarioActual.rol === 'mercadero') {
+                mostrarToast("Los dueños de puestos (mercaderos) no pueden votar ni calificar.");
+                return;
+            }
+
+            puestoSeleccionadoId = id;
+            const p = puestosBD.find(x => String(x.ID || x.id) === String(id));
+            if (!p) return;
+
+            document.getElementById('mercarRubro').innerText = p.Rubro || p.rubro;
+            document.getElementById('mercarNombre').innerText = p.Nombre_Puesto || p.nombre;
+            document.getElementById('mercarDesc').innerText = p.Descripcion || p.desc;
+            document.getElementById('mercarUbicacion').innerText = `${p.Region || p.region}, ${p.Provincia || p.provincia}, ${p.Distrito || p.distrito}`;
+            
+            setCalificacion(0);
+            document.getElementById('modalMercar').classList.remove('hidden');
+        }
+
+        function setCalificacion(num) {
+            calificacionTemp = num;
+            const stars = document.querySelectorAll('#estrellasContenedor i');
+            stars.forEach((star, idx) => {
+                if (idx < num) {
+                    star.classList.remove('fa-regular', 'text-gray-300');
+                    star.classList.add('fa-solid', 'text-amber-400');
+                } else {
+                    star.classList.remove('fa-solid', 'text-amber-400');
+                    star.classList.add('fa-regular', 'text-gray-300');
+                }
+            });
+        }
+
+        async function confirmarMercar() {
+            if (!usuarioActual || usuarioActual.rol === 'mercadero') {
+                cerrarModal('modalMercar');
+                mostrarToast("Acción no permitida para cuentas de mercaderos.");
+                return;
+            }
+            if (calificacionTemp === 0) {
+                mostrarToast("Por favor selecciona al menos 1 estrella.");
+                return;
+            }
+
+            const p = puestosBD.find(x => String(x.ID || x.id) === String(puestoSeleccionadoId));
+            const comentario = document.getElementById('mercarComentario').value || "Sin comentario";
+            const nombreUsuario = usuarioActual.Nombre_Completo || usuarioActual.nombre;
+            const userUid = usuarioActual.uid || "";
+            const fechaHora24 = obtenerFechaHora24hActual();
+
+            const indiceExistente = calificacionesBD.findIndex(c => 
+                String(c.Puesto_ID || c.puestoId) === String(puestoSeleccionadoId) && 
+                ((c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(nombreUsuario).toLowerCase()) ||
+                 (userUid && String(c.Usuario_UID) === String(userUid)) ||
+                 (c.Usuario_Correo && usuarioActual.Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase()))
+            );
+
+            if (indiceExistente >= 0) {
+                calificacionesBD[indiceExistente].Estrellas = calificacionTemp;
+                calificacionesBD[indiceExistente].Comentario = comentario;
+                calificacionesBD[indiceExistente].Fecha_Hora = fechaHora24;
+                
+                const calReg = calificacionesBD[indiceExistente];
+                await enviarASheets('calificaciones', [
+                    calReg.ID_Calificacion || calReg.id, 
+                    calReg.Puesto_ID || calReg.puestoId, 
+                    calReg.Usuario_Nombre || nombreUsuario, 
+                    calReg.Estrellas, 
+                    calReg.Comentario, 
+                    calReg.Fecha_Hora, 
+                    calReg.Usuario_UID || userUid
+                ], "update", 0, calReg.ID_Calificacion || calReg.id);
+
+                renderPuestos();
+                if(usuarioActual && usuarioActual.rol === 'mercador') {
+                    renderListaCalificacionesMercador();
+                }
+                if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
+                    verFavoritosModal();
+                }
+                cerrarModal('modalMercar');
+                mostrarToast(`¡Calificación actualizada con ${calificacionTemp} estrellas!`);
+                return;
+            }
+
+            if (p) {
+                const nuevaCalificacion = {
+                    ID_Calificacion: Date.now(),
+                    Puesto_ID: p.ID || p.id,
+                    Usuario_Nombre: nombreUsuario,
+                    Estrellas: calificacionTemp,
+                    Comentario: comentario,
+                    Fecha_Hora: fechaHora24,
+                    Usuario_UID: userUid,
+                    Usuario_Correo: usuarioActual.Correo || ''
+                };
+                calificacionesBD.unshift(nuevaCalificacion);
+                
+                await enviarASheets('calificaciones', [
+                    nuevaCalificacion.ID_Calificacion, 
+                    nuevaCalificacion.Puesto_ID, 
+                    nuevaCalificacion.Usuario_Nombre, 
+                    nuevaCalificacion.Estrellas, 
+                    nuevaCalificacion.Comentario, 
+                    nuevaCalificacion.Fecha_Hora, 
+                    nuevaCalificacion.Usuario_UID
+                ]);
+
+                renderPuestos();
+                if(usuarioActual && usuarioActual.rol === 'mercador') {
+                    renderListaCalificacionesMercador();
+                }
+                if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
+                    verFavoritosModal();
+                }
+                cerrarModal('modalMercar');
+                mostrarToast(`¡Gracias! Has mercado con ${calificacionTemp} estrellas.`);
+            }
+        }
+
+        function inicializarUbicacionUI() {
+            const selProv = document.getElementById('selProvincia');
+            if (!selProv) return;
+            selProv.innerHTML = '';
+            Object.keys(ubigeoPiura["Piura"]).forEach(prov => {
+                selProv.innerHTML += `<option value="${prov}">${prov}</option>`;
+            });
+            selProv.value = ubicacionActual.provincia || "Todas las provincias";
+            cargarDistritos();
+            document.getElementById('labelUbicacionActual').innerText = `Piura, ${ubicacionActual.provincia}, ${ubicacionActual.distrito || 'Todos los distritos'}`;
+        }
+
+        function cargarDistritos() {
+            const prov = document.getElementById('selProvincia').value;
+            const selDis = document.getElementById('selDistrito');
+            if (!selDis) return;
+            selDis.innerHTML = '';
+            if (ubigeoPiura["Piura"][prov]) {
+                ubigeoPiura["Piura"][prov].forEach(dis => { selDis.innerHTML += `<option value="${dis}">${dis}</option>`; });
+            }
+        }
+
+        function inicializarUbicacionRegistro() {
+            const selProvReg = document.getElementById('regProvinciaPuesto');
+            if (!selProvReg) return;
+            selProvReg.innerHTML = '';
+            Object.keys(ubigeoPiura["Piura"]).forEach(prov => {
+                if(prov !== "Todas las provincias") {
+                    selProvReg.innerHTML += `<option value="${prov}">${prov}</option>`;
+                }
+            });
+            selProvReg.value = "Paita";
+            cargarDistritosRegistro();
+        }
+
+        function cargarDistritosRegistro() {
+            const prov = document.getElementById('regProvinciaPuesto').value;
+            const selDisReg = document.getElementById('regDistritoPuesto');
+            if (!selDisReg) return;
+            selDisReg.innerHTML = '';
+            if (ubigeoPiura["Piura"][prov]) {
+                ubigeoPiura["Piura"][prov].forEach(dis => { 
+                    if(dis !== "Todos los distritos") {
+                        selDisReg.innerHTML += `<option value="${dis}">${dis}</option>`; 
+                    }
+                });
+            }
+        }
+
+        function detectarGpsRegistro() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const lat = pos.coords.latitude.toFixed(6);
+                    const lon = pos.coords.longitude.toFixed(6);
+                    document.getElementById('regGps').value = `${lat}, ${lon}`;
+                    mostrarToast("¡Ubicación GPS detectada!");
+                }, () => { mostrarToast("No se pudo obtener la ubicación GPS."); });
+            } else {
+                mostrarToast("Geolocalización no soportada.");
+            }
+        }
+
+        function guardarUbicacion() {
+            ubicacionActual = {
+                region: "Piura",
+                provincia: document.getElementById('selProvincia').value,
+                distrito: document.getElementById('selDistrito').value
+            };
+            localStorage.setItem('mercaton_ubicacion', JSON.stringify(ubicacionActual));
+            document.getElementById('labelUbicacionActual').innerText = `Piura, ${ubicacionActual.provincia}, ${ubicacionActual.distrito}`;
+            cerrarModal('modalUbicacion');
+            renderPuestos();
+            mostrarToast("Ubicación y filtro de puestos actualizado");
+        }
+
+        function abrirModalUbicacion() { document.getElementById('modalUbicacion').classList.remove('hidden'); }
+        
+        function abrirAuthModal() {
+            if (usuarioActual) {
+                if (usuarioActual.rol === 'ceo') {
+                    verCeoPanel();
+                } else {
+                    verDashboard();
+                }
+                return;
+            }
+            document.getElementById('modalAuth').classList.remove('hidden');
+        }
+
+        async function loginDirecto(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginCorreo').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            const errorContainer = document.getElementById('msgAuthErrorContainer');
+            const errorTexto = document.getElementById('msgAuthErrorTexto');
+            errorContainer.classList.add('hidden');
+
+            if (email.toLowerCase() === "mercaton@gmail.com" && pass === "20701") {
+                usuarioActual = {
+                    Nombre_Completo: "CEO de MERCATON",
+                    Correo: email,
+                    rol: "ceo",
+                    uid: "CEO_ADMIN_UID"
+                };
+                localStorage.setItem('mercaton_usuario', JSON.stringify(usuarioActual));
+                cerrarModal('modalAuth');
+                actualizarHeaderUsuario();
+                verCeoPanel();
+                mostrarToast("Acceso concedido al Panel del CEO.");
+                return;
+            }
+
+            try {
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
+                const uid = userCredential.user.uid;
+
+                let puestoEncontrado = puestosBD.find(p => (p.Correo_Acceso || p.correo) === email || (p.UID && p.UID === uid));
+                let usuarioEncontrado = usuariosBD.find(u => (u.Correo || u.correo) === email || (u.UID && u.UID === uid));
+
+                if (email.toLowerCase() === "mercaton@gmail.com") {
+                    usuarioActual = {
+                        Nombre_Completo: "CEO de MERCATON",
+                        Correo: email,
+                        rol: "ceo",
+                        uid: uid
+                    };
+                } else if (puestoEncontrado) {
+                    usuarioActual = {
+                        Nombre_Completo: puestoEncontrado.Duenio_Nombre || puestoEncontrado.duenio,
+                        Correo: puestoEncontrado.Correo_Acceso || puestoEncontrado.correo,
+                        WhatsApp: puestoEncontrado.WhatsApp || puestoEncontrado.whatsapp,
+                        rol: "mercadero",
+                        puestoId: puestoEncontrado.ID || puestoEncontrado.id,
+                        uid: uid
+                    };
+                } else if (usuarioEncontrado) {
+                    usuarioActual = {
+                        Nombre_Completo: usuarioEncontrado.Nombre_Completo || usuarioEncontrado.nombre,
+                        Correo: usuarioEncontrado.Correo || usuarioEncontrado.correo,
+                        WhatsApp: usuarioEncontrado.WhatsApp || usuarioEncontrado.whatsapp,
+                        rol: usuarioEncontrado.Rol || usuarioEncontrado.rol || "mercador",
+                        oficio: usuarioEncontrado.Oficio || usuarioEncontrado.oficio,
+                        cumpleanos: usuarioEncontrado.Cumpleanos || usuarioEncontrado.cumpleanos,
+                        residencia: usuarioEncontrado.Residencia || usuarioEncontrado.residencia || "",
+                        uid: uid
+                    };
+                } else {
+                    usuarioActual = {
+                        Nombre_Completo: userCredential.user.displayName || email.split('@')[0],
+                        Correo: email,
+                        WhatsApp: "930528649",
+                        rol: "mercador",
+                        oficio: "Comerciante",
+                        cumpleanos: "01/01/2000",
+                        residencia: "",
+                        uid: uid
+                    };
+                }
+
+                localStorage.setItem('mercaton_usuario', JSON.stringify(usuarioActual));
+                cerrarModal('modalAuth');
+                actualizarHeaderUsuario();
+                renderPuestos();
+                if(usuarioActual.rol === 'ceo') {
+                    verCeoPanel();
+                } else {
+                    verDashboard();
+                }
+                mostrarToast("Sesión iniciada correctamente.");
+
+            } catch (error) {
+                errorContainer.classList.remove('hidden');
+                errorTexto.innerText = "Credenciales incorrectas o usuario no registrado.";
+            }
+        }
+
+        async function recuperarPasswordLogin() {
+            const email = document.getElementById('loginCorreo').value.trim();
+            const container = document.getElementById('msgRecuperacionContainer');
+            const texto = document.getElementById('msgRecuperacionTexto');
+
+            if (!email) {
+                container.classList.remove('hidden');
+                texto.innerText = "Ingresa tu correo en la casilla superior para enviarte el enlace.";
+                return;
+            }
+
+            try {
+                await firebase.auth().sendPasswordResetEmail(email);
+                container.classList.remove('hidden');
+                texto.innerText = `Enlace enviado a ${email}. Revisa tu bandeja de entrada o spam.`;
+            } catch (error) {
+                container.classList.remove('hidden');
+                texto.innerText = "Error: El correo no está registrado.";
+            }
+        }
+
+        function abrirFormularioAuth(rol) {
+            cerrarModal('modalAuth');
+            document.getElementById('authRol').value = rol;
+            document.getElementById('formAuthTitulo').innerText = rol === 'mercadero' ? 'Registro de Puesto (Mercadero)' : 'Registro Comprador (Mercador)';
+            const camposExtra = document.getElementById('camposExtraMercador');
+            const campoWspMercador = document.getElementById('campoWhatsappMercador');
+            const campoResidencia = document.getElementById('campoResidenciaMercador');
+
+            if (rol === 'mercadero') {
+                document.getElementById('camposMercadero').classList.remove('hidden');
+                camposExtra.classList.add('hidden');
+                campoWspMercador.classList.add('hidden');
+                campoResidencia.classList.add('hidden');
+            } else {
+                document.getElementById('camposMercadero').classList.add('hidden');
+                camposExtra.classList.remove('hidden');
+                campoWspMercador.classList.remove('hidden');
+                campoResidencia.classList.remove('hidden');
+            }
+            document.getElementById('modalFormAuth').classList.remove('hidden');
+        }
+
+        async function procesarAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('regCorreo').value.trim().toLowerCase();
+            const pass = document.getElementById('regPass').value.trim();
+            const rol = document.getElementById('authRol').value;
+            const nombreUsuario = document.getElementById('regNombreCompleto').value.trim();
+
+            const wspPuesto = document.getElementById('regWhatsapp') ? document.getElementById('regWhatsapp').value.trim() : "";
+            const wspMercador = document.getElementById('regWhatsappMercador') ? document.getElementById('regWhatsappMercador').value.trim() : "";
+            const wspFinal = rol === 'mercadero' ? wspPuesto : (wspMercador || "930528649");
+            const residencia = document.getElementById('regResidencia') ? document.getElementById('regResidencia').value.trim() : "";
+
+            const correoDuplicadoPuesto = puestosBD.some(p => String(p.Correo_Acceso || p.correo || '').toLowerCase() === email);
+            const wspDuplicadoPuesto = puestosBD.some(p => String(p.WhatsApp || p.whatsapp || '').trim() === wspFinal);
+            const correoDuplicadoUsuario = usuariosBD.some(u => String(u.Correo || u.correo || '').toLowerCase() === email);
+            const wspDuplicadoUsuario = usuariosBD.some(u => String(u.WhatsApp || u.whatsapp || '').trim() === wspFinal);
+
+            if (correoDuplicadoPuesto || correoDuplicadoUsuario) {
+                mostrarToast("⚠️ El correo electrónico ya está registrado. Inicie sesión.");
+                return;
+            }
+            if (wspDuplicadoPuesto || wspDuplicadoUsuario) {
+                mostrarToast("⚠️ El número de WhatsApp ya se encuentra registrado.");
+                return;
+            }
+
+            try {
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
+                const uid = userCredential.user.uid;
+                const fechaReg24 = obtenerFechaHora24hActual();
+
+                if (rol === 'mercadero') {
+                    const nombrePuesto = document.getElementById('regPuestoNombre').value.trim();
+                    const rubroPuesto = document.getElementById('regPuestoRubro').value;
+                    const descPuesto = document.getElementById('regPuestoDesc').value.trim();
+                    const provinciaPuesto = document.getElementById('regProvinciaPuesto').value;
+                    const distritoPuesto = document.getElementById('regDistritoPuesto').value;
+                    const gpsPuesto = document.getElementById('regGps').value;
+                    const webPuesto = document.getElementById('regPuestoWeb').value;
+
+                    const nuevoPuesto = {
+                        ID: Date.now(),
+                        Nombre_Puesto: nombrePuesto,
+                        Rubro: rubroPuesto,
+                        Descripcion: descPuesto,
+                        Region: "Piura",
+                        Provincia: provinciaPuesto,
+                        Distrito: distritoPuesto,
+                        GPS: gpsPuesto,
+                        Mercas: 0,
+                        WhatsApp: wspFinal,
+                        Web_Catalogo: webPuesto || "",
+                        Duenio_Nombre: nombreUsuario,
+                        Correo_Acceso: email,
+                        Estado: "Activo",
+                        UID: uid,
+                        Fecha_Registro: fechaReg24
+                    };
+                    puestosBD.push(nuevoPuesto);
+                    
+                    await enviarASheets('puestos', [
+                        nuevoPuesto.ID, 
+                        nuevoPuesto.Nombre_Puesto, 
+                        nuevoPuesto.Rubro, 
+                        nuevoPuesto.Descripcion, 
+                        nuevoPuesto.Region, 
+                        nuevoPuesto.Provincia, 
+                        nuevoPuesto.Distrito, 
+                        nuevoPuesto.GPS, 
+                        nuevoPuesto.Mercas, 
+                        nuevoPuesto.WhatsApp, 
+                        nuevoPuesto.Web_Catalogo, 
+                        nuevoPuesto.Duenio_Nombre, 
+                        nuevoPuesto.Correo_Acceso, 
+                        nuevoPuesto.Estado,
+                        nuevoPuesto.UID
+                    ]);
+
+                    usuarioActual = {
+                        Nombre_Completo: nombreUsuario,
+                        Correo: email,
+                        WhatsApp: wspFinal,
+                        rol: rol,
+                        puestoId: nuevoPuesto.ID,
+                        uid: uid
+                    };
+
+                    renderRubros();
+                    renderPuestos();
+                } else {
+                    const oficio = document.getElementById('regOficio').value || "Comerciante";
+                    const cDia = document.getElementById('regCumpleDia').value || "01";
+                    const cMes = document.getElementById('regCumpleMes').value || "01";
+                    const cAnio = document.getElementById('regCumpleAnio').value || "2000";
+                    const cumpleanos = `${cDia}/${cMes}/${cAnio}`;
+
+                    const nuevoUsuario = {
+                        ID_Usuario: Date.now(),
+                        Nombre_Completo: nombreUsuario,
+                        Correo: email,
+                        WhatsApp: wspFinal,
+                        Oficio: oficio,
+                        Cumpleanos: cumpleanos,
+                        Fecha_Registro: fechaReg24,
+                        Estado: "Activo",
+                        UID: uid,
+                        Residencia: residencia
+                    };
+                    usuariosBD.push(nuevoUsuario);
+
+                    await enviarASheets('usuarios', [
+                        nuevoUsuario.ID_Usuario, 
+                        nuevoUsuario.Nombre_Completo, 
+                        nuevoUsuario.Correo, 
+                        nuevoUsuario.WhatsApp, 
+                        nuevoUsuario.Oficio, 
+                        nuevoUsuario.Cumpleanos, 
+                        nuevoUsuario.Fecha_Registro, 
+                        nuevoUsuario.Estado,
+                        nuevoUsuario.UID,
+                        nuevoUsuario.Residencia
+                    ]);
+
+                    usuarioActual = {
+                        Nombre_Completo: nombreUsuario,
+                        Correo: email,
+                        WhatsApp: wspFinal,
+                        rol: rol,
+                        oficio: oficio,
+                        cumpleanos: cumpleanos,
+                        residencia: residencia,
+                        uid: uid
+                    };
+                }
+
+                localStorage.setItem('mercaton_usuario', JSON.stringify(usuarioActual));
+                cerrarModal('modalFormAuth');
+                actualizarHeaderUsuario();
+                renderPuestos();
+                verDashboard();
+                mostrarToast("¡Registro creado y sincronizado exitosamente!");
+
+            } catch (err) {
+                mostrarToast(`Error de Registro: ${err.message}`);
+            }
+        }
+
+        function actualizarHeaderUsuario() {
+            const btnText = document.getElementById('btnAuthText');
+            if (btnText && usuarioActual) {
+                btnText.innerText = (usuarioActual.Nombre_Completo || usuarioActual.nombre || "Usuario").split(' ')[0];
+            } else if (btnText) {
+                btnText.innerText = 'Ingresar';
+            }
+        }
+
+        function cerrarSesion() {
+            firebase.auth().signOut().catch(() => {});
+            usuarioActual = null;
+            localStorage.removeItem('mercaton_usuario');
+            actualizarHeaderUsuario();
+            renderPuestos();
+            verInicio();
+            mostrarToast("Sesión cerrada correctamente");
+        }
+
+        function renderDashMercadero() {
+            const puesto = puestosBD.find(p => (p.Correo_Acceso || p.correo) === usuarioActual.Correo || String(p.ID || p.id) === String(usuarioActual.puestoId)) || puestosBD[0];
+            if (!puesto) return;
+            const puestoId = puesto.ID || puesto.id;
+            
+            let calificacionesPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(puestoId));
+            calificacionesPuesto.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
+
+            const rubrosOpciones = ["Alimentos", "Bebidas", "Carnes", "Pescados", "Frutas", "Regionales", "Gastronomía", "Panadería", "Lácteos", "Salud", "Belleza", "Moda", "Tecnología", "Hogar", "Ferretería", "Limpieza", "Mascotas", "Librería", "Servicios", "Otros"];
+            const rubroActual = puesto.Rubro || puesto.rubro || "Alimentos";
+            let optionsHtml = rubrosOpciones.map(r => `<option value="${r}" ${r === rubroActual ? 'selected' : ''}>${r}</option>`).join('');
+
+            const promedioEstrellas = calificacionesPuesto.length > 0 ? (calificacionesPuesto.reduce((a,c)=>a+parseInt(c.Estrellas||0),0)/calificacionesPuesto.length).toFixed(1) : '0';
+
+            document.getElementById('dashMercadero').innerHTML = `
+                <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <div>
+                            <h3 class="font-black text-base text-gray-900">Panel de Mercadero(a)</h3>
+                            <p class="text-xs text-gray-500">Negocio: ${puesto.Nombre_Puesto || puesto.nombre}</p>
+                        </div>
+                        <button onclick="cerrarSesion()" class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-center">
+                        <div class="bg-red-50 p-2.5 rounded-xl border">
+                            <span class="text-[10px] text-gray-500 font-semibold">Total Calificaciones</span>
+                            <p class="text-lg font-bold text-brand-red">${calificacionesPuesto.length}</p>
+                        </div>
+                        <div class="bg-amber-50 p-2.5 rounded-xl border">
+                            <span class="text-[10px] text-gray-500 font-semibold">Calificación Promedio</span>
+                            <p class="text-lg font-bold text-amber-500">${promedioEstrellas} <i class="fa-solid fa-star text-xs"></i></p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pt-2 border-t">
+                        <h4 class="text-xs font-bold text-gray-800 uppercase">Calificaciones Recibidas (${calificacionesPuesto.length})</h4>
+                        <div class="space-y-2 max-h-64 overflow-y-auto">
+                            ${calificacionesPuesto.map((c, idx) => `
+                                <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs space-y-1 shadow-sm">
+                                    <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
+                                        <span>#${idx + 1} - ${c.Usuario_Nombre || 'Cliente'}</span>
+                                        <span class="text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</span>
+                                    </div>
+                                    <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
+                                    <div class="text-[10px] text-gray-400 text-right pt-0.5"><i class="fa-regular fa-clock"></i> ${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</div>
+                                </div>
+                            `).join('') || '<p class="text-xs text-gray-400 py-3 text-center">Aún no hay calificaciones registradas en tu puesto.</p>'}
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-xl border space-y-2.5 pt-3">
+                        <h4 class="text-xs font-bold text-gray-800 uppercase">Editar Información de mi Puesto</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <div><label class="font-semibold text-gray-600">Nombre del Puesto</label><input type="text" id="editNombrePuesto" value="${puesto.Nombre_Puesto || puesto.nombre}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
+                            <div>
+                                <label class="font-semibold text-gray-600">Rubro Principal</label>
+                                <select id="editRubroPuesto" class="w-full border rounded-lg p-2 mt-1 bg-white outline-none">
+                                    ${optionsHtml}
+                                </select>
+                            </div>
+                            <div class="col-span-full"><label class="font-semibold text-gray-600">Descripción Breve</label><input type="text" id="editDescPuesto" value="${puesto.Descripcion || puesto.desc}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
+                            <div><label class="font-semibold text-gray-600">WhatsApp</label><input type="text" id="editWspPuesto" value="${puesto.WhatsApp || puesto.whatsapp}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
+                            <div><label class="font-semibold text-gray-600">Ubicación GPS (Editar)</label>
+                                <div class="flex gap-1 mt-1">
+                                    <input type="text" id="editGpsPuesto" value="${puesto.GPS || puesto.gps || ''}" class="w-full border rounded-lg p-2 bg-white text-xs">
+                                    <button type="button" onclick="detectarGpsDashboard()" class="bg-gray-200 hover:bg-gray-300 px-2.5 rounded-lg text-xs" title="Actualizar GPS"><i class="fa-solid fa-location-crosshairs text-brand-red"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-span-full"><label class="font-semibold text-gray-600">Catálogo o Facebook</label><input type="url" id="editWebPuesto" value="${puesto.Web_Catalogo || puesto.web || ''}" class="w-full border rounded-lg p-2 mt-1 bg-white"></div>
+                        </div>
+                        <button onclick="guardarEdicionMercadero('${puestoId}')" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2 rounded-lg text-xs shadow transition">Actualizar Datos</button>
+                    </div>
+
+                    <div class="pt-3 border-t border-gray-200 space-y-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
+                                <div>
+                                    <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Digital</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu Puesto, Producto o Servicio GRATIS en nuestras redes!</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual (imagen) o audiovisual (video).</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <div class="flex gap-2.5 text-sm text-gray-700">
+                                        <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                                        <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
+                                    </div>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto/producto/servicio%20GRATIS" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
+                                <div>
+                                    <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con carrito de compras y código QR profesional y personalizado.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <span class="text-[10px] font-semibold text-gray-500">Planes únicos o mensuales</span>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Cotizar Catálogo</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                            <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATON</span>
+                            <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
+                            <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
+                            <div class="pt-1 flex justify-center gap-4 text-lg text-white">
+                                <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
+                            </div>
+                            <div class="pt-1">
+                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                                    <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Cotización
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function detectarGpsDashboard() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const lat = pos.coords.latitude.toFixed(6);
+                    const lon = pos.coords.longitude.toFixed(6);
+                    document.getElementById('editGpsPuesto').value = `${lat}, ${lon}`;
+                    mostrarToast("GPS actualizado en el panel.");
+                }, () => { mostrarToast("No se pudo obtener la ubicación GPS."); });
+            }
+        }
+
+        async function guardarEdicionMercadero(id) {
+            const p = puestosBD.find(x => String(x.ID || x.id) === String(id));
+            if (p) {
+                p.Nombre_Puesto = document.getElementById('editNombrePuesto').value;
+                p.Rubro = document.getElementById('editRubroPuesto').value;
+                p.Descripcion = document.getElementById('editDescPuesto').value;
+                p.WhatsApp = document.getElementById('editWspPuesto').value;
+                p.Web_Catalogo = document.getElementById('editWebPuesto').value;
+                p.GPS = document.getElementById('editGpsPuesto').value;
+
+                await enviarASheets('puestos', [
+                    p.ID || p.id,
+                    p.Nombre_Puesto,
+                    p.Rubro,
+                    p.Descripcion,
+                    p.Region || "Piura",
+                    p.Provincia || "Paita",
+                    p.Distrito || "Paita",
+                    p.GPS || "",
+                    p.Mercas || 0,
+                    p.WhatsApp,
+                    p.Web_Catalogo,
+                    p.Duenio_Nombre || usuarioActual.Nombre_Completo,
+                    p.Correo_Acceso || usuarioActual.Correo,
+                    p.Estado || "Activo",
+                    p.UID || usuarioActual.uid || ""
+                ], "update", 0, id);
+
+                renderPuestos();
+                mostrarToast("¡Información actualizada!");
+            }
+        }
+
+        function renderDashMercador() {
+            const misCals = calificacionesBD.filter(c => 
+                (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
+                (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
+                (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
+            );
+
+            document.getElementById('dashMercador').innerHTML = `
+                <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <div>
+                            <h3 class="font-black text-base text-gray-900">Panel de Mercador(a)</h3>
+                            <p class="text-xs text-gray-500">Bienvenido, ${usuarioActual.Nombre_Completo || usuarioActual.nombre}</p>
+                        </div>
+                        <button onclick="cerrarSesion()" class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
+                    </div>
+                    <div class="text-xs space-y-1 bg-gray-50 p-2.5 rounded-xl border">
+                        <p><strong>Correo Electrónico:</strong> ${usuarioActual.Correo || 'No asignado'}</p>
+                        <p><strong>WhatsApp:</strong> ${usuarioActual.WhatsApp || 'No asignado'}</p>
+                        <p><strong>Oficio/Profesión:</strong> ${usuarioActual.oficio || 'Comerciante'}</p>
+                        <p><strong>Cumpleaños:</strong> ${usuarioActual.cumpleanos || 'No especificado'}</p>
+                        <p><strong>Residencia:</strong> ${usuarioActual.residencia || 'No especificada'}</p>
+                    </div>
+
+                    <div class="space-y-2 pt-2 border-t">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
+                            <h4 id="tituloContadorCalsMercador" class="text-xs font-bold text-gray-800 uppercase">Puestos Calificados (${misCals.length})</h4>
+                            <div class="w-full sm:w-64 relative">
+                                <i class="fa-solid fa-magnifying-glass text-gray-400 text-xs absolute left-2.5 top-2.5"></i>
+                                <input type="text" id="buscadorMisCalificaciones" oninput="renderListaCalificacionesMercador()" placeholder="Buscar puesto o comentario..." class="w-full border border-gray-300 rounded-lg pl-7 pr-2.5 py-1.5 text-xs text-gray-900 bg-white outline-none focus:border-brand-red select-text">
+                            </div>
+                        </div>
+
+                        <div id="contenedorListaCalsMercador" class="space-y-2 max-h-72 overflow-y-auto"></div>
+                    </div>
+
+                    <div class="pt-3 border-t border-gray-200 space-y-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-red transition">
+                                <div>
+                                    <div class="inline-block bg-red-100 text-brand-red text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Oportunidad Digital</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¡Promociona tu Puesto, Producto o Servicio GRATIS en nuestras redes!</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Envíanos tu material visual (imagen) o audiovisual (video) y te publicitamos.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <div class="flex gap-2.5 text-sm text-gray-700">
+                                        <i class="fa-brands fa-facebook hover:text-blue-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-instagram hover:text-pink-600 cursor-pointer"></i>
+                                        <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
+                                        <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
+                                    </div>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto%20GRATIS" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col justify-between space-y-1.5 hover:border-brand-orange transition">
+                                <div>
+                                    <div class="inline-block bg-orange-100 text-brand-orange text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">Catálogo Virtual + QR</div>
+                                    <h4 class="font-bold text-gray-900 text-xs leading-snug">¿Quieres tu propio Catálogo Virtual para vender más?</h4>
+                                    <p class="text-gray-600 text-[11px] mt-0.5">Muestra productos con carrito de compras y código QR profesional y personalizado.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-1 border-t border-gray-100">
+                                    <span class="text-[10px] font-semibold text-gray-500">Planes únicos, mensuales y anuales</span>
+                                    <a href="https://wa.me/51930528649?text=Hola,%20deseo%20cotizar%20un%20Catálogo%20Virtual" target="_blank" class="bg-brand-orange hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Cotizar Catálogo</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                            <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATON</span>
+                            <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
+                            <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
+                            <div class="pt-1 flex justify-center gap-4 text-lg text-white">
+                                <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="https://instagram.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://tiktok.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
+                            </div>
+                            <div class="pt-1">
+                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                                    <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Cotización
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            renderListaCalificacionesMercador();
+        }
+
+        function renderListaCalificacionesMercador() {
+            const cont = document.getElementById('contenedorListaCalsMercador');
+            const titulo = document.getElementById('tituloContadorCalsMercador');
+            if (!cont) return;
+
+            const misCals = calificacionesBD.filter(c => 
+                (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
+                (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
+                (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
+            );
+
+            misCals.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
+
+            if (titulo) titulo.innerText = `Puestos Calificados (${misCals.length})`;
+
+            const inputEl = document.getElementById('buscadorMisCalificaciones');
+            const queryMercador = inputEl ? inputEl.value.toLowerCase().trim() : '';
+
+            let filtradasCals = misCals;
+            if (queryMercador) {
+                filtradasCals = misCals.filter(c => {
+                    const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId).toLowerCase();
+                    const comentario = String(c.Comentario || '').toLowerCase();
+                    return nombrePuesto.includes(queryMercador) || comentario.includes(queryMercador);
+                });
+            }
+
+            if (filtradasCals.length === 0) {
+                cont.innerHTML = `<p class="text-xs text-gray-400 py-3 text-center">${queryMercador ? 'No se encontraron resultados para tu búsqueda.' : 'Aún no has registrado calificaciones en puestos.'}</p>`;
+                return;
+            }
+
+            cont.innerHTML = filtradasCals.map((c, idx) => {
+                const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId);
+                return `
+                    <div class="bg-white border border-gray-200 p-3 rounded-xl text-xs space-y-1.5 shadow-sm">
+                        <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
+                            <span>#${idx + 1} - ${nombrePuesto}</span>
+                            <span class="text-amber-500">${'★'.repeat(c.Estrellas || 5)}</span>
+                        </div>
+                        <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-[10px] text-gray-400"><i class="fa-regular fa-clock"></i> ${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</span>
+                            <button onclick="abrirEditarCalificacion('${c.ID_Calificacion || c.id || ''}')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-2.5 py-1 rounded-lg text-[10px] transition"><i class="fa-solid fa-pen text-[9px]"></i> Editar Calificación</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function abrirEditarCalificacion(calId) {
+            const cal = calificacionesBD.find(c => String(c.ID_Calificacion || c.id) === String(calId));
+            if(!cal) return;
+            puestoSeleccionadoId = cal.Puesto_ID || cal.puestoId;
+            abrirMercarModal(puestoSeleccionadoId);
+            document.getElementById('mercarComentario').value = cal.Comentario || '';
+            setCalificacion(parseInt(cal.Estrellas || 5));
+        }
+
+        function cambiarTabCeo(tab) {
+            ceoTabActual = tab;
+            const btnMers = document.getElementById('tabBtnMercaderos');
+            const btnComps = document.getElementById('tabBtnCompradores');
+            const btnCals = document.getElementById('tabBtnCalificaciones');
+
+            btnMers.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition";
+            btnComps.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition";
+            if(btnCals) btnCals.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-gray-100 text-gray-700 transition";
+
+            if (tab === 'mercaderos') {
+                btnMers.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-brand-red text-white transition";
+                document.getElementById('ceoTituloTabla').innerText = "Gestión de Mercaderos (Puestos Registrados)";
+            } else if (tab === 'compradores') {
+                btnComps.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-brand-red text-white transition";
+                document.getElementById('ceoTituloTabla').innerText = "Gestión de Compradores Registrados";
+            } else if (tab === 'calificaciones') {
+                if(btnCals) btnCals.className = "px-4 py-1.5 rounded-xl text-xs font-bold bg-brand-red text-white transition";
+                document.getElementById('ceoTituloTabla').innerText = "Historial Completo de Calificaciones";
+            }
+            renderCeoTable();
+        }
+
+        function renderCeoTable() {
+            document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
+            document.getElementById('ceoCantUsuarios').innerText = usuariosBD.length;
+            document.getElementById('ceoCantMercadas').innerText = calificacionesBD.length;
+
+            const tbody = document.getElementById('tablaCeoContenido');
+            const thead = document.getElementById('ceoTablaHeader');
+            if (!tbody || !thead) return;
+            tbody.innerHTML = '';
+
+            const queryCeo = document.getElementById('inputBusquedaCeo')?.value.toLowerCase() || '';
+            const periodo = document.getElementById('filtroPeriodoCeo')?.value || 'historial';
+            
+            const rangoContainer = document.getElementById('rangoPersonalizadoCeoContainer');
+            let fechaIni = null;
+            let fechaFin = null;
+
+            if (periodo === 'personalizado') {
+                rangoContainer.classList.remove('hidden');
+                const iD = document.getElementById('ceoIniDia')?.value || '01';
+                const iM = document.getElementById('ceoIniMes')?.value || '01';
+                const iA = document.getElementById('ceoIniAnio')?.value || '2024';
+                const fD = document.getElementById('ceoFinDia')?.value || '31';
+                const fM = document.getElementById('ceoFinMes')?.value || '12';
+                const fA = document.getElementById('ceoFinAnio')?.value || '2026';
+                fechaIni = new Date(parseInt(iA), parseInt(iM) - 1, parseInt(iD), 0, 0, 0);
+                fechaFin = new Date(parseInt(fA), parseInt(fM) - 1, parseInt(fD), 23, 59, 59);
+            } else {
+                rangoContainer.classList.add('hidden');
+            }
+
+            const filtrarPorFecha = (fechaStr) => {
+                if (!fechaStr || periodo === 'historial') return true;
+                const d = parsearFechaSegura(fechaStr);
+                if (isNaN(d.getTime()) || d.getTime() === 0) return true;
+                const ahora = new Date();
+
+                if (periodo === 'dia') {
+                    return d.toDateString() === ahora.toDateString();
+                } else if (periodo === 'semana') {
+                    const sieteDiasMs = 7 * 24 * 60 * 60 * 1000;
+                    return (ahora - d) <= sieteDiasMs;
+                } else if (periodo === 'mes') {
+                    return d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
+                } else if (periodo === 'anio') {
+                    return d.getFullYear() === ahora.getFullYear();
+                } else if (periodo === 'personalizado') {
+                    if (fechaIni && fechaFin) return d >= fechaIni && d <= fechaFin;
+                }
+                return true;
+            };
+
+            if (ceoTabActual === 'mercaderos') {
+                thead.innerHTML = `
+                    <th class="p-2 border">Puesto / Dueño</th>
+                    <th class="p-2 border">Rubro</th>
+                    <th class="p-2 border">Ubicación</th>
+                    <th class="p-2 border">Contacto / Registro</th>
+                    <th class="p-2 border text-center">Acciones</th>
+                `;
+
+                let filtrados = puestosBD.filter(p => 
+                    (p.Nombre_Puesto || p.nombre || '').toLowerCase().includes(queryCeo) ||
+                    (p.Rubro || p.rubro || '').toLowerCase().includes(queryCeo) ||
+                    (p.Duenio_Nombre || p.duenio || '').toLowerCase().includes(queryCeo)
+                );
+
+                filtrados.forEach(p => {
+                    const id = p.ID || p.id;
+                    tbody.innerHTML += `
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-2 font-bold">${p.Nombre_Puesto || p.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Dueño: ${p.Duenio_Nombre || p.duenio || 'N/A'}</span></td>
+                            <td class="p-2">${p.Rubro || p.rubro}</td>
+                            <td class="p-2">${p.Provincia || p.provincia} / ${p.Distrito || p.distrito}</td>
+                            <td class="p-2">${p.Correo_Acceso || p.correo || 'N/A'}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${p.WhatsApp || p.whatsapp}</span></td>
+                            <td class="p-2 text-center">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <button onclick="verDetalleMercaderoCeo('${id}')" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition" title="Ver Detalles"><i class="fa-solid fa-eye text-xs"></i></button>
+                                    <button onclick="eliminarPuestoCeo('${id}')" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition" title="Eliminar"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else if (ceoTabActual === 'compradores') {
+                thead.innerHTML = `
+                    <th class="p-2 border">Comprador / Oficio</th>
+                    <th class="p-2 border">Residencia</th>
+                    <th class="p-2 border">Fecha y Hora (24h)</th>
+                    <th class="p-2 border">Contacto / Correo</th>
+                    <th class="p-2 border text-center">Acciones</th>
+                `;
+
+                let filtrados = usuariosBD.filter(u => {
+                    const matchQuery = (u.Nombre_Completo || u.nombre || '').toLowerCase().includes(queryCeo) ||
+                                       (u.Correo || u.correo || '').toLowerCase().includes(queryCeo) ||
+                                       (u.Residencia || u.residencia || '').toLowerCase().includes(queryCeo);
+                    const matchFecha = filtrarPorFecha(u.Fecha_Registro || u.fecha);
+                    return matchQuery && matchFecha;
+                });
+
+                filtrados.forEach(u => {
+                    const correo = u.Correo || u.correo;
+                    tbody.innerHTML += `
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-2 font-bold">${u.Nombre_Completo || u.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Oficio: ${u.Oficio || u.oficio || 'N/A'}</span></td>
+                            <td class="p-2">${u.Residencia || u.residencia || 'No especificada'}</td>
+                            <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(u.Fecha_Registro || u.fecha)}</td>
+                            <td class="p-2">${correo}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${u.WhatsApp || u.whatsapp}</span></td>
+                            <td class="p-2 text-center">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <button onclick="verDetalleMercadorCeo('${correo}')" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition" title="Ver Data"><i class="fa-solid fa-eye text-xs"></i></button>
+                                    <button onclick="eliminarUsuarioCeo('${correo}')" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition" title="Eliminar"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else if (ceoTabActual === 'calificaciones') {
+                thead.innerHTML = `
+                    <th class="p-2 border">Usuario / Puesto</th>
+                    <th class="p-2 border">Calificación</th>
+                    <th class="p-2 border">Comentario</th>
+                    <th class="p-2 border">Fecha y Hora (24h)</th>
+                    <th class="p-2 border text-center">Acciones</th>
+                `;
+
+                let filtradasCals = calificacionesBD.filter(c => {
+                    const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId).toLowerCase();
+                    const matchQuery = (c.Usuario_Nombre || c.usuario || '').toLowerCase().includes(queryCeo) ||
+                                       (c.Comentario || c.comentario || '').toLowerCase().includes(queryCeo) ||
+                                       nombrePuesto.includes(queryCeo);
+                    const matchFecha = filtrarPorFecha(c.Fecha_Hora || c.fecha);
+                    return matchQuery && matchFecha;
+                });
+
+                filtradasCals.forEach(c => {
+                    const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId);
+                    tbody.innerHTML += `
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-2 font-bold">${c.Usuario_Nombre || c.usuario}<br><span class="text-[10px] text-gray-500 font-normal">Puesto: <strong>${nombrePuesto}</strong></span></td>
+                            <td class="p-2 text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</td>
+                            <td class="p-2 italic">"${c.Comentario || ''}"</td>
+                            <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</td>
+                            <td class="p-2 text-center">
+                                <button onclick="eliminarCalificacionCeo('${c.ID_Calificacion || c.id}')" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition" title="Eliminar Calificación"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        async function eliminarCalificacionCeo(calId) {
+            if(confirm("¿Desea eliminar esta calificación permanentemente?")) {
+                calificacionesBD = calificacionesBD.filter(c => String(c.ID_Calificacion || c.id) !== String(calId));
+                await eliminarEnSheets('calificaciones', calId, 0);
+                renderCeoTable();
+                renderPuestos();
+                if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
+                    verFavoritosModal();
+                }
+                mostrarToast("Calificación eliminada.");
+            }
+        }
+
+        function verDetalleMercaderoCeo(id) {
+            const p = puestosBD.find(x => String(x.ID || x.id) === String(id));
+            if (!p) return;
+            const cals = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(id));
+
+            document.getElementById('ceoDetalleTitulo').innerText = `Puesto: ${p.Nombre_Puesto || p.nombre}`;
+            document.getElementById('ceoDetalleContenido').innerHTML = `
+                <p><strong>Dueño:</strong> ${p.Duenio_Nombre || 'N/A'}</p>
+                <p><strong>Correo:</strong> ${p.Correo_Acceso || 'N/A'}</p>
+                <p><strong>WhatsApp:</strong> ${p.WhatsApp || 'N/A'}</p>
+                <p><strong>Rubro:</strong> ${p.Rubro || 'N/A'}</p>
+                <p><strong>Ubicación:</strong> ${p.Region}, ${p.Provincia}, ${p.Distrito}</p>
+                <div class="pt-2 border-t mt-2">
+                    <strong class="block mb-1">Calificaciones recibidas (${cals.length}):</strong>
+                    ${cals.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1"><strong>${c.Usuario_Nombre}:</strong> ${c.Estrellas}★ - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">Sin calificaciones</span>'}
+                </div>
+            `;
+            document.getElementById('modalCeoDetalle').classList.remove('hidden');
+        }
+
+        function verDetalleMercadorCeo(correo) {
+            const u = usuariosBD.find(x => (x.Correo || x.correo) === correo);
+            if (!u) return;
+
+            const calsObj = calificacionesBD.filter(c => (c.Usuario_Nombre || c.usuario) === (u.Nombre_Completo || u.nombre));
+            const favsIds = favoritosBD.filter(f => (f.Usuario_Correo || f.correo) === correo).map(f => String(f.Puesto_ID || f.puestoId));
+            const favsPuestos = puestosBD.filter(p => favsIds.includes(String(p.ID || p.id)));
+
+            document.getElementById('ceoDetalleTitulo').innerText = `Comprador: ${u.Nombre_Completo || u.nombre}`;
+            document.getElementById('ceoDetalleContenido').innerHTML = `
+                <p><strong>Correo:</strong> ${correo}</p>
+                <p><strong>WhatsApp:</strong> ${u.WhatsApp || 'N/A'}</p>
+                <p><strong>Oficio:</strong> ${u.Oficio || 'Comerciante'}</p>
+                <p><strong>Cumpleaños:</strong> ${u.Cumpleanos || 'N/A'}</p>
+                <p><strong>Residencia:</strong> ${u.Residencia || u.residencia || 'No especificada'}</p>
+                <p><strong>Fecha y Hora Registro (24h):</strong> ${formatearFechaHora24h(u.Fecha_Registro || u.fecha)}</p>
+                <div class="pt-2 border-t mt-2">
+                    <strong class="block mb-1">Calificaciones realizadas (${calsObj.length}):</strong>
+                    ${calsObj.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal"><strong>${obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId)}</strong>: <strong>${c.Estrellas}★</strong> - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">No ha calificado ningún puesto</span>'}
+                </div>
+                <div class="pt-2 border-t mt-2">
+                    <strong class="block mb-1">Favoritos (${favsPuestos.length}):</strong>
+                    ${favsPuestos.map(f => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal">• ${f.Nombre_Puesto} (${f.Rubro})</div>`).join('') || '<span class="text-gray-400">Sin favoritos</span>'}
+                </div>
+            `;
+            document.getElementById('modalCeoDetalle').classList.remove('hidden');
+        }
+
+        async function eliminarPuestoCeo(id) {
+            if (confirm("Confirmación: ¿Desea eliminar definitivamente este puesto?")) {
+                puestosBD = puestosBD.filter(p => String(p.ID || p.id) !== String(id));
+                await eliminarEnSheets('puestos', id, 0);
+                renderCeoTable();
+                renderPuestos();
+                if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
+                    verFavoritosModal();
+                }
+                mostrarToast("Puesto eliminado de Google Sheets.");
+            }
+        }
+
+        async function eliminarUsuarioCeo(correo) {
+            if (confirm("Confirmación: ¿Desea eliminar este usuario?")) {
+                usuariosBD = usuariosBD.filter(u => (u.Correo || u.correo) !== correo);
+                await eliminarEnSheets('usuarios', correo, 2);
+                renderCeoTable();
+                mostrarToast("Usuario eliminado de Google Sheets.");
+            }
+        }
+
+        function iniciarSlider(segundos = 5) {
+            if (intervaloSlider) clearInterval(intervaloSlider);
+            intervaloSlider = setInterval(() => { nextSlide(); }, parseInt(segundos) * 1000);
+        }
+        function nextSlide() { 
+            if (totalSlidesCount <= 1) return;
+            slideIndex = (slideIndex + 1) % totalSlidesCount; 
+            actualizarSlide(); 
+        }
+        function prevSlide() { 
+            if (totalSlidesCount <= 1) return;
+            slideIndex = (slideIndex - 1 + totalSlidesCount) % totalSlidesCount; 
+            actualizarSlide(); 
+        }
+        function actualizarSlide() {
+            const wrapper = document.getElementById('sliderWrapper');
+            if (wrapper) wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
+        }
+
+        function configurarSwipeTactil() {
+            const container = document.getElementById('sliderContainer');
+            if (!container) return;
+            let startX = 0;
+            container.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+            container.addEventListener('touchend', (e) => {
+                let diff = startX - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 50) { if (diff > 0) nextSlide(); else prevSlide(); }
+            }, { passive: true });
+        }
+
+        function appYaInstalada() {
+            return window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true ||
+                   localStorage.getItem('mercaton_pwa_instalada') === 'true';
+        }
+
+        function configurarInstalacionPWA() {
+            const banner = document.getElementById('bannerInstalacionPWA');
+            if (appYaInstalada()) {
+                if (banner) banner.classList.add('hidden');
+                return;
+            }
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                if (appYaInstalada()) return;
+                deferredPromptPWA = e;
+                if (banner) banner.classList.remove('hidden');
+            });
+
+            window.addEventListener('appinstalled', () => {
+                localStorage.setItem('mercaton_pwa_instalada', 'true');
+                deferredPromptPWA = null;
+                if (banner) banner.classList.add('hidden');
+                mostrarToast("¡MERCATON se instaló correctamente en tu dispositivo!");
+            });
+        }
+
+        function instalarAppNativa() {
+            if (deferredPromptPWA) {
+                deferredPromptPWA.prompt();
+                deferredPromptPWA.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        localStorage.setItem('mercaton_pwa_instalada', 'true');
+                        document.getElementById('bannerInstalacionPWA').classList.add('hidden');
+                    }
+                    deferredPromptPWA = null;
+                });
+            } else {
+                mostrarToast("Para instalar en tu dispositivo: Abre el menú de tu navegador y selecciona 'Instalar aplicación' o 'Agregar a pantalla principal'.");
+            }
+        }
+
+        function cerrarBannerPWA() {
+            document.getElementById('bannerInstalacionPWA').classList.add('hidden');
+        }
+
+        function abrirModalDonacion() { document.getElementById('modalDonacion').classList.remove('hidden'); }
+        function enviarDonacion() {
+            const nombre = document.getElementById('donanteNombre').value || "Anónimo";
+            const metodo = document.getElementById('donanteMetodo').value;
+            const monto = document.getElementById('donanteMonto').value || "10";
+            const nota = document.getElementById('donanteNota').value || "Apoyo a MERCATON";
+            const msg = `Hola,%20deseo%20apoyar%20a%20MERCATON:%0A- Nombre: ${encodeURIComponent(nombre)}%0A- Método: ${encodeURIComponent(metodo)}%0A- Monto: S/.${encodeURIComponent(monto)}%0A- Nota: ${encodeURIComponent(nota)}`;
+            window.open(`https://wa.me/51930528649?text=${msg}`, '_blank');
+            cerrarModal('modalDonacion');
+        }
+
+        function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
+        window.onscroll = function() {
+            const btn = document.getElementById('btnScrollTop');
+            if (!btn) return;
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                btn.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                btn.classList.add('opacity-0', 'pointer-events-none');
+            }
+        };
+        function scrollArriba() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        function registrarServiceWorkerNativo() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            }
+        }
+    </script>
+</body>
+</html>
