@@ -1,4 +1,4 @@
-# MercadoPlaza — Fase 1
+# Mercatodon — Fase 1
 
 Frontend responsive construido con React + Vite + iconos oficiales de marcas mediante react-icons, preparado para Vercel y GitHub.
 
