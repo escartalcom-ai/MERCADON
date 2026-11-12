@@ -2071,154 +2071,48 @@
         }
 
 
-function renderDashMercador() {
-    const misCals = calificacionesBD.filter(c =>
-        (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo || usuarioActual.nombre || '').toLowerCase()) ||
-        (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
-        (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo || '').toLowerCase())
-    );
+        function renderDashMercador() {
+            const misCals = calificacionesBD.filter(c => 
+                (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
+                (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
+                (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
+            );
 
-    misCals.sort((a, b) =>
-        new Date(b.Fecha_Hora || b.fecha || 0) -
-        new Date(a.Fecha_Hora || a.fecha || 0)
-    );
+            misCals.sort((a, b) => new Date(b.Fecha_Hora || b.fecha || 0) - new Date(a.Fecha_Hora || a.fecha || 0));
 
-    // Obtener el texto actual del buscador
-    const buscadorAnterior = document.getElementById('buscadorMisCalificaciones');
-    const queryMercador = buscadorAnterior
-        ? buscadorAnterior.value.toLowerCase().trim()
-        : '';
+            const queryMercador = document.getElementById('buscadorMisCalificaciones')?.value.toLowerCase() || '';
+            let filtradasCals = misCals;
+            if(queryMercador) {
+                filtradasCals = misCals.filter(c => 
+                    String(c.Comentario || '').toLowerCase().includes(queryMercador) ||
+                    String(c.Puesto_ID || '').toLowerCase().includes(queryMercador)
+                );
+            }
 
-    // Filtrar calificaciones
-    let filtradasCals = misCals;
-
-    if (queryMercador) {
-        filtradasCals = misCals.filter(c =>
-            String(c.Comentario || '').toLowerCase().includes(queryMercador) ||
-            String(c.Puesto_ID || '').toLowerCase().includes(queryMercador)
-        );
-    }
-
-    // Función para mostrar las calificaciones
-    const renderListaCalificaciones = () => {
-        const lista = document.getElementById('listaMisCalificaciones');
-
-        if (!lista) return;
-
-        if (filtradasCals.length === 0) {
-            lista.innerHTML = `
-                <div class="text-center py-6 text-gray-400 text-xs">
-                    <p class="text-2xl mb-2">🔎</p>
-                    <p class="font-bold">No se encontraron resultados.</p>
-                    <p>Intenta con otra palabra o nombre de puesto.</p>
-                </div>
-            `;
-            return;
-        }
-
-        // IMPORTANTE:
-        // Conserva aquí el HTML original de tus tarjetas de calificaciones.
-        // Este bloque muestra una estructura básica de ejemplo.
-        lista.innerHTML = filtradasCals.map(c => `
-            <div class="bg-white border rounded-xl p-3 mb-2">
-                <p class="text-xs font-bold text-gray-800">
-                    ${c.Puesto_ID || 'Puesto sin identificar'}
-                </p>
-                <p class="text-xs text-gray-600 mt-1">
-                    ${c.Comentario || 'Sin comentario'}
-                </p>
-                <p class="text-[10px] text-gray-400 mt-2">
-                    ${c.Fecha_Hora || c.fecha || ''}
-                </p>
-            </div>
-        `).join('');
-    };
-
-    // Si el panel ya existe, actualizar solamente los resultados.
-    const panelExistente = document.getElementById('listaMisCalificaciones');
-
-    if (panelExistente) {
-        renderListaCalificaciones();
-
-        const contador = document.getElementById('contadorMisCalificaciones');
-        if (contador) contador.textContent = misCals.length;
-
-        return;
-    }
-
-    // Primera renderización del panel
-    document.getElementById('dashMercador').innerHTML = `
-        <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
-
-            <div class="flex justify-between items-center border-b pb-2">
-                <div>
-                    <h3 class="font-black text-base text-gray-900">
-                        Panel de Mercador(a)
-                    </h3>
-                    <p class="text-xs text-gray-500">
-                        Bienvenido, ${usuarioActual.Nombre_Completo || usuarioActual.nombre || ''}
-                    </p>
-                </div>
-
-                <button onclick="cerrarSesion()"
-                    class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">
-                    Cerrar Sesión
-                </button>
-            </div>
-
-            <div class="text-xs space-y-1 bg-gray-50 p-2.5 rounded-xl border">
-                <p><strong>Correo Electrónico:</strong> ${usuarioActual.Correo || 'No asignado'}</p>
-                <p><strong>WhatsApp:</strong> ${usuarioActual.WhatsApp || 'No asignado'}</p>
-                <p><strong>Oficio/Profesión:</strong> ${usuarioActual.oficio || 'Comerciante'}</p>
-                <p><strong>Cumpleaños:</strong> ${usuarioActual.cumpleanos || 'No especificado'}</p>
-                <p><strong>Residencia:</strong> ${usuarioActual.residencia || 'No especificada'}</p>
-            </div>
-
-            <div class="space-y-2 pt-2 border-t">
-
-                <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
-
-                    <h4 class="text-xs font-bold text-gray-800 uppercase">
-                        Puestos Calificados
-                        (<span id="contadorMisCalificaciones">${misCals.length}</span>)
-                    </h4>
-
-                    <div class="w-full sm:w-60">
-                        <input
-                            type="text"
-                            id="buscadorMisCalificaciones"
-                            placeholder="Búsqueda inteligente en historial..."
-                            autocomplete="off"
-                            class="w-full border rounded-lg p-2 text-xs bg-white text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
-                        >
+            document.getElementById('dashMercador').innerHTML = `
+                <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <div>
+                            <h3 class="font-black text-base text-gray-900">Panel de Mercador(a)</h3>
+                            <p class="text-xs text-gray-500">Bienvenido, ${usuarioActual.Nombre_Completo || usuarioActual.nombre}</p>
+                        </div>
+                        <button onclick="cerrarSesion()" class="text-xs bg-red-100 text-brand-red font-bold py-1 px-3 rounded-lg">Cerrar Sesión</button>
                     </div>
-                </div>
+                    <div class="text-xs space-y-1 bg-gray-50 p-2.5 rounded-xl border">
+                        <p><strong>Correo Electrónico:</strong> ${usuarioActual.Correo || 'No asignado'}</p>
+                        <p><strong>WhatsApp:</strong> ${usuarioActual.WhatsApp || 'No asignado'}</p>
+                        <p><strong>Oficio/Profesión:</strong> ${usuarioActual.oficio || 'Comerciante'}</p>
+                        <p><strong>Cumpleaños:</strong> ${usuarioActual.cumpleanos || 'No especificado'}</p>
+                        <p><strong>Residencia:</strong> ${usuarioActual.residencia || 'No especificada'}</p>
+                    </div>
 
-                <div id="listaMisCalificaciones"></div>
-
-            </div>
-        </div>
-    `;
-
-    // Registrar el evento una sola vez.
-    const nuevoBuscador = document.getElementById('buscadorMisCalificaciones');
-
-    nuevoBuscador.addEventListener('input', function () {
-        const texto = this.value.toLowerCase().trim();
-
-        filtradasCals = texto
-            ? misCals.filter(c =>
-                String(c.Comentario || '').toLowerCase().includes(texto) ||
-                String(c.Puesto_ID || '').toLowerCase().includes(texto)
-            )
-            : misCals;
-
-        renderListaCalificaciones();
-    });
-
-    // Mostrar resultados iniciales
-    renderListaCalificaciones();
-}
+                    <div class="space-y-2 pt-2 border-t">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
+                            <h4 class="text-xs font-bold text-gray-800 uppercase">Puestos Calificados (${misCals.length})</h4>
+                            <div class="w-full sm:w-60">
+                                <input type="text" id="buscadorMisCalificaciones" onkeyup="renderDashMercador()" placeholder="Búsqueda inteligente en historial..." class="w-full border rounded-lg p-1.5 text-xs bg-gray-50 outline-none bg-white">
+                            </div>
+                        </div>
 
 
                         <div class="space-y-2 max-h-72 overflow-y-auto">
