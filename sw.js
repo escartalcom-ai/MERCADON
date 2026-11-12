@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mercatodon-pwa-v1';
+const CACHE_NAME = 'mercaton-pwa-v1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
