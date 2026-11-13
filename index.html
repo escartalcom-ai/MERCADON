@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="rgb(229, 57, 53)">
-    <title>MERCATODON - Puestos en Acción</title>
+    <title>MERCATON - Puestos en Acción</title>
     <!-- Favicon e Iconos (PNG) -->
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/favicon.png">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATON/main/favicon.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/escartalcom-ai/MERCATON/main/logo.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -100,7 +100,7 @@
     <div id="bannerInstalacionPWA" class="hidden bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white px-3 py-2 text-xs flex items-center justify-between border-b border-gray-700">
         <div class="flex items-center gap-2">
             <i class="fa-solid fa-mobile-screen-button text-brand-orange text-sm"></i>
-            <span>Instala la App nativa de <strong>MERCATODON</strong> en tu celular o PC</span>
+            <span>Instala la App nativa de <strong>MERCATON</strong> en tu celular o PC</span>
         </div>
         <div class="flex items-center gap-2">
             <button onclick="instalarAppNativa()" class="bg-brand-red hover:bg-brand-darkRed text-white font-bold py-1 px-3 rounded-full text-[11px] shadow transition">Instalar App</button>
@@ -116,7 +116,7 @@
             <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="verInicio()">
                 <!-- LOGO -->
                 <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-md flex-shrink-0 overflow-hidden" style="background-color: rgb(255, 0, 1);">
-                    <img src="https://raw.githubusercontent.com/escartalcom-ai/MERCATODON/main/logo.png"
+                    <img src="https://raw.githubusercontent.com/escartalcom-ai/MERCATON/main/logo.png"
                          loading="lazy"
                          onerror="this.src='https://placehold.co/40x40/ff0001/ffffff?text=M'"
                          alt="Logo"
@@ -127,7 +127,7 @@
                 <div class="leading-none flex-shrink-0">
                     <span class="text-2xl sm:text-2xl font-bold tracking-tight block whitespace-nowrap"
                           style="font-family: 'Fredoka', sans-serif; font-weight: 700; color: rgb(255, 0, 1);">
-                        MERCATODON
+                        MERCATON
                     </span>
                 </div>
             </div>
@@ -185,7 +185,7 @@
             usuario: document.getElementById('btnUsuarioHeader')
         };
 
-        localStorage.setItem('mercatodon_header_activo', nombre);
+        localStorage.setItem('mercaton_header_activo', nombre);
 
         Object.entries(botones).forEach(([clave, boton]) => {
             if (!boton) return;
@@ -203,7 +203,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        const activo = localStorage.getItem('mercatodon_header_activo');
+        const activo = localStorage.getItem('mercaton_header_activo');
         if (!activo) return;
 
         const boton = document.getElementById(
@@ -310,7 +310,7 @@
                                 <i class="fa-brands fa-tiktok hover:text-black cursor-pointer"></i>
                                 <i class="fa-brands fa-youtube hover:text-red-600 cursor-pointer"></i>
                             </div>
-                            <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto/producto/servicio%20GRATIS%20en%20MERCATODON" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
+                            <a href="https://wa.me/51930528649?text=Hola,%20quiero%20promocionar%20mi%20puesto/producto/servicio%20GRATIS%20en%20MERCATON" target="_blank" class="bg-brand-red hover:bg-brand-darkRed text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow transition">Publicar Gratis</a>
                         </div>
                     </div>
 
@@ -328,8 +328,8 @@
                 </div>
 
                 <!-- Banner Oficial -->
-                <div id="bannerOficialMercatodon" class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
-                    <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATODON</span>
+                <div id="bannerOficialMercaton" class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
+                    <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATON</span>
                     <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
                     <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
                     <div class="pt-1 flex justify-center gap-4 text-lg text-white">
@@ -339,7 +339,7 @@
                         <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
                     </div>
                     <div class="pt-1">
-                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
                             <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Cotización
                         </a>
                     </div>
@@ -389,7 +389,7 @@
                 </div>
 
                 <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
-                    <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATODON</span>
+                    <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATON</span>
                     <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
                     <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
                     <div class="pt-1 flex justify-center gap-4 text-lg text-white">
@@ -399,7 +399,7 @@
                         <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
                     </div>
                     <div class="pt-1">
-                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                        <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
                             <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Cotización
                         </a>
                     </div>
@@ -496,7 +496,7 @@
     <footer class="bg-white border-t border-gray-200 py-2.5 mt-3">
         <div class="max-w-7xl mx-auto px-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-xs text-gray-600 font-medium">
             <div class="flex items-center gap-1.5">
-                <span>MERCATODON - Desarrollado por</span>
+                <span>MERCATON - Desarrollado por</span>
                 <a href="https://comaxion.vercel.app" target="_blank" rel="noopener" class="text-brand-red font-bold hover:underline">COMAXION</a>
             </div>
             <button onclick="abrirModalDonacion()" class="bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold py-1 px-3 rounded-full border border-amber-200 flex items-center gap-1 transition shadow-sm">
@@ -736,7 +736,7 @@
             <button onclick="cerrarModal('modalDonacion')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center">
                 <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl mb-2"><i class="fa-solid fa-heart"></i></div>
-                <h3 class="font-bold text-base text-gray-900">Apoyo Voluntario a MERCATODON</h3>
+                <h3 class="font-bold text-base text-gray-900">Apoyo Voluntario a MERCATON</h3>
                 <p class="text-xs text-gray-500 mt-0.5">Tu contribución fortalece el comercio en Piura.</p>
             </div>
             <div class="space-y-2.5">
@@ -782,9 +782,9 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyA6nCurDvRAZRWR7yinzk7DwC2Be05ohEw",
-            authDomain: "mercatodon-peru.firebaseapp.com",
-            projectId: "mercatodon-peru",
-            storageBucket: "mercatodon-peru.firebasestorage.app",
+            authDomain: "MERCATON-peru.firebaseapp.com",
+            projectId: "MERCATON-peru",
+            storageBucket: "MERCATON-peru.firebasestorage.app",
             messagingSenderId: "941481497625",
             appId: "1:941481497625:web:bd873da529475d2ad44688",
             measurementId: "G-6W4XMLL29T"
@@ -837,8 +837,8 @@
         let publicidadBD = [];
         let favoritosBD = [];
 
-        let usuarioActual = JSON.parse(localStorage.getItem('mercatodon_usuario')) || null;
-        let ubicacionActual = JSON.parse(localStorage.getItem('mercatodon_ubicacion')) || { region: "Piura", provincia: "Todas las provincias", distrito: "Todos los distritos" };
+        let usuarioActual = JSON.parse(localStorage.getItem('MERCATON_usuario')) || null;
+        let ubicacionActual = JSON.parse(localStorage.getItem('MERCATON_ubicacion')) || { region: "Piura", provincia: "Todas las provincias", distrito: "Todos los distritos" };
         let rubroSeleccionado = "Todos";
         let puestoSeleccionadoId = null;
         let calificacionTemp = 0;
@@ -991,15 +991,15 @@
                             Correo: user.email,
                             Nombre_Completo: user.displayName || user.email.split('@')[0],
                             uid: user.uid,
-                            rol: (user.email.toLowerCase() === "mercatodon@gmail.com") ? "ceo" : "mercador"
+                            rol: (user.email.toLowerCase() === "mercaton.peru@gmail.com") ? "ceo" : "mercador"
                         };
                     } else {
                         usuarioActual.uid = user.uid;
-                        if (user.email.toLowerCase() === "mercatodon@gmail.com") {
+                        if (user.email.toLowerCase() === "mercaton.peru@gmail.com") {
                             usuarioActual.rol = "ceo";
                         }
                     }
-                    localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+                    localStorage.setItem('MERCATON_usuario', JSON.stringify(usuarioActual));
                     actualizarHeaderUsuario();
                 }
             });
@@ -1490,7 +1490,7 @@
                             <div class="grid grid-cols-3 gap-1">
                                 <a href="${web || '#'}" target="_blank" class="h-8 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded transition" title="Web"><i class="fa-solid fa-globe text-lg"></i></a>
                                 <a href="https://maps.google.com/?q=${encodeURIComponent(nombre + ' Piura')}" target="_blank" class="h-8 bg-black hover:bg-gray-800 text-white flex items-center justify-center rounded transition" title="GPS"><i class="fa-solid fa-location-dot text-lg"></i></a>
-                                <a href="https://wa.me/${whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20MERCATODON%20Piura" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp"><i class="fa-brands fa-whatsapp text-xl"></i></a>
+                                <a href="https://wa.me/${whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20MERCATON%20Piura" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp"><i class="fa-brands fa-whatsapp text-xl"></i></a>
                             </div>
                         </div>
                     </div>
@@ -1616,7 +1616,7 @@
                                 <div class="grid grid-cols-3 gap-1">
                                     <a href="${web || '#'}" target="_blank" class="h-8 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center rounded transition" title="Web"><i class="fa-solid fa-globe text-lg"></i></a>
                                     <a href="https://maps.google.com/?q=${encodeURIComponent(nombre + ' Piura')}" target="_blank" class="h-8 bg-black hover:bg-gray-800 text-white flex items-center justify-center rounded transition" title="GPS"><i class="fa-solid fa-location-dot text-lg"></i></a>
-                                    <a href="https://wa.me/${whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20MERCATODON" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp"><i class="fa-brands fa-whatsapp text-xl"></i></a>
+                                    <a href="https://wa.me/${whatsapp}?text=Hola,%20vi%20tu%20puesto%20en%20MERCATON" target="_blank" class="h-8 bg-brand-whatsapp hover:bg-emerald-600 text-white flex items-center justify-center rounded transition" title="WhatsApp"><i class="fa-brands fa-whatsapp text-xl"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1819,7 +1819,7 @@
                 provincia: document.getElementById('selProvincia').value,
                 distrito: document.getElementById('selDistrito').value
             };
-            localStorage.setItem('mercatodon_ubicacion', JSON.stringify(ubicacionActual));
+            localStorage.setItem('MERCATON_ubicacion', JSON.stringify(ubicacionActual));
             document.getElementById('labelUbicacionActual').innerText = `Piura, ${ubicacionActual.provincia}, ${ubicacionActual.distrito}`;
             cerrarModal('modalUbicacion');
             renderPuestos();
@@ -1848,14 +1848,14 @@
             const errorTexto = document.getElementById('msgAuthErrorTexto');
             errorContainer.classList.add('hidden');
 
-            if (email.toLowerCase() === "mercatodon@gmail.com" && pass === "20701") {
+            if (email.toLowerCase() === "mercaton.peru@gmail.com" && pass === "20701") {
                 usuarioActual = {
-                    Nombre_Completo: "CEO de MERCATODON",
+                    Nombre_Completo: "CEO de MERCATON",
                     Correo: email,
                     rol: "ceo",
                     uid: "CEO_ADMIN_UID"
                 };
-                localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+                localStorage.setItem('MERCATON_usuario', JSON.stringify(usuarioActual));
                 cerrarModal('modalAuth');
                 actualizarHeaderUsuario();
                 verCeoPanel();
@@ -1870,9 +1870,9 @@
                 let puestoEncontrado = puestosBD.find(p => (p.Correo_Acceso || p.correo) === email || (p.UID && p.UID === uid));
                 let usuarioEncontrado = usuariosBD.find(u => (u.Correo || u.correo) === email || (u.UID && u.UID === uid));
 
-                if (email.toLowerCase() === "mercatodon@gmail.com") {
+                if (email.toLowerCase() === "mercaton.peru@gmail.com") {
                     usuarioActual = {
-                        Nombre_Completo: "CEO de MERCATODON",
+                        Nombre_Completo: "CEO de MERCATON",
                         Correo: email,
                         rol: "ceo",
                         uid: uid
@@ -1910,7 +1910,7 @@
                     };
                 }
 
-                localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+                localStorage.setItem('MERCATON_usuario', JSON.stringify(usuarioActual));
                 cerrarModal('modalAuth');
                 actualizarHeaderUsuario();
                 renderPuestos();
@@ -2105,7 +2105,7 @@
                     };
                 }
 
-                localStorage.setItem('mercatodon_usuario', JSON.stringify(usuarioActual));
+                localStorage.setItem('MERCATON_usuario', JSON.stringify(usuarioActual));
                 cerrarModal('modalFormAuth');
                 actualizarHeaderUsuario();
                 renderPuestos();
@@ -2129,7 +2129,7 @@
         function cerrarSesion() {
             firebase.auth().signOut().catch(() => {});
             usuarioActual = null;
-            localStorage.removeItem('mercatodon_usuario');
+            localStorage.removeItem('MERCATON_usuario');
             actualizarHeaderUsuario();
             renderPuestos();
             verInicio();
@@ -2242,7 +2242,7 @@
                         </div>
 
                         <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
-                            <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATODON</span>
+                            <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATON</span>
                             <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
                             <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
                             <div class="pt-1 flex justify-center gap-4 text-lg text-white">
@@ -2252,7 +2252,7 @@
                                 <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
                             </div>
                             <div class="pt-1">
-                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
                                     <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Cotización
                                 </a>
                             </div>
@@ -2376,7 +2376,7 @@
                         </div>
 
                         <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
-                            <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATODON</span>
+                            <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATON</span>
                             <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
                             <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
                             <div class="pt-1 flex justify-center gap-4 text-lg text-white">
@@ -2386,7 +2386,7 @@
                                 <a href="https://youtube.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-youtube"></i></a>
                             </div>
                             <div class="pt-1">
-                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATODON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
+                                <a href="https://wa.me/51930528649?text=Hola,%20deseo%20solicitar%20publicidad%20dentro%20de%20la%20plataforma%20MERCATON" target="_blank" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-extrabold text-[11px] py-1.5 px-4 rounded-full shadow transition">
                                     <i class="fa-brands fa-whatsapp text-brand-whatsapp text-sm mr-1"></i> Solicitar Cotización
                                 </a>
                             </div>
@@ -2750,7 +2750,7 @@
         function appYaInstalada() {
             return window.matchMedia('(display-mode: standalone)').matches ||
                    window.navigator.standalone === true ||
-                   localStorage.getItem('mercatodon_pwa_instalada') === 'true';
+                   localStorage.getItem('MERCATON_pwa_instalada') === 'true';
         }
 
         function configurarInstalacionPWA() {
@@ -2768,10 +2768,10 @@
             });
 
             window.addEventListener('appinstalled', () => {
-                localStorage.setItem('mercatodon_pwa_instalada', 'true');
+                localStorage.setItem('MERCATON_pwa_instalada', 'true');
                 deferredPromptPWA = null;
                 if (banner) banner.classList.add('hidden');
-                mostrarToast("¡MERCATODON se instaló correctamente en tu dispositivo!");
+                mostrarToast("¡MERCATON se instaló correctamente en tu dispositivo!");
             });
         }
 
@@ -2780,7 +2780,7 @@
                 deferredPromptPWA.prompt();
                 deferredPromptPWA.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        localStorage.setItem('mercatodon_pwa_instalada', 'true');
+                        localStorage.setItem('MERCATON_pwa_instalada', 'true');
                         document.getElementById('bannerInstalacionPWA').classList.add('hidden');
                     }
                     deferredPromptPWA = null;
@@ -2799,8 +2799,8 @@
             const nombre = document.getElementById('donanteNombre').value || "Anónimo";
             const metodo = document.getElementById('donanteMetodo').value;
             const monto = document.getElementById('donanteMonto').value || "10";
-            const nota = document.getElementById('donanteNota').value || "Apoyo a MERCATODON";
-            const msg = `Hola,%20deseo%20apoyar%20a%20MERCATODON:%0A- Nombre: ${encodeURIComponent(nombre)}%0A- Método: ${encodeURIComponent(metodo)}%0A- Monto: S/.${encodeURIComponent(monto)}%0A- Nota: ${encodeURIComponent(nota)}`;
+            const nota = document.getElementById('donanteNota').value || "Apoyo a MERCATON";
+            const msg = `Hola,%20deseo%20apoyar%20a%20MERCATON:%0A- Nombre: ${encodeURIComponent(nombre)}%0A- Método: ${encodeURIComponent(metodo)}%0A- Monto: S/.${encodeURIComponent(monto)}%0A- Nota: ${encodeURIComponent(nota)}`;
             window.open(`https://wa.me/51930528649?text=${msg}`, '_blank');
             cerrarModal('modalDonacion');
         }
