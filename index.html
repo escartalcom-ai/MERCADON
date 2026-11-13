@@ -883,7 +883,6 @@
         function formatearFechaHora24h(fechaVal) {
             if (!fechaVal) return 'N/A';
             const str = String(fechaVal).trim();
-            // Detectar formato DD/MM/YYYY con hora 12h/24h
             const regexPe = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{2})(?::\d{2})?\s*(a\.?\s*m\.?|p\.?\s*m\.?|am|pm)?)?$/i;
             const matchPe = str.match(regexPe);
             if (matchPe) {
@@ -962,15 +961,16 @@
                 sAnio.value = String(defAnio);
             };
 
-            // Cumpleaños en Registro (1935 hasta año actual)
             poblarGrupoFecha('regCumpleDia', 'regCumpleMes', 'regCumpleAnio', 1935, anioActual, '01', '01', 1995);
 
-            // Rango Personalizado CEO (2024 hasta año actual + 1)
             const hoy = new Date();
             const dHoy = String(hoy.getDate()).padStart(2, '0');
             const mHoy = String(hoy.getMonth() + 1).padStart(2, '0');
             poblarGrupoFecha('ceoIniDia', 'ceoIniMes', 'ceoIniAnio', 2024, anioActual + 1, '01', mHoy, anioActual);
             poblarGrupoFecha('ceoFinDia', 'ceoFinMes', 'ceoFinAnio', 2024, anioActual + 1, dHoy, mHoy, anioActual);
+
+            poblarGrupoFecha('mercaderoIniDia', 'mercaderoIniMes', 'mercaderoIniAnio', 2024, anioActual + 1, '01', mHoy, anioActual);
+            poblarGrupoFecha('mercaderoFinDia', 'mercaderoFinMes', 'mercaderoFinAnio', 2024, anioActual + 1, dHoy, mHoy, anioActual);
         }
 
         window.onload = function() {
@@ -1084,7 +1084,6 @@
             if (el) el.scrollBy({ left: amount, behavior: 'smooth' });
         }
 
-        // --- EXTRACCIÓN UNIVERSAL DE YOUTUBE SIN RESTRICCIONES ---
         function obtenerEmbedYoutube(url) {
             if (!url) return null;
             const strUrl = String(url).trim();
@@ -1097,7 +1096,6 @@
             return null;
         }
 
-        // --- PAUSA DEDICADA PARA SPOTS COMERCIALES (1 HORA = 3600000 ms) ---
         function pausarSpotsComerciales() {
             if (intervalosSecciones["C"]) {
                 clearInterval(intervalosSecciones["C"]);
@@ -1110,7 +1108,7 @@
                 if (typeof funcionesReanudarSecciones["C"] === 'function') {
                     funcionesReanudarSecciones["C"]();
                 }
-            }, 3600000); // 1 hora exacta de inactividad
+            }, 3600000);
         }
 
         function renderBannersDinamicos() {
@@ -1162,7 +1160,6 @@
                     let bannerCardHtml = "";
 
                     if (secKey === "C") {
-                        // En Spots Comerciales: priorizar reproducción directa de YouTube sin restricciones
                         const youtubeSpot = embedYoutube || obtenerEmbedYoutube(imgUrl) || obtenerEmbedYoutube(destinoUrl);
                         if (youtubeSpot) {
                             bannerCardHtml = `
@@ -1217,7 +1214,6 @@
                     iniciarIntervaloSeccion();
 
                     if (secCode === "C") {
-                        // En Spots Comerciales: contacto táctil detiene de inmediato y reanuda tras 1 hora (3600000 ms) sin actividad
                         cont.addEventListener('touchstart', pausarSpotsComerciales, { passive: true });
                         cont.addEventListener('touchmove', pausarSpotsComerciales, { passive: true });
                         cont.addEventListener('mousedown', pausarSpotsComerciales);
@@ -1237,7 +1233,6 @@
                 }
             });
 
-            // Detectar también si el usuario toca un iframe de YouTube dentro de Spots Comerciales (cambio de foco de ventana)
             window.addEventListener('blur', () => {
                 const activeEl = document.activeElement;
                 const contC = document.getElementById('bannerSeccionC');
@@ -2136,13 +2131,13 @@
             mostrarToast("Sesión cerrada correctamente");
         }
 
+        // --- RENDER DASHBOARD MERCADERO (CON BÚSQUEDA Y FILTRACIÓN TEMPORAL) ---
         function renderDashMercadero() {
             const puesto = puestosBD.find(p => (p.Correo_Acceso || p.correo) === usuarioActual.Correo || String(p.ID || p.id) === String(usuarioActual.puestoId)) || puestosBD[0];
             if (!puesto) return;
             const puestoId = puesto.ID || puesto.id;
             
             let calificacionesPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(puestoId));
-            calificacionesPuesto.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
 
             const rubrosOpciones = ["Alimentos", "Bebidas", "Carnes", "Pescados", "Frutas", "Regionales", "Gastronomía", "Panadería", "Lácteos", "Salud", "Belleza", "Moda", "Tecnología", "Hogar", "Ferretería", "Limpieza", "Mascotas", "Librería", "Servicios", "Otros"];
             const rubroActual = puesto.Rubro || puesto.rubro || "Alimentos";
@@ -2162,7 +2157,7 @@
                     <div class="grid grid-cols-2 gap-2 text-center">
                         <div class="bg-red-50 p-2.5 rounded-xl border">
                             <span class="text-[10px] text-gray-500 font-semibold">Total Calificaciones</span>
-                            <p class="text-lg font-bold text-brand-red">${calificacionesPuesto.length}</p>
+                            <p class="text-lg font-bold text-brand-red" id="mercaderoCantTotalCals">${calificacionesPuesto.length}</p>
                         </div>
                         <div class="bg-amber-50 p-2.5 rounded-xl border">
                             <span class="text-[10px] text-gray-500 font-semibold">Calificación Promedio</span>
@@ -2170,20 +2165,41 @@
                         </div>
                     </div>
 
-                    <div class="space-y-2 pt-2 border-t">
-                        <h4 class="text-xs font-bold text-gray-800 uppercase">Calificaciones Recibidas (${calificacionesPuesto.length})</h4>
-                        <div class="space-y-2 max-h-64 overflow-y-auto">
-                            ${calificacionesPuesto.map((c, idx) => `
-                                <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs space-y-1 shadow-sm">
-                                    <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
-                                        <span>#${idx + 1} - ${c.Usuario_Nombre || 'Cliente'}</span>
-                                        <span class="text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</span>
-                                    </div>
-                                    <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
-                                    <div class="text-[10px] text-gray-400 text-right pt-0.5"><i class="fa-regular fa-clock"></i> ${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</div>
-                                </div>
-                            `).join('') || '<p class="text-xs text-gray-400 py-3 text-center">Aún no hay calificaciones registradas en tu puesto.</p>'}
+                    <!-- BARRA DE BÚSQUEDA Y FILTRACIÓN TEMPORAL PARA MERCADERO -->
+                    <div class="space-y-2 bg-gray-50 p-3 rounded-xl border">
+                        <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
+                            <div class="w-full sm:w-64 relative">
+                                <i class="fa-solid fa-magnifying-glass text-gray-400 text-xs absolute left-2.5 top-2.5"></i>
+                                <input type="text" id="buscadorCalificacionesMercadero" oninput="renderListaCalificacionesMercaderoTab()" placeholder="Buscar cliente o comentario..." class="w-full border border-gray-300 rounded-lg pl-7 pr-2.5 py-1.5 text-xs text-gray-900 bg-white outline-none focus:border-brand-red select-text">
+                            </div>
+                            <div class="flex flex-wrap gap-2 items-center text-xs w-full sm:w-auto justify-end">
+                                <span class="font-bold text-gray-600">Periodo:</span>
+                                <select id="filtroPeriodoMercadero" onchange="renderListaCalificacionesMercaderoTab()" class="border rounded-lg p-1.5 bg-white outline-none text-xs">
+                                    <option value="historial">Todo el Historial</option>
+                                    <option value="dia">Hoy (Día)</option>
+                                    <option value="semana">Esta Semana</option>
+                                    <option value="mes">Este Mes</option>
+                                    <option value="anio">Este Año</option>
+                                    <option value="personalizado">Rango Personalizado</option>
+                                </select>
+                            </div>
                         </div>
+                        <!-- RANGO PERSONALIZADO MERCADERO -->
+                        <div id="rangoPersonalizadoMercaderoContainer" class="hidden flex flex-wrap gap-1.5 items-center bg-white p-1.5 rounded-xl border">
+                            <span class="text-[10px] font-bold text-gray-500">Desde:</span>
+                            <select id="mercaderoIniDia" onchange="renderListaCalificacionesMercaderoTab()" class="date-select-modern"></select>
+                            <select id="mercaderoIniMes" onchange="renderListaCalificacionesMercaderoTab()" class="date-select-modern"></select>
+                            <select id="mercaderoIniAnio" onchange="renderListaCalificacionesMercaderoTab()" class="date-select-modern"></select>
+                            <span class="text-[10px] font-bold text-gray-500 ml-1">Hasta:</span>
+                            <select id="mercaderoFinDia" onchange="renderListaCalificacionesMercaderoTab()" class="date-select-modern"></select>
+                            <select id="mercaderoFinMes" onchange="renderListaCalificacionesMercaderoTab()" class="date-select-modern"></select>
+                            <select id="mercaderoFinAnio" onchange="renderListaCalificacionesMercaderoTab()" class="date-select-modern"></select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pt-2 border-t">
+                        <h4 id="tituloContadorCalsMercaderoTab" class="text-xs font-bold text-gray-800 uppercase">Calificaciones Recibidas</h4>
+                        <div id="contenedorListaCalsMercaderoTab" class="space-y-2 max-h-64 overflow-y-auto"></div>
                     </div>
 
                     <div class="bg-gray-50 p-3 rounded-xl border space-y-2.5 pt-3">
@@ -2260,6 +2276,88 @@
                     </div>
                 </div>
             `;
+            renderListaCalificacionesMercaderoTab();
+        }
+
+        function renderListaCalificacionesMercaderoTab() {
+            const puesto = puestosBD.find(p => (p.Correo_Acceso || p.correo) === usuarioActual.Correo || String(p.ID || p.id) === String(usuarioActual.puestoId)) || puestosBD[0];
+            if (!puesto) return;
+            const puestoId = puesto.ID || puesto.id;
+
+            const cont = document.getElementById('contenedorListaCalsMercaderoTab');
+            const titulo = document.getElementById('tituloContadorCalsMercaderoTab');
+            if (!cont) return;
+
+            let calificacionesPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(puestoId));
+            calificacionesPuesto.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
+
+            const periodo = document.getElementById('filtroPeriodoMercadero')?.value || 'historial';
+            const rangoContainer = document.getElementById('rangoPersonalizadoMercaderoContainer');
+            let fechaIni = null;
+            let fechaFin = null;
+
+            if (periodo === 'personalizado') {
+                if(rangoContainer) rangoContainer.classList.remove('hidden');
+                const iD = document.getElementById('mercaderoIniDia')?.value || '01';
+                const iM = document.getElementById('mercaderoIniMes')?.value || '01';
+                const iA = document.getElementById('mercaderoIniAnio')?.value || '2024';
+                const fD = document.getElementById('mercaderoFinDia')?.value || '31';
+                const fM = document.getElementById('mercaderoFinMes')?.value || '12';
+                const fA = document.getElementById('mercaderoFinAnio')?.value || '2026';
+                fechaIni = new Date(parseInt(iA), parseInt(iM) - 1, parseInt(iD), 0, 0, 0);
+                fechaFin = new Date(parseInt(fA), parseInt(fM) - 1, parseInt(fD), 23, 59, 59);
+            } else {
+                if(rangoContainer) rangoContainer.classList.add('hidden');
+            }
+
+            const filtrarPorFecha = (fechaStr) => {
+                if (!fechaStr || periodo === 'historial') return true;
+                const d = parsearFechaSegura(fechaStr);
+                if (isNaN(d.getTime()) || d.getTime() === 0) return true;
+                const ahora = new Date();
+
+                if (periodo === 'dia') {
+                    return d.toDateString() === ahora.toDateString();
+                } else if (periodo === 'semana') {
+                    const sieteDiasMs = 7 * 24 * 60 * 60 * 1000;
+                    return (ahora - d) <= sieteDiasMs;
+                } else if (periodo === 'mes') {
+                    return d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
+                } else if (periodo === 'anio') {
+                    return d.getFullYear() === ahora.getFullYear();
+                } else if (periodo === 'personalizado') {
+                    if (fechaIni && fechaFin) return d >= fechaIni && d <= fechaFin;
+                }
+                return true;
+            };
+
+            const inputEl = document.getElementById('buscadorCalificacionesMercadero');
+            const query = inputEl ? inputEl.value.toLowerCase().trim() : '';
+
+            let filtradas = calificacionesPuesto.filter(c => {
+                const matchQuery = (c.Usuario_Nombre || c.usuario || '').toLowerCase().includes(query) ||
+                                   (c.Comentario || c.comentario || '').toLowerCase().includes(query);
+                const matchFecha = filtrarPorFecha(c.Fecha_Hora || c.fecha);
+                return matchQuery && matchFecha;
+            });
+
+            if (titulo) titulo.innerText = `Calificaciones Recibidas (${filtradas.length})`;
+
+            if (filtradas.length === 0) {
+                cont.innerHTML = `<p class="text-xs text-gray-400 py-3 text-center">No se encontraron calificaciones para esta búsqueda o periodo.</p>`;
+                return;
+            }
+
+            cont.innerHTML = filtradas.map((c, idx) => `
+                <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs space-y-1 shadow-sm">
+                    <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
+                        <span>#${idx + 1} - ${c.Usuario_Nombre || 'Cliente'}</span>
+                        <span class="text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</span>
+                    </div>
+                    <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
+                    <div class="text-[10px] text-gray-400 text-right pt-0.5"><i class="fa-regular fa-clock"></i> ${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</div>
+                </div>
+            `).join('');
         }
 
         function detectarGpsDashboard() {
@@ -2306,7 +2404,7 @@
             }
         }
 
-        // --- PANEL DE MERCADOR(A) CON BÚSQUEDA EN TIEMPO REAL SIN PERDER FOCO NI TEXTO ---
+        // --- PANEL DE MERCADOR(A) ---
         function renderDashMercador() {
             const misCals = calificacionesBD.filter(c => 
                 (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
@@ -2331,15 +2429,40 @@
                         <p><strong>Residencia:</strong> ${usuarioActual.residencia || 'No especificada'}</p>
                     </div>
 
-                    <div class="space-y-2 pt-2 border-t">
-                        <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
-                            <h4 id="tituloContadorCalsMercador" class="text-xs font-bold text-gray-800 uppercase">Puestos Calificados (${misCals.length})</h4>
+                    <!-- AJUSTE 3: BARRA DE BÚSQUEDA Y FILTRACIÓN TEMPORAL EN PANEL MERCADOR(A) -->
+                    <div class="space-y-2 bg-gray-50 p-3 rounded-xl border">
+                        <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
                             <div class="w-full sm:w-64 relative">
                                 <i class="fa-solid fa-magnifying-glass text-gray-400 text-xs absolute left-2.5 top-2.5"></i>
                                 <input type="text" id="buscadorMisCalificaciones" oninput="renderListaCalificacionesMercador()" placeholder="Buscar puesto o comentario..." class="w-full border border-gray-300 rounded-lg pl-7 pr-2.5 py-1.5 text-xs text-gray-900 bg-white outline-none focus:border-brand-red select-text">
                             </div>
+                            <div class="flex flex-wrap gap-2 items-center text-xs w-full sm:w-auto justify-end">
+                                <span class="font-bold text-gray-600">Periodo:</span>
+                                <select id="filtroPeriodoMercador" onchange="renderListaCalificacionesMercador()" class="border rounded-lg p-1.5 bg-white outline-none text-xs">
+                                    <option value="historial">Todo el Historial</option>
+                                    <option value="dia">Hoy (Día)</option>
+                                    <option value="semana">Esta Semana</option>
+                                    <option value="mes">Este Mes</option>
+                                    <option value="anio">Este Año</option>
+                                    <option value="personalizado">Rango Personalizado</option>
+                                </select>
+                            </div>
                         </div>
+                        <!-- RANGO PERSONALIZADO MERCADOR -->
+                        <div id="rangoPersonalizadoMercadorContainer" class="hidden flex flex-wrap gap-1.5 items-center bg-white p-1.5 rounded-xl border">
+                            <span class="text-[10px] font-bold text-gray-500">Desde:</span>
+                            <select id="mercadorIniDia" onchange="renderListaCalificacionesMercador()" class="date-select-modern"></select>
+                            <select id="mercadorIniMes" onchange="renderListaCalificacionesMercador()" class="date-select-modern"></select>
+                            <select id="mercadorIniAnio" onchange="renderListaCalificacionesMercador()" class="date-select-modern"></select>
+                            <span class="text-[10px] font-bold text-gray-500 ml-1">Hasta:</span>
+                            <select id="mercadorFinDia" onchange="renderListaCalificacionesMercador()" class="date-select-modern"></select>
+                            <select id="mercadorFinMes" onchange="renderListaCalificacionesMercador()" class="date-select-modern"></select>
+                            <select id="mercadorFinAnio" onchange="renderListaCalificacionesMercador()" class="date-select-modern"></select>
+                        </div>
+                    </div>
 
+                    <div class="space-y-2 pt-2 border-t">
+                        <h4 id="tituloContadorCalsMercador" class="text-xs font-bold text-gray-800 uppercase">Puestos Calificados (${misCals.length})</h4>
                         <div id="contenedorListaCalsMercador" class="space-y-2 max-h-72 overflow-y-auto"></div>
                     </div>
 
@@ -2395,7 +2518,42 @@
                 </div>
             `;
 
+            // Inicializar selectores de fecha en el modal de mercador si no existían
+            poblarSelectoresFechaMercador();
             renderListaCalificacionesMercador();
+        }
+
+        function poblarSelectoresFechaMercador() {
+            const anioActual = new Date().getFullYear();
+            const hoy = new Date();
+            const dHoy = String(hoy.getDate()).padStart(2, '0');
+            const mHoy = String(hoy.getMonth() + 1).padStart(2, '0');
+            
+            const poblarGrupo = (idD, idM, idA) => {
+                const sD = document.getElementById(idD);
+                const sM = document.getElementById(idM);
+                const sA = document.getElementById(idA);
+                if (!sD || sD.children.length > 0) return;
+
+                for (let d = 1; d <= 31; d++) {
+                    sD.innerHTML += `<option value="${String(d).padStart(2, '0')}">${d}</option>`;
+                }
+                const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                meses.forEach((m, idx) => {
+                    sM.innerHTML += `<option value="${String(idx+1).padStart(2, '0')}">${m}</option>`;
+                });
+                for (let a = anioActual + 1; a >= 2024; a--) {
+                    sA.innerHTML += `<option value="${a}">${a}</option>`;
+                }
+                sD.value = '01';
+                sM.value = mHoy;
+                sA.value = String(anioActual);
+            };
+
+            poblarGrupo('mercadorIniDia', 'mercadorIniMes', 'mercadorIniAnio');
+            poblarGrupo('mercadorFinDia', 'mercadorFinMes', 'mercadorFinAnio');
+            const fD = document.getElementById('mercadorFinDia');
+            if (fD) fD.value = dHoy;
         }
 
         function renderListaCalificacionesMercador() {
@@ -2411,22 +2569,61 @@
 
             misCals.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
 
-            if (titulo) titulo.innerText = `Puestos Calificados (${misCals.length})`;
+            const periodo = document.getElementById('filtroPeriodoMercador')?.value || 'historial';
+            const rangoContainer = document.getElementById('rangoPersonalizadoMercadorContainer');
+            let fechaIni = null;
+            let fechaFin = null;
+
+            if (periodo === 'personalizado') {
+                if(rangoContainer) rangoContainer.classList.remove('hidden');
+                const iD = document.getElementById('mercadorIniDia')?.value || '01';
+                const iM = document.getElementById('mercadorIniMes')?.value || '01';
+                const iA = document.getElementById('mercadorIniAnio')?.value || '2024';
+                const fD = document.getElementById('mercadorFinDia')?.value || '31';
+                const fM = document.getElementById('mercadorFinMes')?.value || '12';
+                const fA = document.getElementById('mercadorFinAnio')?.value || '2026';
+                fechaIni = new Date(parseInt(iA), parseInt(iM) - 1, parseInt(iD), 0, 0, 0);
+                fechaFin = new Date(parseInt(fA), parseInt(fM) - 1, parseInt(fD), 23, 59, 59);
+            } else {
+                if(rangoContainer) rangoContainer.classList.add('hidden');
+            }
+
+            const filtrarPorFecha = (fechaStr) => {
+                if (!fechaStr || periodo === 'historial') return true;
+                const d = parsearFechaSegura(fechaStr);
+                if (isNaN(d.getTime()) || d.getTime() === 0) return true;
+                const ahora = new Date();
+
+                if (periodo === 'dia') {
+                    return d.toDateString() === ahora.toDateString();
+                } else if (periodo === 'semana') {
+                    const sieteDiasMs = 7 * 24 * 60 * 60 * 1000;
+                    return (ahora - d) <= sieteDiasMs;
+                } else if (periodo === 'mes') {
+                    return d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
+                } else if (periodo === 'anio') {
+                    return d.getFullYear() === ahora.getFullYear();
+                } else if (periodo === 'personalizado') {
+                    if (fechaIni && fechaFin) return d >= fechaIni && d <= fechaFin;
+                }
+                return true;
+            };
 
             const inputEl = document.getElementById('buscadorMisCalificaciones');
             const queryMercador = inputEl ? inputEl.value.toLowerCase().trim() : '';
 
-            let filtradasCals = misCals;
-            if (queryMercador) {
-                filtradasCals = misCals.filter(c => {
-                    const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId).toLowerCase();
-                    const comentario = String(c.Comentario || '').toLowerCase();
-                    return nombrePuesto.includes(queryMercador) || comentario.includes(queryMercador);
-                });
-            }
+            let filtradasCals = misCals.filter(c => {
+                const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId).toLowerCase();
+                const comentario = String(c.Comentario || '').toLowerCase();
+                const matchQuery = nombrePuesto.includes(queryMercador) || comentario.includes(queryMercador);
+                const matchFecha = filtrarPorFecha(c.Fecha_Hora || c.fecha);
+                return matchQuery && matchFecha;
+            });
+
+            if (titulo) titulo.innerText = `Puestos Calificados (${filtradasCals.length})`;
 
             if (filtradasCals.length === 0) {
-                cont.innerHTML = `<p class="text-xs text-gray-400 py-3 text-center">${queryMercador ? 'No se encontraron resultados para tu búsqueda.' : 'Aún no has registrado calificaciones en puestos.'}</p>`;
+                cont.innerHTML = `<p class="text-xs text-gray-400 py-3 text-center">No se encontraron puestos calificados con esa búsqueda o periodo.</p>`;
                 return;
             }
 
@@ -2480,6 +2677,7 @@
             renderCeoTable();
         }
 
+        // --- RENDER CEO TABLE (AJUSTE 1: FILTRACIÓN FUNCIONAL DÍA, SEMANA, MES, AÑO, HISTORIAL, PERSONALIZADO) ---
         function renderCeoTable() {
             document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
             document.getElementById('ceoCantUsuarios').innerText = usuariosBD.length;
@@ -2498,7 +2696,7 @@
             let fechaFin = null;
 
             if (periodo === 'personalizado') {
-                rangoContainer.classList.remove('hidden');
+                if(rangoContainer) rangoContainer.classList.remove('hidden');
                 const iD = document.getElementById('ceoIniDia')?.value || '01';
                 const iM = document.getElementById('ceoIniMes')?.value || '01';
                 const iA = document.getElementById('ceoIniAnio')?.value || '2024';
@@ -2508,7 +2706,7 @@
                 fechaIni = new Date(parseInt(iA), parseInt(iM) - 1, parseInt(iD), 0, 0, 0);
                 fechaFin = new Date(parseInt(fA), parseInt(fM) - 1, parseInt(fD), 23, 59, 59);
             } else {
-                rangoContainer.classList.add('hidden');
+                if(rangoContainer) rangoContainer.classList.add('hidden');
             }
 
             const filtrarPorFecha = (fechaStr) => {
@@ -2537,15 +2735,17 @@
                     <th class="p-2 border">Puesto / Dueño</th>
                     <th class="p-2 border">Rubro</th>
                     <th class="p-2 border">Ubicación</th>
-                    <th class="p-2 border">Contacto / Registro</th>
+                    <th class="p-2 border">Fecha Registro / Contacto</th>
                     <th class="p-2 border text-center">Acciones</th>
                 `;
 
-                let filtrados = puestosBD.filter(p => 
-                    (p.Nombre_Puesto || p.nombre || '').toLowerCase().includes(queryCeo) ||
-                    (p.Rubro || p.rubro || '').toLowerCase().includes(queryCeo) ||
-                    (p.Duenio_Nombre || p.duenio || '').toLowerCase().includes(queryCeo)
-                );
+                let filtrados = puestosBD.filter(p => {
+                    const matchQuery = (p.Nombre_Puesto || p.nombre || '').toLowerCase().includes(queryCeo) ||
+                                       (p.Rubro || p.rubro || '').toLowerCase().includes(queryCeo) ||
+                                       (p.Duenio_Nombre || p.duenio || '').toLowerCase().includes(queryCeo);
+                    const matchFecha = filtrarPorFecha(p.Fecha_Registro || p.fecha);
+                    return matchQuery && matchFecha;
+                });
 
                 filtrados.forEach(p => {
                     const id = p.ID || p.id;
@@ -2554,7 +2754,7 @@
                             <td class="p-2 font-bold">${p.Nombre_Puesto || p.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Dueño: ${p.Duenio_Nombre || p.duenio || 'N/A'}</span></td>
                             <td class="p-2">${p.Rubro || p.rubro}</td>
                             <td class="p-2">${p.Provincia || p.provincia} / ${p.Distrito || p.distrito}</td>
-                            <td class="p-2">${p.Correo_Acceso || p.correo || 'N/A'}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${p.WhatsApp || p.whatsapp}</span></td>
+                            <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(p.Fecha_Registro || p.fecha)}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${p.WhatsApp || p.whatsapp}</span></td>
                             <td class="p-2 text-center">
                                 <div class="flex items-center justify-center gap-1.5">
                                     <button onclick="verDetalleMercaderoCeo('${id}')" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition" title="Ver Detalles"><i class="fa-solid fa-eye text-xs"></i></button>
@@ -2658,6 +2858,7 @@
                 <p><strong>WhatsApp:</strong> ${p.WhatsApp || 'N/A'}</p>
                 <p><strong>Rubro:</strong> ${p.Rubro || 'N/A'}</p>
                 <p><strong>Ubicación:</strong> ${p.Region}, ${p.Provincia}, ${p.Distrito}</p>
+                <p><strong>Fecha Registro (24h):</strong> ${formatearFechaHora24h(p.Fecha_Registro || p.fecha)}</p>
                 <div class="pt-2 border-t mt-2">
                     <strong class="block mb-1">Calificaciones recibidas (${cals.length}):</strong>
                     ${cals.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1"><strong>${c.Usuario_Nombre}:</strong> ${c.Estrellas}★ - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">Sin calificaciones</span>'}
@@ -2746,7 +2947,6 @@
             }, { passive: true });
         }
 
-        // --- INSTALACIÓN PWA CON PERSISTENCIA (NO VOLVER A MOSTRAR SI YA SE INSTALÓ) ---
         function appYaInstalada() {
             return window.matchMedia('(display-mode: standalone)').matches ||
                    window.navigator.standalone === true ||
