@@ -881,7 +881,7 @@
         }
 
         function formatearFechaHora24h(fechaVal) {
-            if (!fechaVal) return 'N/A';
+            if (!fechaVal) return obtenerFechaHora24hActual();
             const str = String(fechaVal).trim();
             const regexPe = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{2})(?::\d{2})?\s*(a\.?\s*m\.?|p\.?\s*m\.?|am|pm)?)?$/i;
             const matchPe = str.match(regexPe);
@@ -912,7 +912,7 @@
         }
 
         function parsearFechaSegura(fechaStr) {
-            if (!fechaStr) return new Date(0);
+            if (!fechaStr) return new Date();
             const str = String(fechaStr).trim();
             const matchPe = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{2}))?/);
             if (matchPe) {
@@ -924,7 +924,7 @@
                 return new Date(anio, mes, dia, hh, mm);
             }
             const d = new Date(str);
-            return isNaN(d.getTime()) ? new Date(0) : d;
+            return isNaN(d.getTime()) ? new Date() : d;
         }
 
         // --- SELECTORES MODERNOS DE FECHA (DÍA / MES / AÑO) ---
@@ -1006,12 +1006,23 @@
         };
 
         async function sincronizarDatosRemotos() {
+            const fechaHoy = obtenerFechaHora24hActual();
             await Promise.all([
-                cargarHojaRemota('puestos', data => { puestosBD = data; renderPuestos(); renderRubros(); }),
-                cargarHojaRemota('usuarios', data => { usuariosBD = data; }),
-                cargarHojaRemota('calificaciones', data => { calificacionesBD = data; renderPuestos(); renderRubros(); }),
-                cargarHojaRemota('favoritos', data => { favoritosBD = data; renderPuestos(); }),
-                cargarHojaRemota('publicidad', data => { publicidadBD = data; renderBannersDinamicos(); })
+                cargarHojaRemota('puestos', data => { 
+                    puestosBD = (data || []).map(p => ({ ...p, Fecha_Registro: p.Fecha_Registro || p.fecha || fechaHoy })); 
+                    renderPuestos(); 
+                    renderRubros(); 
+                }),
+                cargarHojaRemota('usuarios', data => { 
+                    usuariosBD = (data || []).map(u => ({ ...u, Fecha_Registro: u.Fecha_Registro || u.fecha || fechaHoy })); 
+                }),
+                cargarHojaRemota('calificaciones', data => { 
+                    calificacionesBD = (data || []).map(c => ({ ...c, Fecha_Hora: c.Fecha_Hora || c.fecha || fechaHoy })); 
+                    renderPuestos(); 
+                    renderRubros(); 
+                }),
+                cargarHojaRemota('favoritos', data => { favoritosBD = data || []; renderPuestos(); }),
+                cargarHojaRemota('publicidad', data => { publicidadBD = data || []; renderBannersDinamicos(); })
             ]);
         }
 
@@ -1104,12 +1115,11 @@
             if (timeoutPausasSliders["C"]) {
                 clearTimeout(timeoutPausasSliders["C"]);
             }
-            // Reanudar automáticamente después de 1 hora (3,600,000 ms) sin actividad
             timeoutPausasSliders["C"] = setTimeout(() => {
                 if (typeof funcionesReanudarSecciones["C"] === 'function') {
                     funcionesReanudarSecciones["C"]();
                 }
-            }, 3600000);
+            }, 3600000); // Reanuda tras 1 hora de inactividad
         }
 
         function renderBannersDinamicos() {
@@ -1212,7 +1222,12 @@
                     }
 
                     funcionesReanudarSecciones[secCode] = iniciarIntervaloSeccion;
-                    iniciarIntervaloSeccion();
+                    if (secCode !== "C") {
+                        iniciarIntervaloSeccion();
+                    } else {
+                        // Spots Comerciales inicia en pausa o activo pero con control táctil robusto
+                        iniciarIntervaloSeccion();
+                    }
 
                     if (secCode === "C") {
                         cont.addEventListener('touchstart', pausarSpotsComerciales, { passive: true });
@@ -1359,8 +1374,8 @@
                     totalCalsRubro += cals.length;
                     cals.forEach(c => sumaEstrellasRubro += parseInt(c.Estrellas || c.estrellas || 0));
                 });
-                const porcentaje = totalCalsRubro > 0 ? (sumaEstrellasRubro / (totalCalsRubro * 5)) * 100 : 0;
-                puntajeRubros[r.nombre] = totalCalsRubro * 10 + porcentaje;
+                const promedioRubro = totalCalsRubro > 0 ? sumaEstrellasRubro / totalCalsRubro : 0;
+                puntajeRubros[r.nombre] = totalCalsRubro * 10 + (promedioRubro * 5);
             });
 
             let rubrosOrdenados = [...rubrosConfig];
@@ -1411,14 +1426,21 @@
                 return matchRubro && matchProvincia && matchDistrito;
             });
             
-            // Ordenamiento por puntaje / número de calificaciones (más votados primero)
+            // Ordenamiento inteligente: Primero por cantidad de votos y luego por calificación promedio más alta
             filtrados.sort((a, b) => {
                 const calsA = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(a.ID || a.id));
                 const calsB = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(b.ID || b.id));
-                const sumaA = calsA.reduce((acc, curr) => acc + parseInt(curr.Estrellas || curr.estrellas || 0), 0);
-                const sumaB = calsB.reduce((acc, curr) => acc + parseInt(curr.Estrellas || curr.estrellas || 0), 0);
-                if (sumaB !== sumaA) return sumaB - sumaA;
-                return calsB.length - calsA.length;
+                
+                const countA = calsA.length;
+                const countB = calsB.length;
+                
+                const avgA = countA > 0 ? calsA.reduce((acc, curr) => acc + parseInt(curr.Estrellas || curr.estrellas || 0), 0) / countA : 0;
+                const avgB = countB > 0 ? calsB.reduce((acc, curr) => acc + parseInt(curr.Estrellas || curr.estrellas || 0), 0) / countB : 0;
+
+                if (countB !== countA) {
+                    return countB - countA;
+                }
+                return avgB - avgA;
             });
 
             if (filtrados.length === 0) {
@@ -1426,7 +1448,7 @@
                 return;
             }
 
-            filtrados.forEach((p, index) => {
+            filtrados.forEach(p => {
                 const id = p.ID || p.id;
                 const nombre = p.Nombre_Puesto || p.nombre;
                 const rubro = p.Rubro || p.rubro;
@@ -1469,12 +1491,8 @@
                     }
                 }
 
-                // Enumeración descendente: 1 el mejor, 2 el segundo, etc. (Calculado desde el total filtrado)
-                const numeroDescendente = filtrados.length - index;
-
                 grid.innerHTML += `
-                    <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition relative">
-                        <span class="absolute -top-2 -left-2 bg-brand-red text-white text-[10px] font-extrabold w-6 h-6 rounded-full flex items-center justify-center shadow-md border border-white">#${numeroDescendente}</span>
+                    <div class="card-puesto bg-white rounded-xl p-2.5 flex flex-col justify-between transition">
                         <div>
                             <div class="flex items-center justify-between gap-1 mb-1">
                                 <span class="text-[9px] font-extrabold uppercase bg-red-50 text-brand-red px-1.5 py-0.5 rounded truncate max-w-[75%]" title="${rubro}">${rubro}</span>
@@ -1981,33 +1999,30 @@
             const rol = document.getElementById('authRol').value;
             const nombreUsuario = document.getElementById('regNombreCompleto').value.trim();
 
+            const nombrePuestoInput = rol === 'mercadero' ? document.getElementById('regPuestoNombre').value.trim().toLowerCase() : "";
             const wspPuesto = document.getElementById('regWhatsapp') ? document.getElementById('regWhatsapp').value.trim() : "";
             const wspMercador = document.getElementById('regWhatsappMercador') ? document.getElementById('regWhatsappMercador').value.trim() : "";
             const wspFinal = rol === 'mercadero' ? wspPuesto : (wspMercador || "930528649");
             const residencia = document.getElementById('regResidencia') ? document.getElementById('regResidencia').value.trim() : "";
 
-            // Validación estricta para evitar duplicidad de tiendas / mercaderos con los mismos datos
+            // Validación rigurosa Antiduplicidad
             const correoDuplicadoPuesto = puestosBD.some(p => String(p.Correo_Acceso || p.correo || '').toLowerCase() === email);
             const wspDuplicadoPuesto = puestosBD.some(p => String(p.WhatsApp || p.whatsapp || '').trim() === wspFinal);
+            const tiendaDuplicada = rol === 'mercadero' && puestosBD.some(p => String(p.Nombre_Puesto || p.nombre || '').trim().toLowerCase() === nombrePuestoInput);
+            
             const correoDuplicadoUsuario = usuariosBD.some(u => String(u.Correo || u.correo || '').toLowerCase() === email);
             const wspDuplicadoUsuario = usuariosBD.some(u => String(u.WhatsApp || u.whatsapp || '').trim() === wspFinal);
 
-            if (rol === 'mercadero') {
-                const nombrePuestoIngresado = document.getElementById('regPuestoNombre').value.trim().toLowerCase();
-                const puestoDuplicadoNombre = puestosBD.some(p => String(p.Nombre_Puesto || p.nombre || '').trim().toLowerCase() === nombrePuestoIngresado);
-
-                if (puestoDuplicadoNombre) {
-                    mostrarToast("⚠️ Ya existe un puesto registrado con ese mismo nombre. Verifique los datos para evitar duplicidad.");
-                    return;
-                }
-            }
-
             if (correoDuplicadoPuesto || correoDuplicadoUsuario) {
-                mostrarToast("⚠️ El correo electrónico ya está registrado. Inicie sesión.");
+                mostrarToast("⚠️ El correo electrónico ya se encuentra registrado. Inicie sesión.");
                 return;
             }
             if (wspDuplicadoPuesto || wspDuplicadoUsuario) {
-                mostrarToast("⚠️ El número de WhatsApp ya se encuentra registrado.");
+                mostrarToast("⚠️ El número de WhatsApp ya se encuentra registrado en otro perfil.");
+                return;
+            }
+            if (tiendaDuplicada) {
+                mostrarToast("⚠️ Ya existe un puesto registrado con este mismo nombre. No se permiten tiendas duplicadas.");
                 return;
             }
 
@@ -2185,7 +2200,7 @@
                         </div>
                     </div>
 
-                    <!-- BÚSQUEDA Y FILTRACIÓN TEMPORAL PARA MERCADERO -->
+                    <!-- BARRA DE BÚSQUEDA Y FILTRACIÓN TEMPORAL PARA MERCADERO -->
                     <div class="space-y-2 bg-gray-50 p-3 rounded-xl border">
                         <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
                             <div class="w-full sm:w-64 relative">
@@ -2219,7 +2234,7 @@
 
                     <div class="space-y-2 pt-2 border-t">
                         <h4 id="tituloContadorCalsMercaderoTab" class="text-xs font-bold text-gray-800 uppercase">Calificaciones Recibidas</h4>
-                        <div id="contenedorListaCalsMercaderoTab" class="space-y-2 max-h-64 overflow-y-auto"></div>
+                        <div id="contenedorListaCalsMercaderoTab" class="flex flex-col-reverse space-y-reverse space-y-2 max-h-64 overflow-y-auto"></div>
                     </div>
 
                     <div class="bg-gray-50 p-3 rounded-xl border space-y-2.5 pt-3">
@@ -2309,7 +2324,9 @@
             if (!cont) return;
 
             let calificacionesPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(puestoId));
-            calificacionesPuesto.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
+            
+            // Ordenar ascendente cronológicamente para que el 1er calificado sea 1 en la parte inferior (gracias a flex-col-reverse)
+            calificacionesPuesto.sort((a, b) => parsearFechaSegura(a.Fecha_Hora || a.fecha) - parsearFechaSegura(b.Fecha_Hora || b.fecha));
 
             const periodo = document.getElementById('filtroPeriodoMercadero')?.value || 'historial';
             const rangoContainer = document.getElementById('rangoPersonalizadoMercaderoContainer');
@@ -2368,20 +2385,16 @@
                 return;
             }
 
-            cont.innerHTML = filtradas.map((c, i) => {
-                // Enumeración descendente: El primero calificado es #N, bajando hasta #1
-                const numDesc = filtradas.length - i;
-                return `
-                    <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs space-y-1 shadow-sm">
-                        <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
-                            <span>#${numDesc} - ${c.Usuario_Nombre || 'Cliente'}</span>
-                            <span class="text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</span>
-                        </div>
-                        <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
-                        <div class="text-[10px] text-gray-400 text-right pt-0.5"><i class="fa-regular fa-clock"></i> ${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</div>
+            cont.innerHTML = filtradas.map((c, idx) => `
+                <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs space-y-1 shadow-sm">
+                    <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
+                        <span>${idx + 1} - ${c.Usuario_Nombre || 'Cliente'}</span>
+                        <span class="text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</span>
                     </div>
-                `;
-            }).join('');
+                    <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
+                    <div class="text-[10px] text-gray-400 text-right pt-0.5"><i class="fa-regular fa-clock"></i> ${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</div>
+                </div>
+            `).join('');
         }
 
         function detectarGpsDashboard() {
@@ -2487,7 +2500,7 @@
 
                     <div class="space-y-2 pt-2 border-t">
                         <h4 id="tituloContadorCalsMercador" class="text-xs font-bold text-gray-800 uppercase">Puestos Calificados (${misCals.length})</h4>
-                        <div id="contenedorListaCalsMercador" class="space-y-2 max-h-72 overflow-y-auto"></div>
+                        <div id="contenedorListaCalsMercador" class="flex flex-col-reverse space-y-reverse space-y-2 max-h-72 overflow-y-auto"></div>
                     </div>
 
                     <div class="pt-3 border-t border-gray-200 space-y-2">
@@ -2524,7 +2537,7 @@
 
                         <div class="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-xl p-3 text-white text-center shadow-md space-y-1.5">
                             <span class="text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background-color: rgba(255, 255, 255, 0.2);">PUBLICIDAD OFICIAL MERCATON</span>
-                            <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nuestra sección publicitaria!</h3>
+                            <h3 class="text-xs sm:text-sm font-black leading-tight">¡Impulsa tu negocio, promocionando en nossa sección publicitaria!</h3>
                             <p class="text-[11px]" style="color: rgba(255, 255, 255, 0.9);">Anuncia tu puesto, producto o servicio en nuestra plataforma.</p>
                             <div class="pt-1 flex justify-center gap-4 text-lg text-white">
                                 <a href="https://facebook.com" target="_blank" class="hover:scale-125 transition"><i class="fa-brands fa-facebook"></i></a>
@@ -2590,7 +2603,8 @@
                 (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
             );
 
-            misCals.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
+            // Ordenar ascendente cronológicamente para que el 1er calificado sea 1 en la parte inferior (gracias a flex-col-reverse)
+            misCals.sort((a, b) => parsearFechaSegura(a.Fecha_Hora || a.fecha) - parsearFechaSegura(b.Fecha_Hora || b.fecha));
 
             const periodo = document.getElementById('filtroPeriodoMercador')?.value || 'historial';
             const rangoContainer = document.getElementById('rangoPersonalizadoMercadorContainer');
@@ -2650,14 +2664,12 @@
                 return;
             }
 
-            cont.innerHTML = filtradasCals.map((c, i) => {
-                // Enumeración descendente
-                const numDesc = filtradasCals.length - i;
+            cont.innerHTML = filtradasCals.map((c, idx) => {
                 const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId);
                 return `
                     <div class="bg-white border border-gray-200 p-3 rounded-xl text-xs space-y-1.5 shadow-sm">
                         <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
-                            <span>#${numDesc} - ${nombrePuesto}</span>
+                            <span>${idx + 1} - ${nombrePuesto}</span>
                             <span class="text-amber-500">${'★'.repeat(c.Estrellas || 5)}</span>
                         </div>
                         <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
@@ -2702,7 +2714,7 @@
             renderCeoTable();
         }
 
-        // --- RENDER CEO TABLE (CORRECCIÓN DE FILTRADO Y ENUMERACIÓN DESCENDENTE CON MÁS INFORMACIÓN) ---
+        // --- RENDER CEO TABLE (FILTRACIÓN FUNCIONAL CORREGIDA) ---
         function renderCeoTable() {
             document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
             document.getElementById('ceoCantUsuarios').innerText = usuariosBD.length;
@@ -2737,14 +2749,14 @@
             const filtrarPorFecha = (fechaStr) => {
                 if (!fechaStr || periodo === 'historial') return true;
                 const d = parsearFechaSegura(fechaStr);
-                if (isNaN(d.getTime()) || d.getTime() === 0) return true;
+                if (isNaN(d.getTime())) return true;
                 const ahora = new Date();
 
                 if (periodo === 'dia') {
                     return d.toDateString() === ahora.toDateString();
                 } else if (periodo === 'semana') {
                     const sieteDiasMs = 7 * 24 * 60 * 60 * 1000;
-                    return (ahora - d) <= sieteDiasMs;
+                    return (ahora - d) <= sieteDiasMs && d <= ahora;
                 } else if (periodo === 'mes') {
                     return d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
                 } else if (periodo === 'anio') {
@@ -2757,41 +2769,29 @@
 
             if (ceoTabActual === 'mercaderos') {
                 thead.innerHTML = `
-                    <th class="p-2 border">N° / Puesto / Dueño</th>
-                    <th class="p-2 border">Rubro y Descripción</th>
+                    <th class="p-2 border">Puesto / Dueño</th>
+                    <th class="p-2 border">Rubro</th>
                     <th class="p-2 border">Ubicación</th>
-                    <th class="p-2 border">Fecha Registro / Contacto / Correo</th>
+                    <th class="p-2 border">Fecha Registro / Contacto</th>
                     <th class="p-2 border text-center">Acciones</th>
                 `;
 
                 let filtrados = puestosBD.filter(p => {
                     const matchQuery = (p.Nombre_Puesto || p.nombre || '').toLowerCase().includes(queryCeo) ||
                                        (p.Rubro || p.rubro || '').toLowerCase().includes(queryCeo) ||
-                                       (p.Duenio_Nombre || p.duenio || '').toLowerCase().includes(queryCeo) ||
-                                       (p.Distrito || p.distrito || '').toLowerCase().includes(queryCeo) ||
-                                       (p.WhatsApp || p.whatsapp || '').toLowerCase().includes(queryCeo) ||
-                                       (p.Correo_Acceso || p.correo || '').toLowerCase().includes(queryCeo);
+                                       (p.Duenio_Nombre || p.duenio || '').toLowerCase().includes(queryCeo);
                     const matchFecha = filtrarPorFecha(p.Fecha_Registro || p.fecha);
                     return matchQuery && matchFecha;
                 });
 
-                // Ordenar por puntaje/calificaciones para la enumeración descendente
-                filtrados.sort((a, b) => {
-                    const calsA = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(a.ID || a.id)).length;
-                    const calsB = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(b.ID || b.id)).length;
-                    return calsB - calsA;
-                });
-
-                filtrados.forEach((p, i) => {
-                    const numDesc = filtrados.length - i;
+                filtrados.forEach((p, idx) => {
                     const id = p.ID || p.id;
-                    const totalCalsPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(id)).length;
                     tbody.innerHTML += `
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-2"><span class="font-black text-brand-red mr-1">#${numDesc}</span> <strong>${p.Nombre_Puesto || p.nombre}</strong><br><span class="text-[10px] text-gray-500 font-normal">Dueño: ${p.Duenio_Nombre || p.duenio || 'N/A'}</span></td>
-                            <td class="p-2"><span class="font-bold text-gray-700">${p.Rubro || p.rubro}</span><br><span class="text-[10px] text-gray-500 line-clamp-1">${p.Descripcion || p.desc || 'Sin descripción'}</span></td>
+                            <td class="p-2 font-bold">${idx + 1}. ${p.Nombre_Puesto || p.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Dueño: ${p.Duenio_Nombre || p.duenio || 'N/A'}</span></td>
+                            <td class="p-2">${p.Rubro || p.rubro}</td>
                             <td class="p-2">${p.Provincia || p.provincia} / ${p.Distrito || p.distrito}</td>
-                            <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(p.Fecha_Registro || p.fecha)}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${p.WhatsApp || p.whatsapp}</span><br><span class="text-[10px] text-gray-500">${p.Correo_Acceso || p.correo || ''}</span><br><span class="text-[10px] text-amber-600 font-bold">Calificaciones: ${totalCalsPuesto}</span></td>
+                            <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(p.Fecha_Registro || p.fecha)}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${p.WhatsApp || p.whatsapp}</span></td>
                             <td class="p-2 text-center">
                                 <div class="flex items-center justify-center gap-1.5">
                                     <button onclick="verDetalleMercaderoCeo('${id}')" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition" title="Ver Detalles"><i class="fa-solid fa-eye text-xs"></i></button>
@@ -2803,8 +2803,8 @@
                 });
             } else if (ceoTabActual === 'compradores') {
                 thead.innerHTML = `
-                    <th class="p-2 border">N° / Comprador / Oficio</th>
-                    <th class="p-2 border">Residencia / Cumpleaños</th>
+                    <th class="p-2 border">Comprador / Oficio</th>
+                    <th class="p-2 border">Residencia</th>
                     <th class="p-2 border">Fecha y Hora (24h)</th>
                     <th class="p-2 border">Contacto / Correo</th>
                     <th class="p-2 border text-center">Acciones</th>
@@ -2813,19 +2813,17 @@
                 let filtrados = usuariosBD.filter(u => {
                     const matchQuery = (u.Nombre_Completo || u.nombre || '').toLowerCase().includes(queryCeo) ||
                                        (u.Correo || u.correo || '').toLowerCase().includes(queryCeo) ||
-                                       (u.Residencia || u.residencia || '').toLowerCase().includes(queryCeo) ||
-                                       (u.WhatsApp || u.whatsapp || '').toLowerCase().includes(queryCeo);
+                                       (u.Residencia || u.residencia || '').toLowerCase().includes(queryCeo);
                     const matchFecha = filtrarPorFecha(u.Fecha_Registro || u.fecha);
                     return matchQuery && matchFecha;
                 });
 
-                filtrados.forEach((u, i) => {
-                    const numDesc = filtrados.length - i;
+                filtrados.forEach((u, idx) => {
                     const correo = u.Correo || u.correo;
                     tbody.innerHTML += `
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-2"><span class="font-black text-brand-orange mr-1">#${numDesc}</span> <strong>${u.Nombre_Completo || u.nombre}</strong><br><span class="text-[10px] text-gray-500 font-normal">Oficio: ${u.Oficio || u.oficio || 'N/A'}</span></td>
-                            <td class="p-2">${u.Residencia || u.residencia || 'No especificada'}<br><span class="text-[10px] text-gray-500">Cumple: ${u.Cumpleanos || u.cumpleanos || 'N/A'}</span></td>
+                            <td class="p-2 font-bold">${idx + 1}. ${u.Nombre_Completo || u.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Oficio: ${u.Oficio || u.oficio || 'N/A'}</span></td>
+                            <td class="p-2">${u.Residencia || u.residencia || 'No especificada'}</td>
                             <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(u.Fecha_Registro || u.fecha)}</td>
                             <td class="p-2">${correo}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${u.WhatsApp || u.whatsapp}</span></td>
                             <td class="p-2 text-center">
@@ -2839,7 +2837,7 @@
                 });
             } else if (ceoTabActual === 'calificaciones') {
                 thead.innerHTML = `
-                    <th class="p-2 border">N° / Usuario / Puesto</th>
+                    <th class="p-2 border">Usuario / Puesto</th>
                     <th class="p-2 border">Calificación</th>
                     <th class="p-2 border">Comentario</th>
                     <th class="p-2 border">Fecha y Hora (24h)</th>
@@ -2855,12 +2853,11 @@
                     return matchQuery && matchFecha;
                 });
 
-                filtradasCals.forEach((c, i) => {
-                    const numDesc = filtradasCals.length - i;
+                filtradasCals.forEach((c, idx) => {
                     const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId);
                     tbody.innerHTML += `
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-2"><span class="font-black text-amber-600 mr-1">#${numDesc}</span> <strong>${c.Usuario_Nombre || c.usuario}</strong><br><span class="text-[10px] text-gray-500 font-normal">Puesto: <strong>${nombrePuesto}</strong></span></td>
+                            <td class="p-2 font-bold">${idx + 1}. ${c.Usuario_Nombre || c.usuario}<br><span class="text-[10px] text-gray-500 font-normal">Puesto: <strong>${nombrePuesto}</strong></span></td>
                             <td class="p-2 text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</td>
                             <td class="p-2 italic">"${c.Comentario || ''}"</td>
                             <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</td>
@@ -2901,7 +2898,7 @@
                 <p><strong>Fecha Registro (24h):</strong> ${formatearFechaHora24h(p.Fecha_Registro || p.fecha)}</p>
                 <div class="pt-2 border-t mt-2">
                     <strong class="block mb-1">Calificaciones recibidas (${cals.length}):</strong>
-                    ${cals.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1"><strong>${c.Usuario_Nombre}:</strong> ${c.Estrellas}★ - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">Sin calificaciones</span>'}
+                    ${cals.map((c, i) => `<div class="bg-gray-100 p-1.5 rounded mb-1">${i + 1}. <strong>${c.Usuario_Nombre}:</strong> ${c.Estrellas}★ - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">Sin calificaciones</span>'}
                 </div>
             `;
             document.getElementById('modalCeoDetalle').classList.remove('hidden');
@@ -2925,11 +2922,11 @@
                 <p><strong>Fecha y Hora Registro (24h):</strong> ${formatearFechaHora24h(u.Fecha_Registro || u.fecha)}</p>
                 <div class="pt-2 border-t mt-2">
                     <strong class="block mb-1">Calificaciones realizadas (${calsObj.length}):</strong>
-                    ${calsObj.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal"><strong>${obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId)}</strong>: <strong>${c.Estrellas}★</strong> - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">No ha calificado ningún puesto</span>'}
+                    ${calsObj.map((c, i) => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal">${i + 1}. <strong>${obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId)}</strong>: <strong>${c.Estrellas}★</strong> - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">No ha calificado ningún puesto</span>'}
                 </div>
                 <div class="pt-2 border-t mt-2">
                     <strong class="block mb-1">Favoritos (${favsPuestos.length}):</strong>
-                    ${favsPuestos.map(f => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal">• ${f.Nombre_Puesto} (${f.Rubro})</div>`).join('') || '<span class="text-gray-400">Sin favoritos</span>'}
+                    ${favsPuestos.map((f, i) => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal">${i + 1}. ${f.Nombre_Puesto} (${f.Rubro})</div>`).join('') || '<span class="text-gray-400">Sin favoritos</span>'}
                 </div>
             `;
             document.getElementById('modalCeoDetalle').classList.remove('hidden');
