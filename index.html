@@ -1225,7 +1225,6 @@
                     if (secCode !== "C") {
                         iniciarIntervaloSeccion();
                     } else {
-                        // Spots Comerciales inicia en pausa o activo pero con control táctil robusto
                         iniciarIntervaloSeccion();
                     }
 
@@ -1426,7 +1425,6 @@
                 return matchRubro && matchProvincia && matchDistrito;
             });
             
-            // Ordenamiento inteligente: Primero por cantidad de votos y luego por calificación promedio más alta
             filtrados.sort((a, b) => {
                 const calsA = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(a.ID || a.id));
                 const calsB = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(b.ID || b.id));
@@ -2005,7 +2003,6 @@
             const wspFinal = rol === 'mercadero' ? wspPuesto : (wspMercador || "930528649");
             const residencia = document.getElementById('regResidencia') ? document.getElementById('regResidencia').value.trim() : "";
 
-            // Validación rigurosa Antiduplicidad
             const correoDuplicadoPuesto = puestosBD.some(p => String(p.Correo_Acceso || p.correo || '').toLowerCase() === email);
             const wspDuplicadoPuesto = puestosBD.some(p => String(p.WhatsApp || p.whatsapp || '').trim() === wspFinal);
             const tiendaDuplicada = rol === 'mercadero' && puestosBD.some(p => String(p.Nombre_Puesto || p.nombre || '').trim().toLowerCase() === nombrePuestoInput);
@@ -2325,7 +2322,6 @@
 
             let calificacionesPuesto = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(puestoId));
             
-            // Ordenar ascendente cronológicamente para que el 1er calificado sea 1 en la parte inferior (gracias a flex-col-reverse)
             calificacionesPuesto.sort((a, b) => parsearFechaSegura(a.Fecha_Hora || a.fecha) - parsearFechaSegura(b.Fecha_Hora || b.fecha));
 
             const periodo = document.getElementById('filtroPeriodoMercadero')?.value || 'historial';
@@ -2603,7 +2599,6 @@
                 (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
             );
 
-            // Ordenar ascendente cronológicamente para que el 1er calificado sea 1 en la parte inferior (gracias a flex-col-reverse)
             misCals.sort((a, b) => parsearFechaSegura(a.Fecha_Hora || a.fecha) - parsearFechaSegura(b.Fecha_Hora || b.fecha));
 
             const periodo = document.getElementById('filtroPeriodoMercador')?.value || 'historial';
@@ -2714,7 +2709,7 @@
             renderCeoTable();
         }
 
-        // --- RENDER CEO TABLE (FILTRACIÓN FUNCIONAL CORREGIDA) ---
+        // --- RENDER CEO TABLE (ORDENAMIENTO INVERSO SOLICITADO: 3 SOBRE 2, 2 SOBRE 1, 1ERO ABAJO) ---
         function renderCeoTable() {
             document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
             document.getElementById('ceoCantUsuarios').innerText = usuariosBD.length;
@@ -2784,11 +2779,17 @@
                     return matchQuery && matchFecha;
                 });
 
-                filtrados.forEach((p, idx) => {
+                // Ordenar ascendente por fecha/ID y mapear número original (1, 2, 3...)
+                filtrados.sort((a, b) => parsearFechaSegura(a.Fecha_Registro || a.fecha) - parsearFechaSegura(b.Fecha_Registro || b.fecha));
+                let conIndices = filtrados.map((item, originalIndex) => ({ item, num: originalIndex + 1 }));
+                // Invertir para que el 3 esté sobre el 2, el 2 sobre el 1, y el 1 (1er registrado) quede abajo
+                conIndices.reverse();
+
+                conIndices.forEach(({ item: p, num }) => {
                     const id = p.ID || p.id;
                     tbody.innerHTML += `
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-2 font-bold">${idx + 1}. ${p.Nombre_Puesto || p.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Dueño: ${p.Duenio_Nombre || p.duenio || 'N/A'}</span></td>
+                            <td class="p-2 font-bold">${num}. ${p.Nombre_Puesto || p.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Dueño: ${p.Duenio_Nombre || p.duenio || 'N/A'}</span></td>
                             <td class="p-2">${p.Rubro || p.rubro}</td>
                             <td class="p-2">${p.Provincia || p.provincia} / ${p.Distrito || p.distrito}</td>
                             <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(p.Fecha_Registro || p.fecha)}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${p.WhatsApp || p.whatsapp}</span></td>
@@ -2818,11 +2819,15 @@
                     return matchQuery && matchFecha;
                 });
 
-                filtrados.forEach((u, idx) => {
+                filtrados.sort((a, b) => parsearFechaSegura(a.Fecha_Registro || a.fecha) - parsearFechaSegura(b.Fecha_Registro || b.fecha));
+                let conIndices = filtrados.map((item, originalIndex) => ({ item, num: originalIndex + 1 }));
+                conIndices.reverse();
+
+                conIndices.forEach(({ item: u, num }) => {
                     const correo = u.Correo || u.correo;
                     tbody.innerHTML += `
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-2 font-bold">${idx + 1}. ${u.Nombre_Completo || u.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Oficio: ${u.Oficio || u.oficio || 'N/A'}</span></td>
+                            <td class="p-2 font-bold">${num}. ${u.Nombre_Completo || u.nombre}<br><span class="text-[10px] text-gray-500 font-normal">Oficio: ${u.Oficio || u.oficio || 'N/A'}</span></td>
                             <td class="p-2">${u.Residencia || u.residencia || 'No especificada'}</td>
                             <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(u.Fecha_Registro || u.fecha)}</td>
                             <td class="p-2">${correo}<br><span class="text-[10px] text-brand-whatsapp font-bold">Wsp: ${u.WhatsApp || u.whatsapp}</span></td>
@@ -2853,11 +2858,15 @@
                     return matchQuery && matchFecha;
                 });
 
-                filtradasCals.forEach((c, idx) => {
+                filtradasCals.sort((a, b) => parsearFechaSegura(a.Fecha_Hora || a.fecha) - parsearFechaSegura(b.Fecha_Hora || b.fecha));
+                let conIndices = filtradasCals.map((item, originalIndex) => ({ item, num: originalIndex + 1 }));
+                conIndices.reverse();
+
+                conIndices.forEach(({ item: c, num }) => {
                     const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId);
                     tbody.innerHTML += `
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-2 font-bold">${idx + 1}. ${c.Usuario_Nombre || c.usuario}<br><span class="text-[10px] text-gray-500 font-normal">Puesto: <strong>${nombrePuesto}</strong></span></td>
+                            <td class="p-2 font-bold">${num}. ${c.Usuario_Nombre || c.usuario}<br><span class="text-[10px] text-gray-500 font-normal">Puesto: <strong>${nombrePuesto}</strong></span></td>
                             <td class="p-2 text-amber-500 font-bold">${'★'.repeat(c.Estrellas || 5)} (${c.Estrellas})</td>
                             <td class="p-2 italic">"${c.Comentario || ''}"</td>
                             <td class="p-2 font-mono text-[11px]">${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</td>
