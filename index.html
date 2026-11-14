@@ -1104,6 +1104,7 @@
             if (timeoutPausasSliders["C"]) {
                 clearTimeout(timeoutPausasSliders["C"]);
             }
+            // Reanudar después de una hora (3,600,000 ms) sin actividad en la sección de Spots Comerciales
             timeoutPausasSliders["C"] = setTimeout(() => {
                 if (typeof funcionesReanudarSecciones["C"] === 'function') {
                     funcionesReanudarSecciones["C"]();
@@ -1410,9 +1411,17 @@
                 return matchRubro && matchProvincia && matchDistrito;
             });
             
+            // Ordenar por calificación promedio y cantidad de votos (más votados y mejor calificados primero)
             filtrados.sort((a, b) => {
                 const calsA = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(a.ID || a.id));
                 const calsB = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(b.ID || b.id));
+                
+                const avgA = calsA.length > 0 ? calsA.reduce((acc, curr) => acc + parseInt(curr.Estrellas || 0), 0) / calsA.length : 0;
+                const avgB = calsB.length > 0 ? calsB.reduce((acc, curr) => acc + parseInt(curr.Estrellas || 0), 0) / calsB.length : 0;
+                
+                if (avgB !== avgA) {
+                    return avgB - avgA;
+                }
                 return calsB.length - calsA.length;
             });
 
@@ -1700,6 +1709,7 @@
                 ], "update", 0, calReg.ID_Calificacion || calReg.id);
 
                 renderPuestos();
+                renderRubros();
                 if(usuarioActual && usuarioActual.rol === 'mercador') {
                     renderListaCalificacionesMercador();
                 }
@@ -1735,6 +1745,7 @@
                 ]);
 
                 renderPuestos();
+                renderRubros();
                 if(usuarioActual && usuarioActual.rol === 'mercador') {
                     renderListaCalificacionesMercador();
                 }
@@ -1977,8 +1988,13 @@
             const wspFinal = rol === 'mercadero' ? wspPuesto : (wspMercador || "930528649");
             const residencia = document.getElementById('regResidencia') ? document.getElementById('regResidencia').value.trim() : "";
 
+            const nombrePuesto = rol === 'mercadero' ? document.getElementById('regPuestoNombre').value.trim() : "";
+
+            // EVITAR DUPLICIDAD ESTRICTA
             const correoDuplicadoPuesto = puestosBD.some(p => String(p.Correo_Acceso || p.correo || '').toLowerCase() === email);
             const wspDuplicadoPuesto = puestosBD.some(p => String(p.WhatsApp || p.whatsapp || '').trim() === wspFinal);
+            const nombrePuestoDuplicado = rol === 'mercadero' && puestosBD.some(p => String(p.Nombre_Puesto || p.nombre || '').toLowerCase() === nombrePuesto.toLowerCase());
+            
             const correoDuplicadoUsuario = usuariosBD.some(u => String(u.Correo || u.correo || '').toLowerCase() === email);
             const wspDuplicadoUsuario = usuariosBD.some(u => String(u.WhatsApp || u.whatsapp || '').trim() === wspFinal);
 
@@ -1990,6 +2006,10 @@
                 mostrarToast("⚠️ El número de WhatsApp ya se encuentra registrado.");
                 return;
             }
+            if (nombrePuestoDuplicado) {
+                mostrarToast("⚠️ Ya existe un puesto registrado con ese mismo nombre.");
+                return;
+            }
 
             try {
                 const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
@@ -1997,7 +2017,6 @@
                 const fechaReg24 = obtenerFechaHora24hActual();
 
                 if (rol === 'mercadero') {
-                    const nombrePuesto = document.getElementById('regPuestoNombre').value.trim();
                     const rubroPuesto = document.getElementById('regPuestoRubro').value;
                     const descPuesto = document.getElementById('regPuestoDesc').value.trim();
                     const provinciaPuesto = document.getElementById('regProvinciaPuesto').value;
@@ -2040,7 +2059,8 @@
                         nuevoPuesto.Duenio_Nombre, 
                         nuevoPuesto.Correo_Acceso, 
                         nuevoPuesto.Estado,
-                        nuevoPuesto.UID
+                        nuevoPuesto.UID,
+                        nuevoPuesto.Fecha_Registro
                     ]);
 
                     usuarioActual = {
@@ -2396,10 +2416,12 @@
                     p.Duenio_Nombre || usuarioActual.Nombre_Completo,
                     p.Correo_Acceso || usuarioActual.Correo,
                     p.Estado || "Activo",
-                    p.UID || usuarioActual.uid || ""
+                    p.UID || usuarioActual.uid || "",
+                    p.Fecha_Registro || ""
                 ], "update", 0, id);
 
                 renderPuestos();
+                renderRubros();
                 mostrarToast("¡Información actualizada!");
             }
         }
@@ -2429,7 +2451,7 @@
                         <p><strong>Residencia:</strong> ${usuarioActual.residencia || 'No especificada'}</p>
                     </div>
 
-                    <!-- AJUSTE 3: BARRA DE BÚSQUEDA Y FILTRACIÓN TEMPORAL EN PANEL MERCADOR(A) -->
+                    <!-- BARRA DE BÚSQUEDA Y FILTRACIÓN TEMPORAL EN PANEL MERCADOR(A) -->
                     <div class="space-y-2 bg-gray-50 p-3 rounded-xl border">
                         <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
                             <div class="w-full sm:w-64 relative">
@@ -2463,7 +2485,8 @@
 
                     <div class="space-y-2 pt-2 border-t">
                         <h4 id="tituloContadorCalsMercador" class="text-xs font-bold text-gray-800 uppercase">Puestos Calificados (${misCals.length})</h4>
-                        <div id="contenedorListaCalsMercador" class="space-y-2 max-h-72 overflow-y-auto"></div>
+                        <!-- CONTENEDOR CON FLEX-COL-REVERSE: EL #1 APARECE EN LA PARTE INFERIOR, EL #2 ENCIMA, ETC. -->
+                        <div id="contenedorListaCalsMercador" class="flex flex-col-reverse space-y-2 space-y-reverse max-h-72 overflow-y-auto"></div>
                     </div>
 
                     <div class="pt-3 border-t border-gray-200 space-y-2">
@@ -2518,7 +2541,6 @@
                 </div>
             `;
 
-            // Inicializar selectores de fecha en el modal de mercador si no existían
             poblarSelectoresFechaMercador();
             renderListaCalificacionesMercador();
         }
@@ -2561,13 +2583,17 @@
             const titulo = document.getElementById('tituloContadorCalsMercador');
             if (!cont) return;
 
-            const misCals = calificacionesBD.filter(c => 
+            let misCals = calificacionesBD.filter(c => 
                 (c.Usuario_Nombre && String(c.Usuario_Nombre).toLowerCase() === String(usuarioActual.Nombre_Completo).toLowerCase()) ||
                 (c.Usuario_UID && usuarioActual.uid && String(c.Usuario_UID) === String(usuarioActual.uid)) ||
                 (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(usuarioActual.Correo).toLowerCase())
             );
 
-            misCals.sort((a, b) => parsearFechaSegura(b.Fecha_Hora || b.fecha) - parsearFechaSegura(a.Fecha_Hora || a.fecha));
+            // Ordenar cronológicamente ascendente (el 1er calificado es el #1, el 2do es #2, etc.)
+            misCals.sort((a, b) => parsearFechaSegura(a.Fecha_Hora || a.fecha) - parsearFechaSegura(b.Fecha_Hora || b.fecha));
+
+            // Asignar número de orden cronológico fijo
+            let misCalsConIndice = misCals.map((c, originalIdx) => ({ ...c, numeroOrden: originalIdx + 1 }));
 
             const periodo = document.getElementById('filtroPeriodoMercador')?.value || 'historial';
             const rangoContainer = document.getElementById('rangoPersonalizadoMercadorContainer');
@@ -2612,7 +2638,7 @@
             const inputEl = document.getElementById('buscadorMisCalificaciones');
             const queryMercador = inputEl ? inputEl.value.toLowerCase().trim() : '';
 
-            let filtradasCals = misCals.filter(c => {
+            let filtradasCals = misCalsConIndice.filter(c => {
                 const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId).toLowerCase();
                 const comentario = String(c.Comentario || '').toLowerCase();
                 const matchQuery = nombrePuesto.includes(queryMercador) || comentario.includes(queryMercador);
@@ -2627,12 +2653,12 @@
                 return;
             }
 
-            cont.innerHTML = filtradasCals.map((c, idx) => {
+            cont.innerHTML = filtradasCals.map((c) => {
                 const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId);
                 return `
                     <div class="bg-white border border-gray-200 p-3 rounded-xl text-xs space-y-1.5 shadow-sm">
                         <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
-                            <span>#${idx + 1} - ${nombrePuesto}</span>
+                            <span>Puesto #${c.numeroOrden} - ${nombrePuesto}</span>
                             <span class="text-amber-500">${'★'.repeat(c.Estrellas || 5)}</span>
                         </div>
                         <p class="text-gray-600 italic">"${c.Comentario || 'Sin comentario'}"</p>
@@ -2677,7 +2703,7 @@
             renderCeoTable();
         }
 
-        // --- RENDER CEO TABLE (AJUSTE 1: FILTRACIÓN FUNCIONAL DÍA, SEMANA, MES, AÑO, HISTORIAL, PERSONALIZADO) ---
+        // --- RENDER CEO TABLE (FILTRACIÓN ROBUSTA Y CORREGIDA) ---
         function renderCeoTable() {
             document.getElementById('ceoCantPuestos').innerText = puestosBD.length;
             document.getElementById('ceoCantUsuarios').innerText = usuariosBD.length;
@@ -2688,7 +2714,7 @@
             if (!tbody || !thead) return;
             tbody.innerHTML = '';
 
-            const queryCeo = document.getElementById('inputBusquedaCeo')?.value.toLowerCase() || '';
+            const queryCeo = document.getElementById('inputBusquedaCeo')?.value.toLowerCase().trim() || '';
             const periodo = document.getElementById('filtroPeriodoCeo')?.value || 'historial';
             
             const rangoContainer = document.getElementById('rangoPersonalizadoCeoContainer');
@@ -2740,12 +2766,29 @@
                 `;
 
                 let filtrados = puestosBD.filter(p => {
-                    const matchQuery = (p.Nombre_Puesto || p.nombre || '').toLowerCase().includes(queryCeo) ||
-                                       (p.Rubro || p.rubro || '').toLowerCase().includes(queryCeo) ||
-                                       (p.Duenio_Nombre || p.duenio || '').toLowerCase().includes(queryCeo);
+                    const nombrePuesto = String(p.Nombre_Puesto || p.nombre || '').toLowerCase();
+                    const rubroPuesto = String(p.Rubro || p.rubro || '').toLowerCase();
+                    const duenioPuesto = String(p.Duenio_Nombre || p.duenio || '').toLowerCase();
+                    const distritoPuesto = String(p.Distrito || p.distrito || '').toLowerCase();
+                    const provinciaPuesto = String(p.Provincia || p.provincia || '').toLowerCase();
+                    const correoPuesto = String(p.Correo_Acceso || p.correo || '').toLowerCase();
+
+                    const matchQuery = !queryCeo || 
+                        nombrePuesto.includes(queryCeo) || 
+                        rubroPuesto.includes(queryCeo) || 
+                        duenioPuesto.includes(queryCeo) ||
+                        distritoPuesto.includes(queryCeo) ||
+                        provinciaPuesto.includes(queryCeo) ||
+                        correoPuesto.includes(queryCeo);
+
                     const matchFecha = filtrarPorFecha(p.Fecha_Registro || p.fecha);
                     return matchQuery && matchFecha;
                 });
+
+                if (filtrados.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400">No se encontraron mercaderos con los filtros seleccionados.</td></tr>`;
+                    return;
+                }
 
                 filtrados.forEach(p => {
                     const id = p.ID || p.id;
@@ -2774,12 +2817,25 @@
                 `;
 
                 let filtrados = usuariosBD.filter(u => {
-                    const matchQuery = (u.Nombre_Completo || u.nombre || '').toLowerCase().includes(queryCeo) ||
-                                       (u.Correo || u.correo || '').toLowerCase().includes(queryCeo) ||
-                                       (u.Residencia || u.residencia || '').toLowerCase().includes(queryCeo);
+                    const nombreComp = String(u.Nombre_Completo || u.nombre || '').toLowerCase();
+                    const correoComp = String(u.Correo || u.correo || '').toLowerCase();
+                    const residenciaComp = String(u.Residencia || u.residencia || '').toLowerCase();
+                    const oficioComp = String(u.Oficio || u.oficio || '').toLowerCase();
+
+                    const matchQuery = !queryCeo || 
+                        nombreComp.includes(queryCeo) || 
+                        correoComp.includes(queryCeo) || 
+                        residenciaComp.includes(queryCeo) ||
+                        oficioComp.includes(queryCeo);
+
                     const matchFecha = filtrarPorFecha(u.Fecha_Registro || u.fecha);
                     return matchQuery && matchFecha;
                 });
+
+                if (filtrados.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400">No se encontraron compradores con los filtros seleccionados.</td></tr>`;
+                    return;
+                }
 
                 filtrados.forEach(u => {
                     const correo = u.Correo || u.correo;
@@ -2809,12 +2865,22 @@
 
                 let filtradasCals = calificacionesBD.filter(c => {
                     const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId).toLowerCase();
-                    const matchQuery = (c.Usuario_Nombre || c.usuario || '').toLowerCase().includes(queryCeo) ||
-                                       (c.Comentario || c.comentario || '').toLowerCase().includes(queryCeo) ||
-                                       nombrePuesto.includes(queryCeo);
+                    const nombreUsuario = String(c.Usuario_Nombre || c.usuario || '').toLowerCase();
+                    const comentario = String(c.Comentario || c.comentario || '').toLowerCase();
+
+                    const matchQuery = !queryCeo || 
+                        nombrePuesto.includes(queryCeo) || 
+                        nombreUsuario.includes(queryCeo) || 
+                        comentario.includes(queryCeo);
+
                     const matchFecha = filtrarPorFecha(c.Fecha_Hora || c.fecha);
                     return matchQuery && matchFecha;
                 });
+
+                if (filtradasCals.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400">No se encontraron calificaciones con los filtros seleccionados.</td></tr>`;
+                    return;
+                }
 
                 filtradasCals.forEach(c => {
                     const nombrePuesto = obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId);
@@ -2839,6 +2905,7 @@
                 await eliminarEnSheets('calificaciones', calId, 0);
                 renderCeoTable();
                 renderPuestos();
+                renderRubros();
                 if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
                     verFavoritosModal();
                 }
@@ -2846,22 +2913,35 @@
             }
         }
 
+        // --- MÁS INFORMACIÓN DETALLADA EN PANEL CEO ---
         function verDetalleMercaderoCeo(id) {
             const p = puestosBD.find(x => String(x.ID || x.id) === String(id));
             if (!p) return;
             const cals = calificacionesBD.filter(c => String(c.Puesto_ID || c.puestoId) === String(id));
+            const promedioEstrellas = cals.length > 0 ? (cals.reduce((a,c)=>a+parseInt(c.Estrellas||0),0)/cals.length).toFixed(1) : '0';
 
-            document.getElementById('ceoDetalleTitulo').innerText = `Puesto: ${p.Nombre_Puesto || p.nombre}`;
+            document.getElementById('ceoDetalleTitulo').innerText = `Detalle del Puesto: ${p.Nombre_Puesto || p.nombre}`;
             document.getElementById('ceoDetalleContenido').innerHTML = `
-                <p><strong>Dueño:</strong> ${p.Duenio_Nombre || 'N/A'}</p>
-                <p><strong>Correo:</strong> ${p.Correo_Acceso || 'N/A'}</p>
-                <p><strong>WhatsApp:</strong> ${p.WhatsApp || 'N/A'}</p>
-                <p><strong>Rubro:</strong> ${p.Rubro || 'N/A'}</p>
-                <p><strong>Ubicación:</strong> ${p.Region}, ${p.Provincia}, ${p.Distrito}</p>
-                <p><strong>Fecha Registro (24h):</strong> ${formatearFechaHora24h(p.Fecha_Registro || p.fecha)}</p>
+                <div class="space-y-1.5 bg-gray-50 p-3 rounded-xl border">
+                    <p><strong>ID de Puesto:</strong> ${p.ID || p.id}</p>
+                    <p><strong>Nombre del Puesto:</strong> ${p.Nombre_Puesto || p.nombre}</p>
+                    <p><strong>Dueño (Mercadero):</strong> ${p.Duenio_Nombre || 'N/A'}</p>
+                    <p><strong>Rubro:</strong> ${p.Rubro || 'N/A'}</p>
+                    <p><strong>Descripción:</strong> ${p.Descripcion || 'Sin descripción'}</p>
+                    <p><strong>Región / Prov / Dist:</strong> ${p.Region || 'Piura'}, ${p.Provincia || 'N/A'}, ${p.Distrito || 'N/A'}</p>
+                    <p><strong>Ubicación GPS:</strong> ${p.GPS || 'No registrada'}</p>
+                    <p><strong>WhatsApp:</strong> ${p.WhatsApp || 'N/A'}</p>
+                    <p><strong>Catálogo / Web:</strong> ${p.Web_Catalogo || 'No registrado'}</p>
+                    <p><strong>Correo de Acceso:</strong> ${p.Correo_Acceso || 'N/A'}</p>
+                    <p><strong>UID Firebase:</strong> ${p.UID || 'N/A'}</p>
+                    <p><strong>Fecha y Hora de Registro (24h):</strong> ${formatearFechaHora24h(p.Fecha_Registro || p.fecha)}</p>
+                    <p><strong>Calificación Promedio:</strong> ${promedioEstrellas} ★ (${cals.length} valoraciones)</p>
+                </div>
                 <div class="pt-2 border-t mt-2">
-                    <strong class="block mb-1">Calificaciones recibidas (${cals.length}):</strong>
-                    ${cals.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1"><strong>${c.Usuario_Nombre}:</strong> ${c.Estrellas}★ - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">Sin calificaciones</span>'}
+                    <strong class="block mb-1 text-gray-800 uppercase text-[10px]">Historial de Calificaciones Recibidas (${cals.length}):</strong>
+                    <div class="max-h-40 overflow-y-auto space-y-1">
+                        ${cals.map(c => `<div class="bg-white p-2 rounded border text-[11px]"><strong>${c.Usuario_Nombre}:</strong> ${'★'.repeat(c.Estrellas)} (${c.Estrellas}) - "${c.Comentario}" <br><span class="text-[9px] text-gray-400">${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</span></div>`).join('') || '<span class="text-gray-400">Sin calificaciones aún</span>'}
+                    </div>
                 </div>
             `;
             document.getElementById('modalCeoDetalle').classList.remove('hidden');
@@ -2871,25 +2951,34 @@
             const u = usuariosBD.find(x => (x.Correo || x.correo) === correo);
             if (!u) return;
 
-            const calsObj = calificacionesBD.filter(c => (c.Usuario_Nombre || c.usuario) === (u.Nombre_Completo || u.nombre));
-            const favsIds = favoritosBD.filter(f => (f.Usuario_Correo || f.correo) === correo).map(f => String(f.Puesto_ID || f.puestoId));
+            const calsObj = calificacionesBD.filter(c => (c.Usuario_Nombre || c.usuario) === (u.Nombre_Completo || u.nombre) || (c.Usuario_Correo && String(c.Usuario_Correo).toLowerCase() === String(correo).toLowerCase()));
+            const favsIds = favoritosBD.filter(f => (f.Usuario_Correo || f.correo) === correo || (u.uid && f.Usuario_UID && String(f.Usuario_UID) === String(u.uid))).map(f => String(f.Puesto_ID || f.puestoId));
             const favsPuestos = puestosBD.filter(p => favsIds.includes(String(p.ID || p.id)));
 
-            document.getElementById('ceoDetalleTitulo').innerText = `Comprador: ${u.Nombre_Completo || u.nombre}`;
+            document.getElementById('ceoDetalleTitulo').innerText = `Detalle de Comprador: ${u.Nombre_Completo || u.nombre}`;
             document.getElementById('ceoDetalleContenido').innerHTML = `
-                <p><strong>Correo:</strong> ${correo}</p>
-                <p><strong>WhatsApp:</strong> ${u.WhatsApp || 'N/A'}</p>
-                <p><strong>Oficio:</strong> ${u.Oficio || 'Comerciante'}</p>
-                <p><strong>Cumpleaños:</strong> ${u.Cumpleanos || 'N/A'}</p>
-                <p><strong>Residencia:</strong> ${u.Residencia || u.residencia || 'No especificada'}</p>
-                <p><strong>Fecha y Hora Registro (24h):</strong> ${formatearFechaHora24h(u.Fecha_Registro || u.fecha)}</p>
-                <div class="pt-2 border-t mt-2">
-                    <strong class="block mb-1">Calificaciones realizadas (${calsObj.length}):</strong>
-                    ${calsObj.map(c => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal"><strong>${obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId)}</strong>: <strong>${c.Estrellas}★</strong> - "${c.Comentario}" <span class="text-[10px] text-gray-500">(${formatearFechaHora24h(c.Fecha_Hora || c.fecha)})</span></div>`).join('') || '<span class="text-gray-400">No ha calificado ningún puesto</span>'}
+                <div class="space-y-1.5 bg-gray-50 p-3 rounded-xl border">
+                    <p><strong>ID de Usuario:</strong> ${u.ID_Usuario || u.id || 'N/A'}</p>
+                    <p><strong>Nombre Completo:</strong> ${u.Nombre_Completo || u.nombre}</p>
+                    <p><strong>Correo Electrónico:</strong> ${correo}</p>
+                    <p><strong>WhatsApp:</strong> ${u.WhatsApp || 'N/A'}</p>
+                    <p><strong>Oficio / Profesión:</strong> ${u.Oficio || 'Comerciante'}</p>
+                    <p><strong>Cumpleaños:</strong> ${u.Cumpleanos || 'N/A'}</p>
+                    <p><strong>Lugar de Residencia:</strong> ${u.Residencia || u.residencia || 'No especificada'}</p>
+                    <p><strong>UID Firebase:</strong> ${u.UID || 'N/A'}</p>
+                    <p><strong>Fecha y Hora de Registro (24h):</strong> ${formatearFechaHora24h(u.Fecha_Registro || u.fecha)}</p>
                 </div>
                 <div class="pt-2 border-t mt-2">
-                    <strong class="block mb-1">Favoritos (${favsPuestos.length}):</strong>
-                    ${favsPuestos.map(f => `<div class="bg-gray-100 p-1.5 rounded mb-1 font-normal">• ${f.Nombre_Puesto} (${f.Rubro})</div>`).join('') || '<span class="text-gray-400">Sin favoritos</span>'}
+                    <strong class="block mb-1 text-gray-800 uppercase text-[10px]">Calificaciones Realizadas (${calsObj.length}):</strong>
+                    <div class="max-h-36 overflow-y-auto space-y-1">
+                        ${calsObj.map(c => `<div class="bg-white p-2 rounded border text-[11px]"><strong>Puesto: ${obtenerNombrePuestoPorId(c.Puesto_ID || c.puestoId)}</strong><br>Calificación: <strong>${c.Estrellas}★</strong> - "${c.Comentario}" <br><span class="text-[9px] text-gray-400">${formatearFechaHora24h(c.Fecha_Hora || c.fecha)}</span></div>`).join('') || '<span class="text-gray-400">No ha calificado ningún puesto</span>'}
+                    </div>
+                </div>
+                <div class="pt-2 border-t mt-2">
+                    <strong class="block mb-1 text-gray-800 uppercase text-[10px]">Puestos Favoritos Guardados (${favsPuestos.length}):</strong>
+                    <div class="max-h-28 overflow-y-auto space-y-1">
+                        ${favsPuestos.map(f => `<div class="bg-white p-1.5 rounded border text-[11px]">• <strong>${f.Nombre_Puesto}</strong> (${f.Rubro}) - ${f.Distrito}</div>`).join('') || '<span class="text-gray-400">Sin puestos favoritos guardados</span>'}
+                    </div>
                 </div>
             `;
             document.getElementById('modalCeoDetalle').classList.remove('hidden');
@@ -2901,6 +2990,7 @@
                 await eliminarEnSheets('puestos', id, 0);
                 renderCeoTable();
                 renderPuestos();
+                renderRubros();
                 if(!document.getElementById('modalFavoritos').classList.contains('hidden')) {
                     verFavoritosModal();
                 }
